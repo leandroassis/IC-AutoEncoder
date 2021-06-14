@@ -61,17 +61,18 @@ class NoiseGen ():
         rng = np.random.Generator(np.random.PCG64(12345))
         self.dataSet = imageDataSet.copy()
         self.dataSet = np.array(self.dataSet, dtype=int)
-        pixel = 0
-        i=0
-        delta = 0 
         NumImages, Dim1, Dim2, Dim3 = imageDataSet.shape
         
-        for image in range(NumImages):        
+        for image in range(NumImages):
             noiseMatrix = rng.integers(-alpha,alpha, (Dim1, Dim2, Dim3), dtype=int)
             self.dataSet[image] = noiseMatrix + self.dataSet[image]
-        self.dataSet = np.array(self.dataSet, dtype=int)
+        for image in range(NumImages):
+            for linha in range(Dim1):
+                for coluna in range (Dim2):
+                    self.dataSet[image][linha][coluna][0] = min(255, self.dataSet[image][linha][coluna][0])
+                    self.dataSet[image][linha][coluna][0] = max(0, self.dataSet[image][linha][coluna][0])
 
-
+        self.dataSet = np.array(self.dataSet, dtype='uint8')
 
 
         
