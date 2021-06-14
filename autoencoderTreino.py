@@ -2,7 +2,7 @@ import tensorflow as tf
 import tensorflow.keras as kr
 import numpy as np
 import os
-from tensorflow.image import ssim
+from tensorflow._api.v2.image import ssim
 from PIL import Image
 from io import BytesIO
 from scipy import misc
@@ -54,7 +54,7 @@ def main():
 
   #load do modelo 
 
-  jsonFile = open("model5.json", "r")
+  jsonFile = open("model3.json", "r")
 
   json_LDD_model = jsonFile.read()
 
@@ -64,7 +64,7 @@ def main():
 
   #gerenciamento de pesos
 
-  checkpoint_path = "checkpoints5/cp.ckpt"
+  checkpoint_path = "checkpoints3/cp.ckpt"
 
   checkpoint_dir = os.path.dirname(checkpoint_path)
 
@@ -92,7 +92,7 @@ def main():
 
   #nNet.summary()
 
-  nNet.compile(optimizer=kr.optimizers.Adam(lr=0.0005), loss=Ssim)
+  nNet.compile(optimizer=kr.optimizers.Adam(lr=0.001), loss=Ssim)
 
   nNet.fit(x=noiseData.dataSet, y=newXtrain.astype('float32'), callbacks=[cp_callback], validation_data=(noiseDataTest.dataSet, newXtest.astype('float32')), batch_size = 10, epochs=1)
 
