@@ -10,7 +10,7 @@ from scipy import misc
 from DataMod import NoiseGen
 
 def Ssim (i1, i2):
-    return -ssim(i1, i2, max_val=255, filter_size = 7)
+    return -ssim(i1, i2, max_val=255, filter_size = 11)
 
 def main():
 
@@ -33,7 +33,7 @@ def main():
   for indice in range(newXtrain.shape[0]):
     buffer = BytesIO()
     img = Image.fromarray(newXtrain[indice].reshape(32,32), mode="L")
-    img.save(buffer, "JPEG", quality=20)
+    img.save(buffer, "JPEG", quality=30)
     image = Image.open(buffer)
     image = np.asarray(image)
     newBase.append(image)
@@ -44,7 +44,7 @@ def main():
   for indice in range(newXtest.shape[0]):
     buffer = BytesIO()
     img = Image.fromarray(newXtest[indice].reshape(32,32), mode="L")
-    img.save(buffer, "JPEG", quality=20)
+    img.save(buffer, "JPEG", quality=30)
     image = Image.open(buffer)
     image = np.asarray(image)
     newTestBase.append(image)
@@ -54,7 +54,7 @@ def main():
 
   #load do modelo 
 
-  jsonFile = open("model3.json", "r")
+  jsonFile = open("Unet.json", "r")
 
   json_LDD_model = jsonFile.read()
 
@@ -64,7 +64,7 @@ def main():
 
   #gerenciamento de pesos
 
-  checkpoint_path = "checkpoints3/cp.ckpt"
+  checkpoint_path = "checkpoints6/cp.ckpt"
 
   checkpoint_dir = os.path.dirname(checkpoint_path)
 
@@ -72,6 +72,7 @@ def main():
                                                   save_weights_only=True,
                                                   verbose=1)
 
+  
   #nNet.load_weights(checkpoint_path)
 
 
@@ -85,15 +86,16 @@ def main():
   newTestBase = newTestBase.astype('float32')
 
   noiseDataTest = NoiseGen()
-  noiseDataTest.grayLowNoiseMkr(newTestBase, 19)
+  noiseDataTest.grayLowNoiseMkr(newTestBase, 10)
 
   noiseData = NoiseGen()
-  noiseData.grayLowNoiseMkr(newBase, 19)
+  noiseData.grayLowNoiseMkr(newBase, 10)
 
   #nNet.summary()
 
-  nNet.compile(optimizer=kr.optimizers.Adam(lr=0.001), loss=Ssim)
+  nNet.compile(optimizer=kr.optimizers.Adam(learning_rate=0.001), loss=Ssim)
 
-  nNet.fit(x=noiseData.dataSet, y=newXtrain.astype('float32'), callbacks=[cp_callback], validation_data=(noiseDataTest.dataSet, newXtest.astype('float32')), batch_size = 10, epochs=1)
+  nNet.fit(x=noiseData.dataSet.astype('float32'), y=newXtrain.astype('float32'), 
+           callbacks=[cp_callback], validation_data=(noiseDataTest.dataSet.astype('float32'), newXtest.astype('float32')), batch_size = 10, epochs=5)
 
 main()
