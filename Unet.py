@@ -8,8 +8,8 @@ model_file_name = "Unet.json"
 #Left frist block:
 inputs = kr.layers.Input(shape=(32,32,1))
 Llayer1_1 = kr.layers.Conv2D(filters= 1, kernel_size=(4,4), input_shape=(32,32,1), activation='relu', padding='same') (inputs)
-Llayer1_2 = kr.layers.Conv2D( filters= 2, kernel_size=(4,4), padding='same' )(Llayer1_1)
-Llayer1_3 = kr.layers.Conv2D( filters= 4, kernel_size=(4,4), padding='same' )(Llayer1_2)
+Llayer1_2 = kr.layers.Conv2D( filters= 2, kernel_size=(4,4), activation='relu', padding='same' )(Llayer1_1)
+Llayer1_3 = kr.layers.Conv2D( filters= 4, kernel_size=(4,4), activation='relu', padding='same' )(Llayer1_2)
 
 #Left second block:
 Llayer2_1 = kr.layers.MaxPool2D()(Llayer1_3)
