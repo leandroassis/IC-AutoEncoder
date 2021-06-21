@@ -33,13 +33,13 @@ Rlayer3_2 = kr.layers.Conv2D( filters= (64+256)//2, kernel_size=(4,4), activatio
 Rlayer3_3 = kr.layers.Conv2D( filters=  80, kernel_size=(4,4), activation='relu' , padding='same'  )(Rlayer3_2)
 
 #right second block:
-Rlayer2_1_2 = kr.layers.UpSampling2D()(Llayer3_3)
+Rlayer2_1_2 = kr.layers.UpSampling2D()(Rlayer3_3)
 Rlayer2_1 = kr.layers.concatenate([Llayer2_3, Rlayer2_1_2], axis=-1)
 Rlayer2_2 = kr.layers.Conv2D( filters= (16+80)//2, kernel_size=(4,4), activation='relu' , padding='same' )(Rlayer2_1)
 Rlayer2_3 = kr.layers.Conv2D( filters= 24, kernel_size=(4,4), activation='relu' , padding='same' )(Rlayer2_2)
 
 #right frist block:
-Rlayer1_1_2 = kr.layers.UpSampling2D()(Llayer2_3)
+Rlayer1_1_2 = kr.layers.UpSampling2D()(Rlayer2_3)
 Rlayer1_1 = kr.layers.concatenate([Llayer1_3, Rlayer1_1_2], axis=-1)
 Rlayer1_2 = kr.layers.Conv2D( filters= (24+4)//2, kernel_size=(4,4), activation='relu' , padding='same' )(Rlayer1_1)
 Rlayer1_3 = kr.layers.Conv2D( filters= 7, kernel_size=(4,4), activation='relu' , padding='same' )(Rlayer1_2)
@@ -50,6 +50,8 @@ Rlayer1_6 = kr.layers.Conv2D( filters= 1, kernel_size=(4,4), activation='relu' ,
 model = kr.models.Model(inputs=inputs, outputs=Rlayer1_6, name="Unet")
 
 model_json = model.to_json()
+
+model.summary()
 
 with open(model_file_name, "w") as json_file:
     json_file.write(model_json)
