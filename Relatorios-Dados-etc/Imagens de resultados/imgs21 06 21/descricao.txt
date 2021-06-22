@@ -1,0 +1,42 @@
+Unet - Versão com erros corrigidos da implementação passada.
+ImgT1 - Treino da epoca 1 a 5.
+img1 - resultados do treino da ImgT1.
+ImgT2 - Treino da epoca 6 a 10.
+img2 - resultados do treino da ImgT2.
+
+Legenda das imagens de resultado
+
+Linha 1 - imagem original
+Linha 2 - sáida do filtro gaussiano
+Linha 3 - imagem ruidosa (entrada)
+Linha 4 - saida da rede neural
+
+Numeros abaixo da imagem: ssim da imagem original com as imagens da linha
+
+----------------------------------------------------
+
+Parametros usados em todos os treinos do dia:
+
+Param do filtro gaussiano :
+
+Sigma = 0.38
+
+---------------------------------------------
+
+Param da ssim:
+
+filter_size = 11
+max_val = 255
+
+----------------------------------------------
+
+Parametros do treino:
+
+Bacth size = 10
+Optimizer = Adam(lr = 0.001)
+Ruído aleatório (desvio maximo nos pixels) = 10
+Qualidade da compressão Jpeg = 30
+Base Cifar-10
+Sem normalização dos dados.
+
+----------------------------------------------------

@@ -1,0 +1,85 @@
+
+Não estava anotando
+
+...
+
+
+5/04/21
+Volta após a JIC.
+Tarefa: Implementar ruido na base da CIFAR-10;
+Leituras:
+Sobre convolução e filtragem:
+https://edisciplinas.usp.br/pluginfile.php/4433646/mod_resource/content/0/V9%20-Filtragem%20e%20suavizacao.pdf
+Alguns conceitos gerais:
+https://medium.com/data-hackers/uma-introdu%C3%A7%C3%A3o-as-redes-neurais-convolucionais-utilizando-o-keras-41ee8dcc033e
+
+
+12/04/21
+Exibir os resultados iniciais;
+Tarefas: Implementar um gerador de ruído que que gera pequenos ruídos em toda a imagem
+usar a compactação jpeg nas imagens
+
+
+19/04/21
+observação dos filtros internos de um lenet (apresentação do gustavo)
+tarefas: comprimir com jpeg e observar os filtros das camadas convolucionais;
+
+
+
+03/05/21
+-recomendação de função:
+	from scipy import misc
+	misc.imsave
+-terminar a implementação da codificação jpeg
+-testar mais redes em cascata
+
+
+10/05/21
+- Formulário de convite (português): https://forms.gle/hh9J3Wpqr2twdpMc9
+avaliação subjetiva de imagens para o trabalho de doutorado do Gustavo.
+- calcular ssim pra imagens de filtro gaussiano e outras coisas.
+- sigma ótimo para a ssim
+
+
+17/05/21
+- Diminuir o ruído e comparar com o filtro gaussiano novamente
+
+
+24/05/21
+- Ler o artigo da unet + o tutorial
+- implementar a Unet
+- https://keras.io/examples/vision/oxford_pets_image_segmentation/
+
+
+31/05/21
+- Diretório do Rafael rafaeltadeu/autoencoder (base de dados X_64x64_treino.npy)
+- Usar a tiny imageNet dataset
+- recomendações de anotações:
+	- Modelo, quantidade de camadas e épocas dos resultados.
+	- Data de cada treino, alinhar os tipos de dados e Comentario sobre o resultado do treino.
+
+- implementar e Unet (atrasado)
+
+
+14/06/21
+- Recomendações:
+	- Vídeo sobre redes neurais convolucionais: geoffrey hinton google lecture convolutional neural networks 2009
+	- Trabalho de mestrado e site sobre redes neurais que estão no grupo.
+- objetivos:
+	fazer o que estava atrasado. 
+
+
+21/06/21
+- Implementar a Unet com tiny image net e a base do rafael.
+- recomendações de livros
+	Leitura do Deep leraning book
+
+	"Oi pessoal! Conversei com o Pedro e nós pensamos nessas referências:" - Do grupo
+
+	1. Curso sobre redes convolucionais de stanford: http://cs231n.stanford.edu/2019/ . Esse curso é muito bom e tem vídeos no youtube.
+	 Foi dele que pegamos os slides que sugerimos na semana passada.
+
+	2. Deep Learning - Ian Goodfellow, Yoshua Bengio, Aaron Courville (versão html gratuita: https://www.deeplearningbook.org/)
+
+	3. Understanding Machine Learning: From Theory to Algorithms - Shai Shalev-Shwartz, Shai Ben-David 
+	(pdf gratuito no site do autor: https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html)
