@@ -1,0 +1,3 @@
+img1 - Modelo 5; 0.8636 de ssim; 1-original 2-filtro gaussiano na entrada (sigma 0.5) 3- entrada 4-saida; entrada = cifar10 + ruido (19) após compressão JPEG (20 de qualidade);
+img2 - Modelo 5; 0.8663 de ssim; 1-original 2-filtro gaussiano na entrada (sigma 0.4) 3- entrada 4-saida; entrada = cifar10 + ruido (19) após compressão JPEG (20 de qualidade);
+img3 - Modelo 5; 0.8663 de ssim; 1-original 2-filtro gaussiano na entrada (sigma 0.8) 3- entrada 4-saida; entrada = cifar10 + ruido (19) após compressão JPEG (20 de qualidade);
