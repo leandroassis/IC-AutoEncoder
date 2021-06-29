@@ -83,3 +83,8 @@ avaliação subjetiva de imagens para o trabalho de doutorado do Gustavo.
 
 	3. Understanding Machine Learning: From Theory to Algorithms - Shai Shalev-Shwartz, Shai Ben-David 
 	(pdf gratuito no site do autor: https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html)
+
+
+28/06/21
+- Implementação da Unet com crop https://arxiv.org/pdf/1505.04597.pdf
+- Defesa de mestrado: https://us06web.zoom.us/j/86076895209?pwd=RTRQNmFUVDBRZHc3R0pIVzcyR0dQdz09

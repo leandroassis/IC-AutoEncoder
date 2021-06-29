@@ -74,3 +74,19 @@ Resumo:
 Obs:
 - Vou colocar os resumos e relatórios no git Hub
 - Terminarei os objetivos (usar a tiny image e a base do rafael) outro dia, além de melhorar a arquitetura atual da Unet.
+
+
+---------------------------------------------------------------------------------------------
+
+28/06/21
+
+Objetivos
+
+Resumo:
+- atuaizei a Unet para a versão 1.1, mudando o as dimensões do nucleo de convolução.
+- Testei novamente redes em cascata, a segunda rede até deu um ganho no valor da ssim porém muito baixo (0.01 aproximadamente),
+
+Observações:
+- 
+
+
