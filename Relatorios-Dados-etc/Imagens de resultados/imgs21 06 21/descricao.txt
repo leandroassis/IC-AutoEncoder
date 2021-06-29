@@ -30,7 +30,7 @@ max_val = 255
 
 ----------------------------------------------
 
-Parametros do treino:
+Parâmetros do treino:
 
 Bacth size = 10
 Optimizer = Adam(lr = 0.001)
