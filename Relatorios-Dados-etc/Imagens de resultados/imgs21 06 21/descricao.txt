@@ -1,4 +1,4 @@
-Unet - Versão com erros corrigidos da implementação passada.
+Unet 1.0 - Versão com erros corrigidos da implementação passada.
 ImgT1 - Treino da epoca 1 a 5.
 img1 - resultados do treino da ImgT1.
 ImgT2 - Treino da epoca 6 a 10.
