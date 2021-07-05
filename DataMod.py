@@ -22,8 +22,8 @@ class DataMod ():
     def rbg_to_gray (self):
         '''
         Coverte as imagens no formato rbg para escala de cinza.
-        '''
-        self.dataSet = rgb_to_grayscale(self.dataSet)
+        '''        
+        self.dataSet = np.array(rgb_to_grayscale(self.dataSet), dtype='uint8')
 
 
     def add_standard_Noise (self, max_pixel_var):
@@ -36,7 +36,7 @@ class DataMod ():
         NumImages, Dim1, Dim2, Dim3 = self.dataSet.shape
         
         for image in range(NumImages):
-            noiseMatrix = rng.integers(-max_pixel_var, max_pixel_var, (Dim1, Dim2, Dim3), dtype=int)
+            noiseMatrix = rng.integers(-max_pixel_var, max_pixel_var + 1, (Dim1, Dim2, Dim3), dtype=int)
             self.dataSet[image] = noiseMatrix + self.dataSet[image]
         
         self.dataSet = np.clip(self.dataSet, 0, 255)
@@ -46,7 +46,7 @@ class DataMod ():
 
     def add_jpeg_compression_to_grayscale (self, compress_quality):
         """
-        Adiciona efeitos da compressão jpeg no dataSet \n
+        Adiciona efeitos da compressão jpeg no dataSet (em escala de cinza) \n
         "compress_quality é o valor da qualidade da compressão (quanto maior, melhor a qualidade, e menor a compressão dos dados)"
         """
         for idx in range(self.dataSet.shape[0]):
@@ -55,8 +55,9 @@ class DataMod ():
             img.save(buffer, "JPEG", quality=compress_quality)
             image = Image.open(buffer)
             image = np.asarray(image)
-            self.dataSet[idx] = image
+            self.dataSet[idx] = image.reshape(32,32,1)
             buffer.close()
-
+        
+        self.dataSet = np.array(self.dataSet, dtype = 'uint8')
 
         
