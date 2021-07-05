@@ -34,8 +34,8 @@ def main():
 
   #adicionando a compressão JPEG
 
-  train.add_jpeg_compression_to_grayscale(compress_quality=5)
-  test.add_jpeg_compression_to_grayscale(compress_quality=5)
+  train.add_jpeg_compression_to_grayscale(compress_quality=30)
+  test.add_jpeg_compression_to_grayscale(compress_quality=30)
 
   #adicionando ruído
 
@@ -69,6 +69,6 @@ def main():
   nNet.compile(optimizer=kr.optimizers.Adam(learning_rate=0.001), loss=Ssim)
 
   nNet.fit(x=train.dataSet.astype('float32'), y=train_target.dataSet.astype('float32'), 
-           callbacks=[cp_callback], validation_data=(test.dataSet.astype('float32'), test_target.dataSet.astype('float32')), batch_size = 10, epochs=2)
+           callbacks=[cp_callback], validation_data=(test.dataSet.astype('float32'), test_target.dataSet.astype('float32')), batch_size = 10, epochs=3)
 
 main()
