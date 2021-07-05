@@ -80,7 +80,8 @@ Obs:
 
 28/06/21
 
-Objetivos
+Objetivos:
+- melhorar resultados da Unet
 
 Resumo:
 - atuaizei a Unet para a versão 1.1, mudando o as dimensões do nucleo de convolução.
@@ -90,3 +91,80 @@ Observações:
 - 
 
 
+--------------------------------------------------------------------------------------------------
+
+29/06/21
+
+Objetivos:
+- Ler textos
+
+Resumo:
+- Li capitulos do deep learning book (2 ao 9)
+- Tirando a apresentação de varias arquiteturas e a definição de deep leraning, quase tudo dos capitulos iniciais eram coisas que eu vi mais a fundo.
+- Algumas informações novas relevantes foram as definições de rede feed-foward, redes recorrentes e redes conectadas simetricamente.
+
+Observações:
+- Arquiteturas de rede que eu deveria dar uma olhada depois:
+	Redes Neurais Recorrentes, Generative Adversarial Networks, Memory Networks.
+
+
+--------------------------------------------------------------------------------------------------
+
+
+30/06/21
+
+Objetivos:
+- Ler a dissertação do Robterto.
+
+Resumo:
+- Pontos interessantes do texto:
+	- novel regularization
+	- prova de que as redes neurais, com parametros suficientes, de uma única camada oculta
+	podem aproximar qualquer função continua.
+	- pergunta interessante: se redes com uma única camada oculta podem aproximar qualquer função
+	continua, qual seria o motivo de usar varias camadas.
+	- Redes profundas (muitas camadas) mostraram precisar exponencialmente de menos parâmtros 
+	para reproduzir uma determinada função. Isso foi demonstrado para circuitos logicos, e supoe-se ser
+	verdade para outros problemas também.
+
+- Observações do texto:
+	- Eu não achei muito claro oq ele quis dizer com computar o gradiente de forma direta, ao invés de usar o produto 
+	gradiente jacobiano (um exemplo deixaria isso mais claro).
+
+-------------------------------------------------------------------------------------------------
+
+
+04/07/21
+
+Objetivos 
+- Mudar a Unet para a versão 2.0 e usar a tiny image net.
+
+Resumo:
+- Mudei o arquivo DataMod.py adicionando uma classe chamada DataMod no Lugar do NoiseGen, adicionando novos métodos. Isso reduziu a quantidade 
+de informação no código, melhorou a legibilidade.
+- Deixei a Unet mais profunda.
+- Depois de um número grande de épocas a rede chegou em 0.9267 de ssim. (30 de qualidade jpeg e 10 de ruído) 
+
+
+----------------------------------------------------------------------------------------------
+
+05/07/21
+
+Objetivos
+- Obter resultados da nova versão da Unet e usar a tiny image net.
+
+Resumo:
+- Devido ao resultado da ssim média (Unet 2.0) do treino ter ficado quase idêntica ao treino das versões anteriores, treinei a unet para
+reproduzir a imagem da entrada na saída. E o resultado foi uma ssim de 0.997, que é quase uma reprodução perfeita da imagem. Isso significa que a rede
+não tem nenhuma dificuldade de representar a imagem em suas camadas ocultas.
+	Com base nesse fato, talvez seja a necessário trocar as metricas de perda/qualidade ou funções de ativação para obter melhores qualidades de imagem
+na saída. Já que, após várias mudanças na arquitetura da Unet e mesmo em auto-encoders, os resultados parecem não mudar para diferentes arquiteturas testadas.
+
+Observações:
+- ver o que é dropout e regularização. 
+- Esqueci de escrever as comparações das ssim's médias das versões 1.0, 1.1, 2.0 da Unet.
+	- 0.9302 para a versão 1.0 (1.8 milhões de parâmetros 18 camadas convolucionais)
+	- 0.926 para a versão 1.1 (0.8 milhões de parâmetros 18 camadas convolucionais)
+	- 0.9267 para versão 2.0 (4.5 milhões de parâmetros 36 camadas convolucionais)
+
+---------------------------------------------------------------------------------------------------
