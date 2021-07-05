@@ -1,3 +1,7 @@
 .vscode
 teste.py
 teste*
+__pycache__
+checkpoint*
+Datasets
+img*

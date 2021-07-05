@@ -1,75 +1,63 @@
 import numpy as np
+from tensorflow._api.v2.image import rgb_to_grayscale
+from io import BytesIO
+from PIL import Image
 
-class NoiseGen ():
+class DataMod ():
+    """
+    Essa classe recebe um dataset (imagens no formato np array de preferência), através do construtor, \n 
+    com dimensões (num_images, linhas, colunas, rbg) e aplica modificações diversas através de seus métodos. \n
+
+    imports necessários para o funcionamento da classe: \n
+        import numpy as np \n
+        from tensorflow._api.v2.image import rgb_to_grayscale \n
+        from io import BytesIO \n
+        from PIL import Image \n
+
+    """
+    def __init__ (self, dataSet):
+        self.dataSet = dataSet
     
-    def __init__(self):
 
-        self.dataSet = []
+    def rbg_to_gray (self):
+        '''
+        Coverte as imagens no formato rbg para escala de cinza.
+        '''        
+        self.dataSet = np.array(rgb_to_grayscale(self.dataSet), dtype='uint8')
 
-    def grayImgSqrNoiseMkr(self, imageDataSet, xRange, yRange, xInit, yInit):
 
-        rng = np.random.default_rng()
-        self.dataSet = imageDataSet.copy()
-        pixel = 0
-        delta = 0 
-        NumImages, Dim1, Dim2, Dim3 = imageDataSet.shape
-        
-        for image in range(NumImages):
-            for linha in range(yRange):
-                for coluna in range(xRange):
-                    pixel = imageDataSet[image][linha+yInit][coluna+xInit][0]
-                    randonNumber = rng.standard_normal(1)
-                    delta = 0
-                    if (randonNumber > 0 and pixel != 255):
-                        delta = (1000*randonNumber)%(255-pixel)
-                    elif (pixel !=0):
-                        delta = (1000*randonNumber)%(pixel)
-            
-                    self.dataSet[image][linha+yInit][coluna+xInit][0] =+ np.trunc(0.1*delta)
-
-                
-    def rGrayImgSqrNoiseMkr(self, imageDataSet, maxRange):
-
-        rng = np.random.default_rng()
-        self.dataSet = imageDataSet.copy()
-        pixel = 0
-        delta = 0 
-        NumImages, Dim1, Dim2, Dim3 = imageDataSet.shape
-
-        for image in range(NumImages):
-            
-            yInit = int(np.trunc((1000*rng.standard_normal())%30))
-            xInit = int(np.trunc((1000*rng.standard_normal())%30))
-            xRange = int(np.trunc((1000*rng.standard_normal())%(31-xInit)))
-            yRange = int(np.trunc((1000*rng.standard_normal())%(31-yInit)))
-
-            for linha in range(yRange):
-                for coluna in range(xRange):
-                    pixel = imageDataSet[image][linha+yInit][coluna+xInit][0]
-                    randonNumber = rng.standard_normal(1)
-                    delta = 0
-                    if (randonNumber > 0 and pixel != 255):
-                        delta = (1000*randonNumber)%(255-pixel)
-                    elif (pixel !=0):
-                        delta = (1000*randonNumber)%(pixel)
-            
-                    self.dataSet[image][linha+yInit][coluna+xInit][0] =+ np.trunc(delta)
-        
-
-    def grayLowNoiseMkr(self, imageDataSet, alpha):
-
+    def add_standard_Noise (self, max_pixel_var):
+        '''
+        Adiciona ruído nas imagens (ruído único para cada imagem), onde valor max_pixel_var é a variação \n
+        máxima que um pixel pode sofrer na imagem. 
+        '''
         rng = np.random.Generator(np.random.PCG64(12345))
-        self.dataSet = imageDataSet.copy()
         self.dataSet = np.array(self.dataSet, dtype=int)
-        NumImages, Dim1, Dim2, Dim3 = imageDataSet.shape
+        NumImages, Dim1, Dim2, Dim3 = self.dataSet.shape
         
         for image in range(NumImages):
-            noiseMatrix = rng.integers(-alpha,alpha, (Dim1, Dim2, Dim3), dtype=int)
+            noiseMatrix = rng.integers(-max_pixel_var, max_pixel_var + 1, (Dim1, Dim2, Dim3), dtype=int)
             self.dataSet[image] = noiseMatrix + self.dataSet[image]
         
         self.dataSet = np.clip(self.dataSet, 0, 255)
 
         self.dataSet = np.array(self.dataSet, dtype='uint8')
 
+
+    def add_jpeg_compression_to_grayscale (self, compress_quality):
+        """
+        Adiciona efeitos da compressão jpeg no dataSet (em escala de cinza) \n
+        "compress_quality é o valor da qualidade da compressão (quanto maior, melhor a qualidade, e menor a compressão dos dados)"
+        """
+        for idx in range(self.dataSet.shape[0]):
+            buffer = BytesIO()
+            img = Image.fromarray(self.dataSet[idx].reshape(32,32), mode="L")
+            img.save(buffer, "JPEG", quality=compress_quality)
+            image = Image.open(buffer)
+            image = np.asarray(image)
+            self.dataSet[idx] = image.reshape(32,32,1)
+            buffer.close()
+        
+        self.dataSet = np.array(self.dataSet, dtype = 'uint8')
 
         
