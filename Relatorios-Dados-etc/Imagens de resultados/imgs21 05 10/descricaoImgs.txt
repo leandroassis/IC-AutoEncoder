@@ -1,4 +1,0 @@
-img 1; 1-original 2-Entrada 3-saida ;0.84 de Ssim; compreção JPEG (qualidade = 15) após adição do ruido (19 DE VARIAÇÃO ALEATORIA DOS PIXELS);batch = 5;lr = 0.001;
-img 2; 1-original 2-JPEG 3-Entrada 4-saida ;0.897 de Ssim.; compreção JPEG (qualidade = 30) antes da aplicação do ruido (19 de var);batch = 5;lr = 0.001;
-img 3; 1-original 2-JPEG 3-Entrada 4-saida ;0.876 de Ssim.; compreção JPEG (qualidade = 20) antes da aplicação do ruido (19 de var);batch = 5;lr = 0.001;
-img 4; 1-original 2-JPEG 3-saida ;0.9 de Ssim.; compreção JPEG (qualidade = 20);batch = 5;lr = 0.001;
