@@ -3,10 +3,10 @@ from tensorflow.keras import layers
 from tensorflow.python import keras
 
 
-model_file_name = "Unet.json"
+model_file_name = "Unet2.0-64x64.json"
 
 #Left frist block:
-inputs = kr.layers.Input(shape=(32,32,1))
+inputs = kr.layers.Input(shape=(64,64,1))
 LeftLayer1_1 = kr.layers.Conv2D(filters= 4, kernel_size=8, input_shape=(32,32,1), activation='relu', padding='same') (inputs)
 LeftLayer1_2 = kr.layers.Conv2D( filters= 5, kernel_size=8, activation='relu', padding='same' )(LeftLayer1_1)
 LeftLayer1_3 = kr.layers.Conv2D( filters= 6, kernel_size=8, activation='relu', padding='same' )(LeftLayer1_2)
@@ -65,11 +65,11 @@ RightLayer1_5 = kr.layers.Conv2D( filters= 4, kernel_size=8, activation='relu' ,
 RightLayer1_6 = kr.layers.Conv2D( filters= 2, kernel_size=8, activation='relu' , padding='same' )(RightLayer1_5)
 RightLayer1_7 = kr.layers.Conv2D( filters= 1, kernel_size=8, activation='relu' , padding='same' )(RightLayer1_6)
 
-model = kr.models.Model(inputs=inputs, outputs=RightLayer1_7, name="Unet")
+model = kr.models.Model(inputs=inputs, outputs=RightLayer1_7, name=model_file_name)
 
 model_json = model.to_json()
 
 model.summary()
 
-with open(model_file_name, "w") as json_file:
+with open("nNet_models/" + model_file_name, "w") as json_file:
     json_file.write(model_json)

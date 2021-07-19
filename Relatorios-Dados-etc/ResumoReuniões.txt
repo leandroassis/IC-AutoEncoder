@@ -109,3 +109,8 @@ avaliação subjetiva de imagens para o trabalho de doutorado do Gustavo.
 	- Testar o desempenho na base do rafael
 	- usar a tiny image net
 	- modificar a Unet
+
+================================================================================================
+
+12/07/21
+- não anotei nada.

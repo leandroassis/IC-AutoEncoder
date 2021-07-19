@@ -1,2 +1,3 @@
 # IC-AutoEncoder
-Meus programas da iniciação científica.
+
+Uma hora eu descrevo o projeto kk

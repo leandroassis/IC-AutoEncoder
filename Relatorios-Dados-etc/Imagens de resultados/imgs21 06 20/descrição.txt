@@ -1,2 +1,0 @@
-img1 - Resultados do treino a partir do zero. Para a versão 1.0 da Unet data do treino (20/06/21)
-img2 - Resultados após o treino da imagem 1 ; Sigma do filtro gaussiano = 0.38 (provavelmente o que mais aumenta a SSIM) ; 

@@ -168,3 +168,52 @@ Observações:
 	- 0.9267 para versão 2.0 (4.5 milhões de parâmetros 36 camadas convolucionais)
 
 ---------------------------------------------------------------------------------------------------
+
+11/07/21
+
+Objetivos:
+- Usar a base do rafael
+- Gerar uma imagem única com o matplotlib dos resultados do treino
+
+Resumo:
+- consegui gerar a imagem com o matplotlib
+
+---------------------------------------------------------------------------------------------------
+
+12/07/21
+
+Objetivos:
+- Usar a base do rafael
+
+Resumo:
+- Usando a base gerada pelo rafael, continuou evidente que a rede neural é mais eficiente para melhorar a qualidade da imagem.
+- A ssim média, e desvio padrão, dos resultados e filtro gaussiano e da rede neural são respectivamente
+
+(0.6608353 0.04550725)
+(0.8348612 0.04180628)
+
+---------------------------------------------------------------------------------------------------
+
+14 a 16/07/21
+
+Objetivos
+- automatizar tudo
+
+-Resumo:
+- Criação da fução find_best_sigma para achar o sigma ótimo
+- mudança em todos os arquivos
+- cirando funções de treino e exibição de resultados para ser usado na main
+- correção no uso do gaussian_filter
+
+-----------------------------------------------------------------------------------------------------
+
+18/07/21
+Objetivos:
+- terminar a geração automatica dos logs
+
+Resumo:
+- Falta pouco para gerar os logs de forma completa.
+- Eu achei os códigos meio ruins, preciso fazer algo pra deixar tudo mais legivel e modularizado.
+- testei o CLR aplicado ao learning rate do SGD e não ajudou muito na convergencia da rede, no caso piorou
+
+-----------------------------------------------------------------------------------------------------
