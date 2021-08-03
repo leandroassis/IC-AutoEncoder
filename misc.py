@@ -21,6 +21,9 @@ def Ssim (i1, i2):
 
 
 def get_current_time_and_data ():
+    '''
+        Retorna o tempo em horas:minutos, e data em ano-mes-dia (str)
+    '''
     current_datetime = dt.now()
     time = current_datetime.time()
     date = current_datetime.date()
@@ -31,7 +34,7 @@ def get_current_time_and_data ():
 
 def get_last_epoch (csv_pathname):
     """
-        retorna a ultima época treinada de um checkpoint. \n
+        Retorna a ultima época treinada de um checkpoint. \n
         obs: retorna -1 quando nenhum treino foi realizado para o treino inciar na época 0.
     """
     try:
