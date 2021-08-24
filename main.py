@@ -1,5 +1,7 @@
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.optimizers import SGD
+import tensorflow
+import os
 
 from sys import version
 from tensorflow import __version__ as tensorflow_version
@@ -20,13 +22,14 @@ from show_results import nNet_result_data
 from finding_best_sigma import find_best_sigma_for_ssim
 from misc import get_current_time_and_data , get_last_epoch, Ssim, write_params_log
 
-
 date_str, time_str = get_current_time_and_data()
 
+os.environ["CUDA_VISIBLE_DEVICES"]="3"
+
 # Dataset
-training_idx = 8
+training_idx = 11
 dataset = DataSet()
-dataset.load_rafael_cifar_10_noise_data()
+dataset.load_rafael_tinyImagenet_64x64_noise_data()
 
 # training param
 model_name = "Unet2.0-64x64.json"
@@ -35,7 +38,7 @@ csv_name = checkpoint_name
 csv_pathname = "Relatorios-Dados-etc/Parametros e dados de Resultados/" + model_name.replace('.json', '|') + dataset.name + "/" + csv_name + ".log"
 learning_rate = 0.001
 batch_size = 20
-num_epochs = 5
+num_epochs = 3
 last_epoch = get_last_epoch(csv_pathname)
 actual_epoch = last_epoch + num_epochs
 
@@ -61,7 +64,7 @@ clr = CLR(
 
 # optimizer
 
-optimizer = SGD(learning_rate = clr if use_CLR else learning_rate, momentum=1, nesterov=False)
+optimizer = Adam(learning_rate = clr if use_CLR else learning_rate)
 
 
 #param de exibição (não citados antes)
@@ -99,7 +102,7 @@ Nnet_params_results = {
     "optimizer_params" : {
         "name" : optimizer._name,
         "init_learning_rate" : learning_rate,
-        "momentun" : 1,
+        "momentun" : 0,
         "nesterov" : False,
         "Ciclical_learning_rate" :{
             "used" : use_CLR,
