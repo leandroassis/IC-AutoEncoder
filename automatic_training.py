@@ -112,7 +112,7 @@ class Training_State ():
         
         # diretorios base
         self.sub_dir_0 = "Relatorios-Dados-etc/Resultados/"
-        self.sub_dir_1 = self.dataset.name + '/'
+        self.sub_dir_1 = self.dataset_name + '/'
         self.sub_dir_2 = self.model_name.replace('.json', '') + '/'
         self.sub_dir_3 = self.date + '|' +self.time + '|' #' + str(training_idx) + '/'
         self.data_path = self.sub_dir_0 + self.sub_dir_1 + self.sub_dir_2 + self.sub_dir_3
@@ -121,11 +121,6 @@ class Training_State ():
         csv_name:str = 'csv-#' + str(self.training_idx) + ".log"
         self.csv_pathname:str = self.data_path + csv_name
 
-        #checkpoints
-        checkpoints_dir_path:str = "checkpoints/"
-        checkpoint_dir_name:str = self.model_name.replace('.json', '-#' + str(self.training_idx)) + '-' + self.dataset.name + '/'
-        checkpoint_name:str = '#' + str(self.training_idx) + '-checkp'
-        self.checkpoint_pathname:str = checkpoints_dir_path + checkpoint_dir_name + checkpoint_name
 
     
     def change_atributes (self, Kw_att_and_val:dict) -> None:
