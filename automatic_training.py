@@ -15,6 +15,8 @@ from misc import get_current_time_and_data, get_last_epoch
 
 from DataMod import DataSet
 
+from os.path import dirname
+
 class Training_State ():
     '''
         ## Function:
@@ -121,7 +123,7 @@ class Training_State ():
         csv_name:str = 'csv-#' + str(self.training_idx) + ".log"
         self.csv_pathname:str = self.data_path + csv_name
 
-
+    
     def change_atributes (self, kw_att_and_val:dict) -> None:
         """
             ## Função:
@@ -171,7 +173,7 @@ class Auto_Training ():
         self.version:str = '0.0.0'
         self.state_pathname:str = "Auto_Training_state/" + "state-v:" + self.version
         self.state:Training_State
-        self.state.load_state(self.state_pathname)
+        self.load_state(self.state_pathname)
 
     def save_state(self) -> None:
         '''
@@ -190,11 +192,13 @@ class Auto_Training ():
 
             Carrega o estado armazenado no arquivo
         '''
-        with open(self.state_pathname, 'rb') as file:
-            preveous_obj:Training_State = pickle.load(file, pickle.HIGHEST_PROTOCOL)
-            self.state = preveous_obj
-            file.close()
-        
+        if file_exists(self.state_pathname):
+
+            with open(self.state_pathname, 'rb') as file:
+                preveous_obj:Training_State = pickle.load(file, pickle.HIGHEST_PROTOCOL)
+                self.state = preveous_obj
+                file.close()
+            
 
    
     def _check_if_dirs_exists_ (self) -> None:
@@ -213,11 +217,19 @@ class Auto_Training ():
 
         # Checkpoints
 
-        if not isdir(self.state.checkpoint_pathname):
-            makedirs(self.state.checkpoint_pathname)
+        if not isdir( dirname(self.state.csv_pathname) ):
+            makedirs( dirname(self.state.checkpoint_pathname) )
 
-        if not isdir(self.state.data_path):
-            makedirs(self.state.data_path)
+        if not isdir( dirname(self.state.data_path) ):
+            makedirs( dirname(self.state.data_path) )
+
+        if not isdir( dirname(self.state.dataframe_pathname) ):
+            makedirs ( dirname(self.state.dataframe_pathname) )
+
+        if not isdir( dirname(self.state.model_save_pathname) ):
+            makedirs ( dirname(self.state.model_save_pathname) )
+
+
 
         
         
@@ -367,11 +379,14 @@ class Auto_Training ():
 
                 Nothing.
         """
-        with self.state as stt:
-            x_train = stt.dataset.x_train
-            x_test = stt.dataset.x_test
-            y_train = stt.dataset.y_train
-            y_test = stt.dataset.y_test
+
+        dataset:DataSet = DataSet()
+        dataset.load_by_name(self.state.dataset_name)
+        
+        x_train = dataset.x_train
+        x_test = dataset.x_test
+        y_train = dataset.y_train
+        y_test = dataset.y_test
         
 
         neural_net:Model = self._load_model_()
@@ -397,6 +412,7 @@ class Auto_Training ():
 
 
         self.save_data_to_dataframe()
+        self.save_state()
 
 
 
