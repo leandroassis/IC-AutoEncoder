@@ -245,34 +245,8 @@ class Auto_Training ():
         nNet:Model = model_from_json(json_readed)
         json_file.close()
 
-        '''
-        try:
-            nNet.load_weights(self.state.checkpoint_pathname)
-        except FileNotFoundError:
-            print("Fail atempt to load the checkpoint at: " + self.state.checkpoint_pathname)
-        '''
-
         return nNet
-
-
-    def _get_last_epoch_(self):
-        """
-            ## Função:
-
-            Retorna a ultima época treinada de um checkpoint. \n
-            obs: retorna -1 quando nenhum treino foi realizado para o treino inciar na época 0.
-        """
-        try:
-            file = open(self.state.csv_pathname, 'r')
-        except FileNotFoundError:
-            return -1
-        lines = file.read().splitlines()
-        if (len(lines) == 0):
-            return -1
-        file.close()
-        last_line = lines[-1]
-        last_epoch = int(last_line.split(',')[0])
-        return last_epoch
+    
 
 
     def get_csv_training_history (self) -> DataFrame:
@@ -305,6 +279,24 @@ class Auto_Training ():
                 "last_training_loss" : last_training_loss,
                 "last_validation_loss": last_validation_loss,
                 "last_epoch" : last_epoch}
+
+
+    def _get_last_epoch_(self) -> int:
+        """
+            ## Função:
+
+            Retorna a ultima época treinada de um checkpoint. \n
+            obs: retorna -1 quando nenhum treino foi realizado para o treino inciar na época 0.
+        """
+        last_epoch:int
+
+        if file_exists(self.state.csv_pathname):
+            dataframe = self.get_csv_training_history()
+            last_epoch = dataframe["epoch"].tolist()[-1]
+        else:
+            last_epoch = -1
+
+        return last_epoch
 
 
     def save_data_to_dataframe(self) -> None:
@@ -349,6 +341,8 @@ class Auto_Training ():
         )
 
         new_dataframe_line = DataFrame(new_line)
+        dataframe.append(new_dataframe_line)
+        dataframe.to_csv(self.state.dataframe_pathname)
 
 
 
