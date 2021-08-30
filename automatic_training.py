@@ -21,7 +21,7 @@ class Training_State ():
 
         This class saves the state of Auto_training objects.
     '''
-    def set_state(self, model_name:str, training_idx:int, fit_Kwargs:dict, dataset:DataSet, 
+    def set_state(self, model_name:str, training_idx:int, fit_Kwargs:dict, dataset_name:str, 
     compile_kwargs:dict, number_of_ephocs:int,  loss_class:Loss, loss_kwargs:dict, 
     optimizer_class:Optimizer, optimizer_kwargs:dict) -> None:
         """
@@ -45,7 +45,7 @@ class Training_State ():
         self.fit_Kwargs:dict = fit_Kwargs
 
         # Dataset
-        self.dataset:DataSet = dataset
+        self.dataset_name:str = dataset_name
 
         # Time and date
         (self.date, self.time) = get_current_time_and_data()
@@ -54,7 +54,7 @@ class Training_State ():
 
         # Base dir
         self.sub_dir_0 = "Relatorios-Dados-etc/Resultados/"
-        self.sub_dir_1 = self.dataset.name + '/'
+        self.sub_dir_1 = self.dataset_name + '/'
         self.sub_dir_2 = self.model_name.replace('.json', '') + '/'
         self.sub_dir_3 = str(training_idx) + '/'
         self.data_path = self.sub_dir_0 + self.sub_dir_1 + self.sub_dir_2 + self.sub_dir_3
