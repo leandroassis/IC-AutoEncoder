@@ -122,8 +122,7 @@ class Training_State ():
         self.csv_pathname:str = self.data_path + csv_name
 
 
-    
-    def change_atributes (self, Kw_att_and_val:dict) -> None:
+    def change_atributes (self, kw_att_and_val:dict) -> None:
         """
             ## Função:
 
@@ -140,15 +139,20 @@ class Training_State ():
             >>> Kw_att_and_val = {'model_name': 'nome', 'optimizer': optimizer_class}
             # note que 'model_name' e 'optimizer' são atributos de Auto_training
         """
-        for key, value in Kw_att_and_val.items():
-            self.__dict__[key] = value
 
+        def recursive_update (dictionary:dict, Kw):
+            for key, value in kw_att_and_val.items():
+                if type(value) == dict:
+                    recursive_update(dictionary[key], value)
+            else:
+                dictionary[key] = value
+
+        recursive_update(self.__dict__, kw_att_and_val)
         self._update_dependent_atributes_()
 
 
     def change_training_idx (self) -> None:
         self.training_idx += 1
-
         self._update_dependent_atributes_()
 
 
