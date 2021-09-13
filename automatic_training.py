@@ -450,20 +450,21 @@ class Auto_Training ():
 
         neural_net:Model = self._load_model_()
 
-        neural_net.compile(optimizers = self.state.optimizer(**self.state.optimizer_kwargs),
-                           loss=self.state.loss,
+        neural_net.compile(optimizer = self.state.optimizer(**self.state.optimizer_kwargs),
+                           loss = self.state.loss(**self.state.loss_kwargs),
                            **self.state.compile_kwargs)
 
         self._check_if_dirs_exists_()
 
-        csv_logger = CSVLogger(filename = self.state.csv_pathname, separator = ';')
+        csv_logger = CSVLogger(filename = self.state.csv_pathname, separator = ';', append= True)
         standard_callbacks:list = [csv_logger]
         
+
         neural_net.fit(x = x_train, y = y_train,
                        validation_data = (x_test, y_test),
                        initial_epoch = self._get_last_epoch_() + 1,
                        callbacks = standard_callbacks,
-                       epochs = self.state.number_of_ephocs,
+                       epochs = self.state.last_epoch +  self.state.number_of_ephocs + 1,
                        **self.state.fit_Kwargs)
 
 
@@ -471,6 +472,7 @@ class Auto_Training ():
 
 
         self.save_data_to_dataframe()
+        self.state._update_dependent_atributes_()
         self.save_state()
 
 
