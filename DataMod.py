@@ -3,6 +3,8 @@ from tensorflow._api.v2.image import rgb_to_grayscale
 from io import BytesIO
 from PIL import Image
 from tensorflow.keras.datasets.cifar10 import load_data as cifar10_load
+from tensorflow.python.keras.backend import switch
+from tensorflow.python.ops.control_flow_ops import switch_case
 
 class DataMod ():
     """
@@ -127,3 +129,14 @@ class DataSet ():
         self.x_train = self.x_train.astype('float32')
         self.y_test = self.y_test.astype('float32')
         self.y_train = self.y_train.astype('float32')
+
+    def load_by_name(self, name:str) -> None:
+
+        if (name == "rafael_tinyImagenet"):
+            self.load_rafael_tinyImagenet_64x64_noise_data()
+            return None
+        
+        if (name == "rafael_cifar_10"):
+            self.load_rafael_cifar_10_noise_data()
+            return None
+    
