@@ -111,20 +111,26 @@ class Training_State ():
         '''
             Atualiza atributos que tem dependências de tempo ou de outros atibutos que podem mudar
         '''
+        print("Atualizando atributos dependentes.")
         self.date, self.time = get_current_time_and_data()
-        self.image_name = '#' + str(self.training_idx) + '|' + self.date + "|" + self.time + "|" + "|epoch=" + str(self.actual_epoch) + ".png"
+        self.image_name = '#' + str(self.training_idx) + '|' + self.date + "|" + self.time + "|" + "|epoch=" + str(self.last_epoch + self.number_of_ephocs) + ".png"
         
         # diretorios base
         self.sub_dir_0 = "Relatorios-Dados-etc/Resultados/"
         self.sub_dir_1 = self.dataset_name + '/'
         self.sub_dir_2 = self.model_name.replace('.json', '') + '/'
-        self.sub_dir_3 = self.date + '|' +self.time + '|' #' + str(training_idx) + '/'
+        self.sub_dir_3 = str(self.training_idx) + '/'
         self.data_path = self.sub_dir_0 + self.sub_dir_1 + self.sub_dir_2 + self.sub_dir_3
 
         # CSV_Logger
         csv_name:str = 'csv-#' + str(self.training_idx) + ".log"
         self.csv_pathname:str = self.data_path + csv_name
 
+        # last epoch
+        self.last_epoch:int = get_last_epoch(self.csv_pathname)
+
+        # Model training name
+        self.model_save_pathname:str = self.data_path + '#' + str(self.training_idx) + '-checkp'
     
     def change_atributes (self, kw_att_and_val:dict) -> None:
         """
