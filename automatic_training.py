@@ -347,6 +347,9 @@ class Auto_Training ():
 
         if file_exists(self.state.csv_pathname):
             dataframe = self.get_csv_training_history()
+            if dataframe.empty:
+                last_epoch = -1
+            else:
             last_epoch = dataframe["epoch"].tolist()[-1]
         else:
             last_epoch = -1
