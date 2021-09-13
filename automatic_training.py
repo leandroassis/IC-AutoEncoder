@@ -284,15 +284,17 @@ class Auto_Training ():
         '''
 
         # Tentando carregar o modelo
-
+        print("Trying to load a preveous state of training.")
         if file_exists(self.state.model_save_pathname):
-            nNet:Model = load_model(self.state.model_save_pathname)
+            nNet:Model = load_model(self.state.model_save_pathname, custom_objects = {self.state.loss().name : self.state.loss}, compile = True)
+            print('Preveous state loaded.')
             return nNet
 
+        print("Loading just the model.")
         try:
-            json_file = open(self.state.models_dir + self.model_name, "r")
+            json_file = open(self.state.models_dir + self.state.model_name, "r")
         except FileNotFoundError:
-            raise Exception("Fail atempt to load the model " + self.model_name + " at " + self.models_dir)
+            raise Exception("Fail atempt to load the model " + self.state.model_name + " at " + self.state.models_dir)
 
         json_readed = json_file.read()
         nNet:Model = model_from_json(json_readed)
