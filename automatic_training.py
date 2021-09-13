@@ -97,7 +97,6 @@ class Training_State ():
         
         # Training parameters
         self.last_epoch:int = get_last_epoch(self.csv_pathname)
-        self.actual_epoch:int = self.last_epoch + self.fit_Kwargs['ephocs']
         self.loss:Loss = loss_class
         self.loss_kwargs:dict = loss_kwargs
         
@@ -159,8 +158,8 @@ class Training_State ():
                         dictionary[key[1:]] = value
                     else:
                         recursive_update(dictionary[key], value) # change key values.
-            else:
-                dictionary[key] = value
+                else:
+                    dictionary[key] = value
 
         recursive_update(self.__dict__, kw_att_and_val)
         self._update_dependent_atributes_()
@@ -271,6 +270,8 @@ class Auto_Training ():
         if not isdir( dirname(self.state.model_save_pathname) ):
             makedirs ( dirname(self.state.model_save_pathname) )
 
+        
+
 
 
         
@@ -350,7 +351,7 @@ class Auto_Training ():
             if dataframe.empty:
                 last_epoch = -1
             else:
-            last_epoch = dataframe["epoch"].tolist()[-1]
+                last_epoch = dataframe["epoch"].tolist()[-1]
         else:
             last_epoch = -1
 
@@ -359,7 +360,7 @@ class Auto_Training ():
 
     def save_data_to_dataframe(self) -> None:
         """
-        
+
         """
 
         print("Saving data to the dataframe")
@@ -368,7 +369,7 @@ class Auto_Training ():
             dataframe = read_csv(self.state.dataframe_pathname + ".csv", index_col=0)
         else:
             dataframe = DataFrame()
-        
+
 
         model:Model = self._load_model_()
         number_of_model_parameters:int = model.count_params()
@@ -458,7 +459,7 @@ class Auto_Training ():
 
         csv_logger = CSVLogger(filename = self.state.csv_pathname, separator = ';', append= True)
         standard_callbacks:list = [csv_logger]
-        
+    
 
         neural_net.fit(x = x_train, y = y_train,
                        validation_data = (x_test, y_test),
