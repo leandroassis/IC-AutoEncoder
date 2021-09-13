@@ -254,12 +254,16 @@ class Auto_Training ():
         """
 
         # Checkpoints
+        print("checking if the dirs exists")
 
         if not isdir( dirname(self.state.csv_pathname) ):
-            makedirs( dirname(self.state.checkpoint_pathname) )
+            makedirs( dirname(self.state.csv_pathname) )
 
         if not isdir( dirname(self.state.data_path) ):
             makedirs( dirname(self.state.data_path) )
+
+        if not isdir( dirname(self.state_pathname) ):
+            makedirs( dirname(self.state_pathname) )
 
         if not isdir( dirname(self.state.dataframe_pathname) ):
             makedirs ( dirname(self.state.dataframe_pathname) )
