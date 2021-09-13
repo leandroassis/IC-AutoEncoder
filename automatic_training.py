@@ -308,7 +308,7 @@ class Auto_Training ():
         """
 
         """
-        dataframe = read_csv(self.state.csv_pathname)
+        dataframe = read_csv(self.state.csv_pathname, sep=';')
         return dataframe
 
     def get_best_results(self) -> dict:
@@ -318,10 +318,10 @@ class Auto_Training ():
         dataframe:DataFrame = self.get_csv_training_history ()
 
         best_training_loss = dataframe["loss"].min()
-        best_training_epoch = (dataframe["loss"] == best_training_loss).index[0]
+        best_training_epoch = [line.epoch for line in dataframe.itertuples() if line.loss == best_training_loss][0]
 
         best_val_loss = dataframe["val_loss"].min()
-        best_val_epoch = (dataframe["val_loss"] == best_training_loss).index[0]
+        best_val_epoch = [line.epoch for line in dataframe.itertuples() if line.val_loss == best_val_loss][0]
 
         last_training_loss = dataframe["loss"].tolist()[-1]
         last_validation_loss = dataframe["val_loss"].tolist()[-1]
