@@ -216,6 +216,8 @@ class Auto_Training ():
 
             Salva o estado atual do objeto.
         '''
+        print("Saving the actual state.")
+        self._check_if_dirs_exists_()
         with open(self.state_pathname, 'wb') as file:
             pickle.dump(self.state, file, pickle.HIGHEST_PROTOCOL)
             file.close()
@@ -227,10 +229,11 @@ class Auto_Training ():
 
             Carrega o estado armazenado no arquivo
         '''
+        print("Loading the actual state.")
         if file_exists(self.state_pathname):
 
             with open(self.state_pathname, 'rb') as file:
-                preveous_obj:Training_State = pickle.load(file, pickle.HIGHEST_PROTOCOL)
+                preveous_obj:Training_State = pickle.load(file)
                 self.state = preveous_obj
                 file.close()
             
