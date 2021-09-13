@@ -59,7 +59,7 @@ def nNet_result_data(image_name, dataset, checkpoint_name,  model_name, sigma):
   for i in range (10):
     ax = fig.add_subplot(4, 10, i+11)
     plt.imshow(x_test[431*i+1050].reshape(64, 64))
-    plt.xlabel(round(-1*Ssim(x_test[2*i+1050], y_test[2*i+1050].astype('uint8')).numpy(),3))
+    plt.xlabel(round(-1*Ssim(x_test[2*i+1050].astype('uint8'), y_test[2*i+1050].astype('uint8')).numpy(),3))
     if (i == 5):
       plt.title('Imagens com ruído (entrada da rede)')
     plt.gray()
@@ -71,7 +71,7 @@ def nNet_result_data(image_name, dataset, checkpoint_name,  model_name, sigma):
     ax = fig.add_subplot(4, 10, i+21)
     plt.imshow(gaussImgs[431*i+1050].reshape(64, 64))
     # Coloca o resultado do ssim entre a imagem original e a
-    plt.xlabel(round(-1*Ssim(gaussImgs[2*i+1050], y_test[2*i+1050].astype('uint8')).numpy(),3))
+    plt.xlabel(round(-1*Ssim(gaussImgs[2*i+1050].astype('uint8'), y_test[2*i+1050].astype('uint8')).numpy(),3))
     if (i == 5):
       plt.title('Aplicação do filtro gaussiano nas imagens com ruído (sigma = ' + str(sigma) + ')')
     plt.gray()
@@ -82,7 +82,7 @@ def nNet_result_data(image_name, dataset, checkpoint_name,  model_name, sigma):
   for i in range (10):
     ax = fig.add_subplot(4, 10, i+31)
     plt.imshow(nNet_imgs[431*i+1050].reshape(64, 64))
-    plt.xlabel(round(-1*Ssim(nNet_imgs[2*i+1050], y_test[2*i+1050].astype('uint8')).numpy(), 3))
+    plt.xlabel(round(-1*Ssim(nNet_imgs[2*i+1050].astype('uint8'), y_test[2*i+1050].astype('uint8')).numpy(), 3))
     if (i == 5):
       plt.title('Resultado da rede neural')
     plt.gray()
@@ -95,11 +95,11 @@ def nNet_result_data(image_name, dataset, checkpoint_name,  model_name, sigma):
     os.mkdir('Relatorios-Dados-etc/Imagens de resultados/' + image_name.split('/')[0])
     plt.savefig('Relatorios-Dados-etc/Imagens de resultados/' + image_name)
 
-  ssim_gauss = Ssim(gaussImgs, y_test.astype('uint8')).numpy()
+  ssim_gauss = Ssim(gaussImgs.astype('uint8'), y_test.astype('uint8')).numpy()
 
-  ssim_nNet = Ssim(nNet_imgs, y_test.astype('uint8')).numpy()
+  ssim_nNet = Ssim(nNet_imgs.astype('uint8'), y_test.astype('uint8')).numpy()
 
-  ssim_base = Ssim(x_test, y_test.astype('uint8')).numpy()
+  ssim_base = Ssim(x_test.astype('uint8'), y_test.astype('uint8')).numpy()
 
   return (ssim_gauss.mean(), ssim_gauss.std()), (ssim_nNet.mean(), ssim_nNet.std()), (ssim_base.mean(), ssim_base.std())
 

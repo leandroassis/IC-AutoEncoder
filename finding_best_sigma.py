@@ -2,13 +2,13 @@ from scipy.ndimage import gaussian_filter
 from misc import Ssim
 
 
-def find_best_sigma_for_ssim (x, y):
+def find_best_sigma_for_ssim (x, y) -> float:
     """
         Essa função encontra o sigma do filtro gaussiano que maximiza o ssim para uma base de dados.
     """
     def calc_ssim(sigma, x, y):
         gauss_imgs = gaussian_filter(x, sigma=(0,sigma,sigma,0))
-        ssim_gauss = -Ssim(gauss_imgs, y.astype('uint8')).numpy()
+        ssim_gauss = -Ssim(gauss_imgs.astype('uint8'), y.astype('uint8')).numpy()
         mean = ssim_gauss.mean()
 
         return mean

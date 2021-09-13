@@ -1,9 +1,6 @@
 import tensorflow.keras as kr
-from tensorflow.keras import layers
-from tensorflow.python import keras
 
-
-model_file_name = "Unet2.0-64x64.json"
+model_file_name = "Unet2.1-64x64.json"
 
 #Left frist block:
 inputs = kr.layers.Input(shape=(64,64,1))
@@ -69,7 +66,6 @@ model = kr.models.Model(inputs=inputs, outputs=RightLayer1_7, name=model_file_na
 
 model_json = model.to_json()
 
-model.summary()
-
 with open("nNet_models/" + model_file_name, "w") as json_file:
     json_file.write(model_json)
+    json_file.close()
