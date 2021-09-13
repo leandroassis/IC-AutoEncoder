@@ -1,22 +1,28 @@
-from PIL.Image import init
 from tensorflow._api.v2.image import ssim
 from datetime import datetime as dt
-from tensorflow.keras.callbacks import Callback
-from collections import OrderedDict
-from collections import Iterable
-
-import os
-import csv
-import numpy as np
-import json
+from tensorflow.python.keras.utils import losses_utils
+from tensorflow.python.util.tf_export import keras_export
+from tensorflow.keras.losses import Loss, Reduction
 
 
-def Ssim (i1, i2):
-    max_val = 255,
-    filter_size = 8
-    return -ssim(i1, i2, max_val=max_val, filter_size = filter_size)
+class LSSIM (Loss):
 
+    def __init__(self, name = "LSSIM", reduction = Reduction.AUTO, max_val = 255, filter_size=9, filter_sigma=1.5, k1=0.01, k2=0.03) -> None:
+        
+        super(LSSIM, self).__init__(name = name, reduction = reduction)
+        self.max_val = max_val
+        self.filter_size = filter_size
+        self.filter_sigma = filter_sigma
+        self.k1 = k1
+        self.k2 = k2
 
+    
+    def call (self,y_true,y_pred):
+        return 1-ssim(y_true, y_pred, max_val = self.max_val,
+                      filter_size = self.filter_size,
+                      filter_sigma = self.filter_sigma,
+                      k1 = self.k1,
+                      k2 = self.k2)
 
 
 
@@ -46,12 +52,8 @@ def get_last_epoch (csv_pathname):
         return -1
     file.close()
     last_line = lines[-1]
-    last_epoch = int(last_line.split(',')[0])
+    last_epoch = int(last_line.split(';')[0])
     return last_epoch
 
 
-def write_params_log (file_pathname, json_obj):
-    file = open(file_pathname, 'w')
-    json.dump(json_obj, file, indent=3)
-    file.close()
 
