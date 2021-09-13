@@ -1,21 +1,18 @@
 import pickle
-
 from os.path import isdir
 from os import makedirs
-from pandas.io.parsers import read_csv
 from tensorflow.keras.models import model_from_json, Model
-from pandas import DataFrame
+from pandas import DataFrame, read_csv
 from tensorflow.keras.losses import Loss
 from tensorflow.keras.optimizers import Optimizer
 from tensorflow.python.keras.callbacks import CSVLogger
 from tensorflow.python.keras.saving.save import load_model
 from tensorflow.python.lib.io.file_io import file_exists
-
 from misc import get_current_time_and_data, get_last_epoch
-
 from DataMod import DataSet
 
 from os.path import dirname
+
 
 class Training_State ():
     '''
