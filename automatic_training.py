@@ -170,6 +170,26 @@ class Training_State ():
         self.training_idx += 1
         self._update_dependent_atributes_()
 
+    def show (self):
+        
+        print('\n Training data: \n')
+        training_data:list = ['training_idx', 'model_name', 'dataset_name',
+        'number_of_ephocs', 'fit_Kwargs', 'last_epoch', 'loss_kwargs',
+        'loss', 'optimizer', 'optimizer_kwargs', 'compile_kwargs']
+
+        for key in training_data:
+            print(
+                key + ' =', self.__dict__[key]
+            )
+
+        print('\n Dir names: \n')
+        dir_data:list = ['model_save_pathname', 'csv_pathname', 'data_path', 'dataframe_pathname']
+        for key in dir_data:
+            print(
+                key + ' =', self.__dict__[key]
+            )
+
+        print()
 
 # ======================================================================================================================
 
