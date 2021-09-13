@@ -149,11 +149,16 @@ class Training_State ():
             >>> Kw_att_and_val = {'model_name': 'nome', 'optimizer': optimizer_class}
             # note que 'model_name' e 'optimizer' são atributos de Auto_training
         """
+        print("Mudando atributos selecionados")
 
         def recursive_update (dictionary:dict, Kw):
             for key, value in kw_att_and_val.items():
+                # all this is to check if the atribute of type 'dict' will be replaced or have some key values changed.
                 if type(value) == dict:
-                    recursive_update(dictionary[key], value)
+                    if key[0] == '*': # replace the dict
+                        dictionary[key[1:]] = value
+                    else:
+                        recursive_update(dictionary[key], value) # change key values.
             else:
                 dictionary[key] = value
 
