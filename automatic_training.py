@@ -202,11 +202,13 @@ class Auto_Training ():
         A classe implementa o treino e a geração automatica de logs e resultados usando o keras e outras bibliotecas.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, load_state = True) -> None:
         self.version:str = '0.0.0'
-        self.state_pathname:str = "Auto_Training_state/" + "state-v:" + self.version
-        self.state:Training_State
-        self.load_state(self.state_pathname)
+        self.state_pathname:str = "Auto_Training_state/" + "state-v:" + self.version + ".ats"
+        self.state:Training_State = Training_State()
+
+        if load_state:
+            self.load_state()
 
     def save_state(self) -> None:
         '''
