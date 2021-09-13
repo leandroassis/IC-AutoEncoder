@@ -69,12 +69,16 @@ class Training_State ():
         self.models_dir:str = "nNet_models/"
 
         # Dataframe directory
-        dataframe_name:str = "Results_DataFrame.df"
+        dataframe_name:str = "Results_DataFrame"
         self.dataframe_pathname:str = self.sub_dir_0 + dataframe_name
 
         # Dataframe params
-        self.dataframe_columns:list = [ "training idx",
+        self.dataframe_columns:list = ["training idx",
+                                        "date", 
                                         "model name",
+                                        "dataset",
+                                        "dataset params",
+                                        "regularizer",
                                         "model total params",
                                         "model total layers",
                                         "optimizer",
@@ -82,13 +86,14 @@ class Training_State ():
                                         "loss", 
                                         "loss args",
                                         "compile args",
+                                        "fit args",
                                         "best training loss",
                                         "best training epoch",
                                         "best validation loss",
                                         "best validation epoch",
                                         "last epoch training loss",
                                         "last epoch validation",
-                                        "last epoch" ]
+                                        "last epoch"]
         
         # Training parameters
         self.last_epoch:int = get_last_epoch(self.csv_pathname)
