@@ -362,32 +362,34 @@ class Auto_Training ():
         
         """
 
-        if not file_exists(self.state.dataframe_pathname):
-            dataframe:DataFrame = DataFrame(columns=self.state.dataframe_columns)
-            dataframe.to_csv(self.state.dataframe_pathname)
+        print("Saving data to the dataframe")
 
+        if file_exists(self.state.dataframe_pathname + ".csv"):
+            dataframe = read_csv(self.state.dataframe_pathname + ".csv", index_col=0)
+        else:
+            dataframe = DataFrame()
         
-        # model parameters
-
-        dataframe = read_csv(self.state.dataframe_pathname)
 
         model:Model = self._load_model_()
         number_of_model_parameters:int = model.count_params()
         number_of_model_layers:int = model.layers.__len__()
-        model_name = self.state.model_name
-        
         loss_data:dict = self.get_best_results()
 
         new_line = DataFrame(
             [{  "training idx": self.state.training_idx,
+                "date": self.state.date,
                 "model name": self.state.model_name,
+                "dataset": self.state.dataset_name,
+                "dataset params": {},
+                "regularizer": False,
                 "model total params": number_of_model_parameters,
                 "model total layers": number_of_model_layers,
-                "optimizer": self.state.optimizer._name,
+                "optimizer": self.state.optimizer.__name__,
                 "optimizer args": self.state.optimizer_kwargs,
-                "loss": self.state.loss.name, 
+                "loss": self.state.loss().name, 
                 "loss args": self.state.loss_kwargs,
                 "compile args": self.state.compile_kwargs,
+                "fit args": self.state.fit_Kwargs,
                 "best training loss": loss_data["best_training_loss"],
                 "best training epoch": loss_data["best_training_epoch"],
                 "best validation loss": loss_data["best_val_loss"],
@@ -395,12 +397,22 @@ class Auto_Training ():
                 "last epoch training loss": loss_data["last_training_loss"],
                 "last epoch validation": loss_data["last_validation_loss"],
                 "last epoch": loss_data["last_epoch"]
-            }], 
+            }]
         )
 
         new_dataframe_line = DataFrame(new_line)
-        dataframe.append(new_dataframe_line)
-        dataframe.to_csv(self.state.dataframe_pathname)
+
+        if dataframe.empty:
+            dataframe = dataframe.append(new_dataframe_line, ignore_index=True)
+
+        else:
+            if not dataframe.iloc[-1]['training idx'] == self.state.training_idx:
+                dataframe = dataframe.append(new_dataframe_line, ignore_index=True)
+            else:
+                dataframe = dataframe.drop(dataframe.last_valid_index(), axis=0)
+                dataframe = dataframe.append(new_dataframe_line, ignore_index=True)
+        
+        dataframe.to_csv(self.state.dataframe_pathname + ".csv")
 
 
 
