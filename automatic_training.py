@@ -21,14 +21,14 @@ class Training_State ():
         This class saves the state of Auto_training objects.
     '''
     def set_state(self, model_name:str, training_idx:int, fit_Kwargs:dict, dataset_name:str, 
-    compile_kwargs:dict, number_of_ephocs:int,  loss_class:Loss, loss_kwargs:dict, 
+    compile_kwargs:dict, number_of_epochs:int,  loss_class:Loss, loss_kwargs:dict, 
     optimizer_class:Optimizer, optimizer_kwargs:dict) -> None:
         """
             ## Function:
 
             Set a new state.
 
-            ## Recieves:
+            ## Receives:
 
             All states parameters.
 
@@ -40,7 +40,7 @@ class Training_State ():
         # Training params
         self.training_idx:int = training_idx
         self.model_name:str = model_name
-        self.number_of_ephocs:int = number_of_ephocs
+        self.number_of_epochs:int = number_of_epochs
         self.fit_Kwargs:dict = fit_Kwargs
 
         # Dataset
@@ -106,13 +106,13 @@ class Training_State ():
         self.compile_kwargs:dict = compile_kwargs
 
 
-    def _update_dependent_atributes_ (self) -> None:
+    def _update_dependent_attributes_ (self) -> None:
         '''
             Atualiza atributos que tem dependências de tempo ou de outros atibutos que podem mudar
         '''
         print("Atualizando atributos dependentes.")
         self.date, self.time = get_current_time_and_data()
-        self.image_name = '#' + str(self.training_idx) + '|' + self.date + "|" + self.time + "|" + "|epoch=" + str(self.last_epoch + self.number_of_ephocs) + ".png"
+        self.image_name = '#' + str(self.training_idx) + '|' + self.date + "|" + self.time + "|" + "|epoch=" + str(self.last_epoch + self.number_of_epochs) + ".png"
         
         # diretorios base
         self.sub_dir_0 = "Relatorios-Dados-etc/Resultados/"
@@ -131,7 +131,7 @@ class Training_State ():
         # Model training name
         self.model_save_pathname:str = self.data_path + '#' + str(self.training_idx) + '-checkp'
     
-    def change_atributes (self, kw_att_and_val:dict) -> None:
+    def change_attributes (self, kw_att_and_val:dict) -> None:
         """
             ## Função:
 
@@ -151,7 +151,7 @@ class Training_State ():
         print("Mudando atributos selecionados")
 
         def recursive_update (dictionary:dict, Kw):
-            for key, value in kw_att_and_val.items():
+            for key, value in Kw.items():
                 # all this is to check if the atribute of type 'dict' will be replaced or have some key values changed.
                 if type(value) == dict:
                     if key[0] == '*': # replace the dict
@@ -162,18 +162,18 @@ class Training_State ():
                     dictionary[key] = value
 
         recursive_update(self.__dict__, kw_att_and_val)
-        self._update_dependent_atributes_()
+        self._update_dependent_attributes_()
 
 
     def change_training_idx (self) -> None:
         self.training_idx += 1
-        self._update_dependent_atributes_()
+        self._update_dependent_attributes_()
 
     def show (self):
         
         print('\n Training data: \n')
         training_data:list = ['training_idx', 'model_name', 'dataset_name',
-        'number_of_ephocs', 'fit_Kwargs', 'last_epoch', 'loss_kwargs',
+        'number_of_epochs', 'fit_Kwargs', 'last_epoch', 'loss_kwargs',
         'loss', 'optimizer', 'optimizer_kwargs', 'compile_kwargs']
 
         for key in training_data:
@@ -232,8 +232,8 @@ class Auto_Training ():
         if file_exists(self.state_pathname):
 
             with open(self.state_pathname, 'rb') as file:
-                preveous_obj:Training_State = pickle.load(file)
-                self.state = preveous_obj
+                previous_obj:Training_State = pickle.load(file)
+                self.state = previous_obj
                 file.close()
             
 
@@ -285,17 +285,17 @@ class Auto_Training ():
         '''
 
         # Tentando carregar o modelo
-        print("Trying to load a preveous state of training.")
+        print("Trying to load a previous state of training.")
         if file_exists(self.state.model_save_pathname):
             nNet:Model = load_model(self.state.model_save_pathname, custom_objects = {self.state.loss().name : self.state.loss}, compile = True)
-            print('Preveous state loaded.')
+            print('Previous state loaded.')
             return nNet
 
         print("Loading just the model.")
         try:
             json_file = open(self.state.models_dir + self.state.model_name, "r")
         except FileNotFoundError:
-            raise Exception("Fail atempt to load the model " + self.state.model_name + " at " + self.state.models_dir)
+            raise Exception("Fail attempt to load the model " + self.state.model_name + " at " + self.state.models_dir)
 
         json_readed = json_file.read()
         nNet:Model = model_from_json(json_readed)
@@ -452,7 +452,7 @@ class Auto_Training ():
         neural_net:Model = self._load_model_()
 
         neural_net.compile(optimizer = self.state.optimizer(**self.state.optimizer_kwargs),
-                           loss = self.state.loss(**self.state.loss_kwargs),
+                           loss = self.state.loss(**self.state.loss_kwargs) ,
                            **self.state.compile_kwargs)
 
         self._check_if_dirs_exists_()
@@ -465,7 +465,7 @@ class Auto_Training ():
                        validation_data = (x_test, y_test),
                        initial_epoch = self._get_last_epoch_() + 1,
                        callbacks = standard_callbacks,
-                       epochs = self.state.last_epoch +  self.state.number_of_ephocs + 1,
+                       epochs = self.state.last_epoch +  self.state.number_of_epochs + 1,
                        **self.state.fit_Kwargs)
 
 
@@ -473,7 +473,7 @@ class Auto_Training ():
 
 
         self.save_data_to_dataframe()
-        self.state._update_dependent_atributes_()
+        self.state._update_dependent_attributes_()
         self.save_state()
 
 
@@ -487,6 +487,54 @@ class Auto_Training ():
             ## Receives:
 
                 A `dict` where the keys are the parameters to be changed, and the values are new parameters.
+
+            ### Possibilities :
+
+                    'model_name' : "AutoEncoder-1.0-64x64.json",
+                    'dataset_name' : "rafael_cifar_10",
+                    'number_of_epochs' : 5,
+                    
+                    'fit_Kwargs' : {
+                        'batch_size': 10,
+                        'verbose': 1,
+                        'validation_split': 0, 
+                        'shuffle': True,
+                        'class_weight': None,
+                        'sample_weight': None,
+                        'steps_per_epoch': None, 
+                        'validation_steps': None, 
+                        'validation_batch_size': None, 
+                        'validation_freq': 1,
+                        'max_queue_size': 10, 
+                        'workers': 1, 
+                        'use_multiprocessing': False
+                    },
+                    
+                    'compile_kwargs' : {
+                        'metrics': None,
+                        'loss_weights': None,
+                        'weighted_metrics': None,
+                        'run_eagerly': None,
+                        'steps_per_execution': None
+                    },
+                    
+                    'optimizer' : Adam,
+
+                    'optimizer_kwargs' : {
+                        'learning_rate': 0.001,
+                        'beta_1': 0.9,
+                        'beta_2': 0.999, 
+                        'epsilon': 1e-7,
+                        'amsgrad': False
+                    },
+
+                    'loss_class' : LSSIM,
+                    'loss_kwargs' : { 
+                        'max_val':255,
+                        'filter_size':9,
+                        'filter_sigma':1.5,
+                        'k1':0.01,
+                        'k2':0.03
 
             ## Returns:
 
@@ -502,7 +550,7 @@ class Auto_Training ():
                 Nothing.
         '''
         self.state.change_training_idx()
-        self.state.change_atributes(new_parameters)
+        self.state.change_attributes(new_parameters)
         self.start_training()
 
     def set_a_sequence_of_trainings(self, list_of_changes:list) -> None:
