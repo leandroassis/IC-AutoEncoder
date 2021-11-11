@@ -17,7 +17,7 @@ layer_9 = Conv2D(filters = 1, kernel_size = 3, padding = 'same', activation = 'r
 
 model = Model(inputs = inputs, outputs = layer_9, name = model_name)
 
-model_json = model.to_json()
+model_json = model.to_json(indent = 4)
 
 with open("nNet_models/" + model_name + ".json", "w") as json_file:
     json_file.write(model_json)
