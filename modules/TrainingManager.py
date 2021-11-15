@@ -7,38 +7,26 @@
 """
 import sys, os
 
-from tensorflow.python import training
-
-
-
 sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder'))
 sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder/modules'))
 
-
+from TrainingData import KerasTrainingData
 from CsvWriter import CsvWriter
 from abc import ABC, abstractmethod
 from tensorflow.keras.optimizers import Optimizer
 from tensorflow.keras.losses import Loss
 from tensorflow.keras.callbacks import Callback, CSVLogger
 from tensorflow.keras.models import Model, load_model
-from tensorflow._api.v2.image import ssim
 
 from typing import Generator, List
 from tensorflow.python.lib.io.file_io import file_exists
 
+from pandas import read_csv
 
-from finding_best_sigma import find_best_sigma_for_ssim
 from NeuralNetData import KerasNeuralNetData
 from DataMod import DataSet
 from DirManager import KerasDirManager
 from TensorBoardWriter import TensorBoardWriter
-
-from pandas import read_csv, DataFrame
-from scipy.ndimage import gaussian_filter
-
-import tensorflow as tf
-import random as rd
-import numpy as np
 
 
 class TrainingManagerABC (ABC):
@@ -64,6 +52,7 @@ class TrainingManagerABC (ABC):
 class KerasTrainingManager (TrainingManagerABC, 
                             KerasDirManager,
                             CsvWriter,
+                            KerasTrainingData,
                             TensorBoardWriter):
     """
         Keras training manager
@@ -112,11 +101,17 @@ class KerasTrainingManager (TrainingManagerABC,
 
         KerasDirManager.__init__(self, model_name = self.neural_net_data.model_name, 
                                 dataset_name = self.dataset.name,
-                                training_idx = self.training_idx)
+                                training_idx = self.training_idx,
+                                loss_name = loss.__name__)
 
         CsvWriter.__init__(self, file_name = "AllTrainingData", training_idx = self.training_idx)
 
         TensorBoardWriter.__init__(self, file_path= self.logs_dir)
+
+        KerasTrainingData.__init__(self)
+
+        if new:
+            self.remove_last_save()
 
         self.generators: dict = None
 
@@ -124,6 +119,30 @@ class KerasTrainingManager (TrainingManagerABC,
 
         self.make_all_dirs()
 
+
+    def _get_model (self):
+        """
+        
+        """
+        if file_exists(self.model_save_pathname):
+            custom_objs: dict = {}
+
+            for metric in self.metrics:
+                custom_objs[metric.__name__] = metric
+
+            for callback in self.callbacks: 
+                custom_objs[callback.__name__] = callback
+
+            custom_objs[self.loss.__name__] = self.loss
+
+            custom_objs[self.optimizer.__name__] = self.optimizer
+
+            model = load_model(self.model_save_pathname, custom_objects = custom_objs)
+
+            return model
+
+        else:
+            return self.neural_net_data.model
         
 
     def _get_generator_atributes(self) -> None:
@@ -232,11 +251,8 @@ class KerasTrainingManager (TrainingManagerABC,
         y_test = self.dataset.y_test
         
 
-        neural_net: Model = self.neural_net_data.model
-
-        if file_exists(self.model_save_pathname):
-            neural_net: Model = load_model(self.model_save_pathname, custom_objects = {self.loss().name : self.loss}, compile = True)            
-            print('Previous state loaded.')
+        neural_net: Model = self._get_model()    
+            
             
 
         neural_net.compile(optimizer = self.optimizer(**self.optimizer_kwargs),
@@ -263,79 +279,16 @@ class KerasTrainingManager (TrainingManagerABC,
 
         neural_net.save(filepath = self.model_save_pathname)
 
+        self.save_actual_model_pathname_as_last()
+
         self.write_data_to_table(self.get_csv_data())
 
-        image_cluster = self.get_example_imgs()
+        image_cluster = self.get_example_imgs(neural_net)
 
         descrptions = ["Inputs", "Outputs", "Expected", "Gaussian_filter"]
 
         for idx in range (4):
             self.write_images(image_cluster[idx], descrptions[idx])
-
-        
-
-
-    
-       
-
-    def get_best_results(self, metrics_names:list = ['loss', 'ssim_metric', 'psnr_metric'],
-                        best = [min, max, max],
-                        validation = True,
-                        last_results = True) -> dict:
-        """
-            Function that get the best results from the actual training
-
-            Parameters
-            ----------
-
-            metric_names:
-                Metric names on the list csv training history (dont include val_*, if vallidation = true)
-            
-            best:
-                For each metric, the function that get the best results in the list
-
-            validation:
-                bool telling if validation is considered
-
-            last_results
-                bool that includes the last results in the return
-
-            Returns
-            -------
-
-            A `dict` that cotains all names and results
-
-        """
-
-        results = {}
-
-        dataframe: DataFrame = self.get_csv_training_history ()
-
-        for metric in metrics_names:
-            results[metric] = dataframe[metric]
-
-
-        
-
-        best_training_loss = dataframe["loss"].min()
-        best_training_epoch = [line.epoch for line in dataframe.itertuples() if line.loss == best_training_loss][0]
-
-        best_val_loss = dataframe["val_loss"].min()
-        best_val_epoch = [line.epoch for line in dataframe.itertuples() if line.val_loss == best_val_loss][0]
-
-        last_training_loss = dataframe["loss"].tolist()[-1]
-        last_validation_loss = dataframe["val_loss"].tolist()[-1]
-        last_epoch = dataframe["epoch"].tolist()[-1]
-
-
-        
-        return {"best_training_loss": best_training_loss,
-                "best_training_epoch" : best_training_epoch,
-                "best_val_loss": best_val_loss,
-                "best_val_epoch": best_val_epoch,
-                "last_training_loss" : last_training_loss,
-                "last_validation_loss": last_validation_loss,
-                "last_epoch" : last_epoch}
 
 
     def _get_training_idx(self, new):
@@ -376,18 +329,13 @@ class KerasTrainingManager (TrainingManagerABC,
         return last_epoch
 
 
-
-    def get_csv_data(self):
+    def get_csv_data (self):
         """
         
         """
-        all_data = {}
+        data = self.neural_net_data.get_csv_data()
 
-        model_data = self.neural_net_data.get_csv_data()
-
-        all_data.update(model_data)
-
-        data: dict = {
+        training_params: dict = {
             "training_idx" : self.training_idx,
             "optimizer" : self.optimizer.__name__,
             "optimizer_args" : self.optimizer_kwargs,
@@ -400,38 +348,10 @@ class KerasTrainingManager (TrainingManagerABC,
             "dataset_params" : self.dataset.parametros
         }
 
-        data.update(self.get_best_results())
+        training_results = self.get_best_results()
 
-        all_data.update(data)
+        data.append(training_params)
+        data.append(training_results)
 
-        return all_data
+        return data
 
-    def get_test_ssim_mean(self):
-
-        model: Model = load_model(self.model_save_pathname, custom_objects = {self.loss().name : self.loss}, compile = True)
-
-        nNet_imgs = model.predict(self.dataset.x_test)
-
-        ssim_mean = ssim(nNet_imgs, self.dataset.y_test)
-
-    def get_example_imgs (self, num_imgs = 4, seed = 12321) -> tf.Tensor :
-
-        model: Model = load_model(self.model_save_pathname, custom_objects = {self.loss().name : self.loss}, compile = True)
-
-        rd.seed(seed)
-
-        selected_imgs = rd.sample( range( 0, len(self.dataset.x_test) ), num_imgs )
-
-        input_imgs = []
-        output_imgs = []
-        expected_imgs = []
-        gaussian_imgs = []
-
-        sigma = find_best_sigma_for_ssim(self.dataset.x_test[0:200], self.dataset.y_test[0:200])
-
-        input_imgs = np.array([self.dataset.x_test[idx] for idx in selected_imgs])
-        output_imgs = np.array(np.clip(model.predict(input_imgs), a_max= 255, a_min = 0), dtype='uint8')
-        expected_imgs = np.array([self.dataset.y_test[idx] for idx in selected_imgs], dtype='uint8')
-        gaussian_imgs = gaussian_filter(input_imgs, sigma=(0, sigma, sigma, 0))
-
-        return input_imgs, output_imgs, expected_imgs, gaussian_imgs
