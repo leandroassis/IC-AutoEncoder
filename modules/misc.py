@@ -11,6 +11,8 @@ from tensorflow._api.v2.image import ssim
 from datetime import datetime as dt
 from tensorflow.keras.losses import Loss, Reduction
 from tensorflow.python.ops.image_ops_impl import psnr
+from tensorflow import keras
+import time
 
 
 
@@ -112,6 +114,4 @@ def get_last_epoch (csv_pathname):
     last_line = lines[-1]
     last_epoch = int(last_line.split(';')[0])
     return last_epoch
-
-
 
