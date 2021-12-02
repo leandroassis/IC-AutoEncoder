@@ -1,10 +1,13 @@
 import numpy as np
+import tensorflow as tf
 from tensorflow._api.v2.image import rgb_to_grayscale
 from io import BytesIO
 from PIL import Image
 from tensorflow.keras.datasets.cifar10 import load_data as cifar10_load
-from tensorflow.python.keras.backend import switch
-from tensorflow.python.ops.control_flow_ops import switch_case
+from tensorflow.python.keras.saving.save import load_model
+from tensorflow.keras.models import Model
+
+
 
 class DataMod ():
     """
@@ -132,6 +135,11 @@ class DataSet ():
         self.y_train = np.load("/home/rafaeltadeu/autoencoder/Y_64x64_treino.npy")
         self.y_test = np.load("/home/rafaeltadeu/autoencoder/Y_64x64_teste.npy")
 
+        self.x_test = self.x_test.astype('float32')
+        self.x_train = self.x_train.astype('float32')
+        self.y_test = self.y_test.astype('float32')
+        self.y_train = self.y_train.astype('float32')
+        
         return self
 
     def load_rafael_tinyImagenet_64x64_noise_data (self):
@@ -146,6 +154,52 @@ class DataSet ():
         self.x_train = self.x_train.astype('float32')
         self.y_test = self.y_test.astype('float32')
         self.y_train = self.y_train.astype('float32')
+
+        return self
+
+    def load_discriminator_training_set(self, generator: Model = None, model_path = None, dataset = 'rafael_cifar_10'):
+        """
+        
+        """
+
+        if not generator and not model_path:
+            raise Exception("No model or path passed")
+
+        if model_path:
+            self.generator = load_model(model_path, compile = False)
+            
+        elif issubclass(generator, Model):
+            self.generator = generator
+        else:
+            raise Exception("Invalid model passed")
+
+        self.name = 'discriminator_training_set'
+        self.description = "images with label 1 and 0 for real and fake imgs respectively"
+
+        self.load_by_name(dataset)
+
+        self.x_train = self.y_train.append(generator.predict(self.x_train))
+        self.y_train = np.ones(shape=self.y_train.shape[0]).append(np.zeros(self.x_train.shape[0]))
+
+        self.x_test = self.y_test.append(generator.predict(self.x_test))
+        self.y_test = np.ones(shape=self.y_test.shape[0]).append(np.zeros(self.x_test.shape[0]))
+
+        assert self.x_train.shape[0] == self.y_train.shape[0]
+        assert self.x_test.shape[0] == self.y_test.shape[0]
+        
+        idx = tf.range(start=0, limit=tf.shape(self.x_train)[0], dtype=tf.int32)
+
+        idx = tf.random.shuffle(idx)
+
+        self.x_train = tf.gather(self.x_train, idx) 
+        self.y_train = tf.gather(self.y_train, idx)
+
+        idx = tf.range(start=0, limit=tf.shape(self.x_test)[0], dtype=tf.int32)
+
+        idx = tf.random.shuffle(idx)
+
+        self.x_test = tf.gather(self.x_test, idx) 
+        self.y_test = tf.gather(self.y_test, idx)
 
         return self
 
