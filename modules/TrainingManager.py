@@ -7,6 +7,8 @@
 """
 import sys, os
 
+
+
 sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder'))
 sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder/modules'))
 
@@ -15,7 +17,7 @@ from CsvWriter import CsvWriter
 from abc import ABC, abstractmethod
 from tensorflow.keras.optimizers import Optimizer
 from tensorflow.keras.losses import Loss
-from tensorflow.keras.callbacks import Callback, CSVLogger
+from tensorflow.keras.callbacks import Callback, CSVLogger, TensorBoard
 from tensorflow.keras.models import Model, load_model
 
 from typing import Generator, List
@@ -28,6 +30,8 @@ from DataMod import DataSet
 from DirManager import KerasDirManager
 from TensorBoardWriter import TensorBoardWriter
 
+class function:
+    pass
 
 class TrainingManagerABC (ABC):
     """
@@ -69,12 +73,16 @@ class KerasTrainingManager (TrainingManagerABC,
                  fit_kwargs: dict = None,
                  callbacks: List[Callback] = [],
                  dataset: DataSet = None,
+                 training_function: function = None,
                  new = True
                  ) -> None:
         """
         
         
         """
+        if not training_function:
+            raise Exception("Training function not set")
+
         self.training_idx = self._get_training_idx(new)
         
         if isinstance(neural_net_data, str):
@@ -93,6 +101,8 @@ class KerasTrainingManager (TrainingManagerABC,
         self.fit_kwargs = fit_kwargs
         
         self.callbacks = callbacks
+
+        self.training_function = training_function
         
         if isinstance(dataset, str):
             self.dataset = DataSet.load_by_name(dataset)
@@ -110,15 +120,18 @@ class KerasTrainingManager (TrainingManagerABC,
 
         KerasTrainingData.__init__(self)
 
+        self.make_all_dirs()
+
         if new:
             self.remove_last_save()
+
+            self.save_actual_model_pathname_as_last()
 
         self.generators: dict = None
 
         self._get_generator_atributes()
 
-        self.make_all_dirs()
-
+        
 
     def _get_model (self):
         """
@@ -252,45 +265,13 @@ class KerasTrainingManager (TrainingManagerABC,
             Nothing
         """
         
-        x_train = self.dataset.x_train
-        x_test = self.dataset.x_test
-        y_train = self.dataset.y_train
-        y_test = self.dataset.y_test
-        
-
-        neural_net: Model = self._get_model()    
-            
-            
-
-        neural_net.compile(optimizer = self.optimizer(**self.optimizer_kwargs),
-                           loss = self.loss(**self.loss_kwargs),
-                           metrics = self.metrics,
-                           **self.compile_kwargs)
-
-        self.make_all_dirs()
-
-        csv_logger = CSVLogger(filename = self.csv_pathname, separator = ';', append= True)
-
-        self.callbacks.append(csv_logger)
-    
-        last_epoch = self._get_last_epoch_()
-
-        self.fit_kwargs['epochs'] += 1 + last_epoch
-
-        neural_net.fit(x = x_train, y = y_train,
-                       validation_data = (x_test, y_test),
-                       initial_epoch = last_epoch + 1,
-                       callbacks = self.callbacks,
-                       **self.fit_kwargs)
-
-
-        neural_net.save(filepath = self.model_save_pathname)
+        self.training_function(self)
 
         self.save_actual_model_pathname_as_last()
 
         self.write_data_to_table(self.get_csv_data())
 
-        image_cluster = self.get_example_imgs(neural_net)
+        image_cluster = self.get_example_imgs(self._get_model())
 
         descrptions = ["Inputs", "Outputs", "Expected", "Gaussian_filter"]
 
@@ -342,11 +323,19 @@ class KerasTrainingManager (TrainingManagerABC,
         """
         data = self.neural_net_data.get_csv_data()
 
+        try:
+            loss_name = self.loss.name
+        except:
+            try: 
+                loss_name = self.loss.__name__
+            except:
+                pass
+
         training_params: dict = {
             "training_idx" : self.training_idx,
             "optimizer" : self.optimizer.__name__,
             "optimizer_args" : self.optimizer_kwargs,
-            "loss" : self.loss.__name__,
+            "loss" : loss_name,
             "loss_args" : self.loss_kwargs,
             "compile_kwargs" : self.compile_kwargs,
             "fit_kwargs" : self.fit_kwargs,
@@ -357,8 +346,8 @@ class KerasTrainingManager (TrainingManagerABC,
 
         training_results = self.get_best_results()
 
-        data.append(training_params)
-        data.append(training_results)
+        data.update(training_params)
+        data.update(training_results)
 
         return data
 
