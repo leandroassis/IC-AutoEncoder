@@ -36,8 +36,8 @@ class KerasTrainingData ():
         return dataframe
 
 
-    def get_best_results(self, metrics_names:list = ['loss', 'ssim_metric', 'psnr_metric'],
-                        best = [min, max, max],
+    def get_best_results(self, metrics_names:list = ['loss'],
+                        best = [min],
                         validation = True,
                         last_results = True) -> dict:
         """
@@ -55,7 +55,7 @@ class KerasTrainingData ():
             validation:
                 bool telling if validation is considered
 
-            last_results
+            last_results:
                 bool that includes the last results in the return
 
             Returns
@@ -67,21 +67,24 @@ class KerasTrainingData ():
 
         results = {}
 
+        for metric in self.metrics:
+            metrics_names.append(metric.__name__)
+
         dataframe: DataFrame = self.get_csv_training_history ()
 
-        for metric, func in (metrics_names, best):
+        for metric, func in zip(metrics_names, best):
             results[f"best_{metric}"] = func(dataframe[metric])
-            results[f"best_{metric}_epoch"] = dataframe.loc[dataframe[metric] == results[f"best_{metric}"]]['epoch'][0]
+            results[f"best_{metric}_epoch"] = dataframe.loc[dataframe[metric] == results[f"best_{metric}"]]['epoch'].iloc[0]
 
             if validation:
                 results[f"best_val_{metric}"] = func(dataframe[f"val_{metric}"])
-                results[f"best_val_{metric}_epoch"] = dataframe.loc[dataframe[metric] == results[f"best_val_{metric}"]]['epoch'][0]
+                results[f"best_val_{metric}_epoch"] = dataframe.loc[dataframe[f"val_{metric}"] == results[f"best_val_{metric}"]]['epoch'].iloc[0]
 
         if last_results:
             for metric in metrics_names:
                 results[f"last_{metric}"] = dataframe[metric].tolist()[-1]
         
-            results['last_epoch'] = dataframe['epoch'].tolist[-1]
+            results['last_epoch'] = dataframe['epoch'].tolist()[-1]
 
         
         return results
