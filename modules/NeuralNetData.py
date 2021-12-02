@@ -241,9 +241,9 @@ class KerasNeuralNetData(NeuralNetDataABC):
         
         for layer in self.model.layers:
 
-            distribution += layer.count_params()*nodes_depp[layer.name]
+            distribution += layer.count_params()*nodes_depp[layer.name] 
             
-        distribution = distribution/(self.total_params*self.total_layers)
+        distribution = distribution/(self.total_params*self.total_layers) # Normalization
             
         return distribution
 
