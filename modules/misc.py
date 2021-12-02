@@ -2,60 +2,28 @@
 Description
 ===========
 
-The Misc module contains functions that help in some process of a class method, or something similar.
+The module contains functions that help in some process of a class method, or something similar.
 
 """
 from tensorflow.keras.models import Model
 import json
 from tensorflow._api.v2.image import ssim
 from datetime import datetime as dt
-from tensorflow.keras.losses import Loss, Reduction
-from tensorflow.python.ops.image_ops_impl import psnr
+from tensorflow.keras.losses import Loss, Reduction, MeanAbsoluteError
+from sewar import psnrb
 from tensorflow import keras
-import time
+from typing import List
+import tensorflow as tf
+import numpy as np
 
-
-
-def get_neural_net_node_deep(model: Model) -> dict:
-    """
-        This function wil define the deep of a neuron with the longest path from the initial node in graph network
-
-        receives: 
-            kr.models.Model
-        returns: 
-            `dict` containing {'name':'deep', ...}
-        raises: 
-            Nothing
-    """
-    
-    layers_config: dict = json.loads(model.to_json())['config']['layers']
-
-    layers_deep: dict = {}
-
-    for layer in layers_config:
-
-        if layer['inbound_nodes'].__len__() == 0:
-            layers_deep[layer['name']] = 0
-
-        elif layer['class_name'] == "Concatenate":
-
-            list_of_preveous_layers = [name[0] for name in layer['inbound_nodes'][0]] 
-
-            layers_deep[layer['name']] = max([layers_deep[layer] for layer in list_of_preveous_layers]) + 1
-
-        else:
-
-            layers_deep[layer['name']] = layers_deep[layer['inbound_nodes'][0][0][0]] + 1
-
-
-    return layers_deep
-
-
+from tensorflow.python.framework.ops import Tensor
+from tensorflow.python.keras.saving.save import load_model
+from tensorflow.python.ops.tensor_array_ops import TensorArray
 
 
 class LSSIM (Loss):
 
-    def __init__(self, name = "LSSIM", reduction = Reduction.AUTO, max_val = 255, filter_size=9, filter_sigma=1.5, k1=0.01, k2=0.03) -> None:
+    def __init__(self, max_val = 255, filter_size=9, filter_sigma=1.5, k1=0.01, k2=0.03, name = "LSSIM", reduction = Reduction.AUTO) -> None:
         
         super(LSSIM, self).__init__(name = name, reduction = reduction)
         self.max_val = max_val
@@ -73,6 +41,53 @@ class LSSIM (Loss):
                       k2 = self.k2)
 
 
+class AdversarialLoss(Loss):
+
+    def __init__(self, adversarial_model: Model, model_path, reduction=Reduction.AUTO, name=None):
+        self.name = adversarial_model.name
+        super().__init__(reduction=reduction, name=name)
+
+        if isinstance(adversarial_model, str):
+            self.adversarial_model = load_model(f"{model_path}/{adversarial_model}", compile = False)
+        elif issubclass(adversarial_model, Model):
+            self.adversarial_model = adversarial_model
+        else:
+            raise Exception("Invalid model passed")
+
+    def call(self, y_true, y_pred):
+        return self.adversarial_model.predict(y_pred)
+
+
+class LossLinearCombination (Loss):
+
+    def __init__(self, losses: List[Loss], weights: list = None, bias_vector:list = None, name: str = "", reduction = Reduction.AUTO) -> None:
+        standard_name = ''
+        for loss in losses:
+            standard_name += f"-{loss().name}"
+        standard_name = standard_name[1:]
+        super(LossLinearCombination, self).__init__(name = standard_name, reduction = reduction)
+        self.losses = losses
+        self.weights = weights
+        self.bias_vector = bias_vector
+
+        if not self.weights:
+            self.weights = tf.ones(shape=losses.__len__())
+
+        if not self.bias_vector:
+            self.bias_vector = tf.zeros(shape=losses.__len__())
+
+    def call(self, y_true,y_pred):
+        result = 0
+        step1 = 0
+        step2 = 0
+
+        for loss, weight, bias in zip(self.losses, self.weights, self.bias_vector):
+            step1 += weight*loss().call(y_true, y_pred)
+            step2 +=  bias*tf.ones(shape=step1.shape)
+            
+        return step1 + step2
+
+
 def ssim_metric (y_true,y_pred, max_val = 255, filter_size = 9, filter_sigma = 1.5, k1=0.01, k2=0.03):
     return ssim(y_true, y_pred, max_val = max_val,
                       filter_size = filter_size,
@@ -81,8 +96,14 @@ def ssim_metric (y_true,y_pred, max_val = 255, filter_size = 9, filter_sigma = 1
                       k2 = k2)
 
 
-def psnr_metric (y_true,y_pred, max_val = 255):
-    return psnr(y_true, y_pred, max_val = max_val)
+def psnrb_metric (y_true,y_pred):
+    if len(y_true.shape) == 4:
+        result = []
+        for idx in range(y_true.shape[0]):
+            result.append(psnrb (y_true[idx], y_pred[idx]))
+        return result
+
+    return psnrb (y_true, y_pred)
 
 
 
