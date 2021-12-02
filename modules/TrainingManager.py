@@ -131,13 +131,20 @@ class KerasTrainingManager (TrainingManagerABC,
                 custom_objs[metric.__name__] = metric
 
             for callback in self.callbacks: 
-                custom_objs[callback.__name__] = callback
+                custom_objs[callback.__class__.__name__] = callback
 
-            custom_objs[self.loss.__name__] = self.loss
+            custom_objs[self.loss.__name__] = self.loss(**self.loss_kwargs)
 
-            custom_objs[self.optimizer.__name__] = self.optimizer
+            custom_objs[self.optimizer.__name__] = self.optimizer(**self.optimizer_kwargs)
 
-            model = load_model(self.model_save_pathname, custom_objects = custom_objs)
+            model = load_model(self.model_save_pathname, custom_objects = custom_objs, compile = False)
+
+            model.compile(optimizer = self.optimizer(**self.optimizer_kwargs),
+                           loss = self.loss(**self.loss_kwargs),
+                           metrics = self.metrics,
+                           **self.compile_kwargs)
+
+            print("---> Model loaded")
 
             return model
 
