@@ -5,7 +5,7 @@ from io import BytesIO
 from PIL import Image
 from tensorflow.keras.datasets.cifar10 import load_data as cifar10_load
 from tensorflow.python.keras.saving.save import load_model
-from tensorflow.keras.models import Model
+from tensorflow.keras.models import Model, model_from_json
 
 
 
@@ -66,7 +66,12 @@ class DataMod ():
         
         self.dataSet = np.array(self.dataSet, dtype = 'uint8')
 
-
+    def normalize_dataset(self):
+        """
+        
+        
+        """
+        pass
 
 class DataSet ():
     """
@@ -161,15 +166,22 @@ class DataSet ():
         """
         
         """
+        print("Loading discriminator training set")
 
         if not generator and not model_path:
             raise Exception("No model or path passed")
 
         if model_path:
-            self.generator = load_model(model_path, compile = False)
+            generator = load_model(model_path, compile = False)
             
+        
+        elif isinstance(generator, str):
+            with open(f"nNet_models/{generator}", 'r') as json_file:
+                architecture = json_file.read()
+                generator = model_from_json(architecture)
+                json_file.close()
         elif issubclass(generator, Model):
-            self.generator = generator
+            generator = generator
         else:
             raise Exception("Invalid model passed")
 
@@ -178,15 +190,16 @@ class DataSet ():
 
         self.load_by_name(dataset)
 
-        self.x_train = self.y_train.append(generator.predict(self.x_train))
-        self.y_train = np.ones(shape=self.y_train.shape[0]).append(np.zeros(self.x_train.shape[0]))
+        self.x_train = np.concatenate((self.y_train, generator.predict(self.x_train)))
+        self.y_train = np.concatenate((np.ones(shape=(self.y_train.shape[0], 1)), np.zeros(shape = (self.y_train.shape[0], 1))))
 
-        self.x_test = self.y_test.append(generator.predict(self.x_test))
-        self.y_test = np.ones(shape=self.y_test.shape[0]).append(np.zeros(self.x_test.shape[0]))
+        self.x_test = np.concatenate((self.y_test, generator.predict(self.x_test)))
+        self.y_test = np.concatenate((np.ones(shape= (self.y_test.shape[0], 1)), np.zeros(shape= (self.y_test.shape[0],1))))
 
         assert self.x_train.shape[0] == self.y_train.shape[0]
         assert self.x_test.shape[0] == self.y_test.shape[0]
         
+        '''
         idx = tf.range(start=0, limit=tf.shape(self.x_train)[0], dtype=tf.int32)
 
         idx = tf.random.shuffle(idx)
@@ -200,7 +213,7 @@ class DataSet ():
 
         self.x_test = tf.gather(self.x_test, idx) 
         self.y_test = tf.gather(self.y_test, idx)
-
+        '''
         return self
 
     def load_by_name(self, name:str):
