@@ -68,7 +68,11 @@ class KerasTrainingData ():
         results = {}
 
         for metric in self.metrics:
-            metrics_names.append(metric.__name__)
+
+            if isinstance(metric, str):
+                metrics_names.append(metric)
+            else:
+                metrics_names.append(metric.__name__)
 
         dataframe: DataFrame = self.get_csv_training_history ()
 
