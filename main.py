@@ -1,7 +1,7 @@
 from tensorflow.keras.optimizers import Adam, SGD
 from tensorflow.keras.callbacks import Callback, CSVLogger, TensorBoard
 from tensorflow.python.saved_model.loader_impl import parse_saved_model
-from tensorflow.keras.losses import MSE, MeanAbsoluteError
+from tensorflow.keras.losses import MSE, MeanAbsoluteError, BinaryCrossentropy
 from modules.misc import LSSIM, ssim_metric, psnrb_metric, LossLinearCombination, AdversarialLoss
 from modules.DataMod import DataSet
 from modules.TrainingManager import KerasTrainingManager
@@ -54,23 +54,23 @@ def generator_training(self: KerasTrainingManager) -> None:
 
 
 manager2 = KerasTrainingManager(
-    "AutoEncoder-1.0-64x64.json",
+    "Discriminator-AutoEncoder-1.0-64x64.json",
     optimizer = Adam,
     optimizer_kwargs = {'learning_rate' : 0.001, 'beta_1' : 0.9, 'beta_2' : 0.999, 'epsilon' : 1e-7, 'amsgrad' : False},
-    loss = LossLinearCombination,
-    loss_kwargs = {'losses' : [AdversarialLoss, MeanAbsoluteError], 'weights' : [1,1], 'bias_vector' : [0,0]},
+    loss = BinaryCrossentropy,
+    loss_kwargs = {},
     compile_kwargs = {'loss_weights' : None, 'weighted_metrics' : None, 'run_eagerly' : None, 'steps_per_execution' : None},
     
-    fit_kwargs = {'batch_size' : 20, 'epochs' : 20, 'verbose':1, 'validation_split':0, 'shuffle':True, 
+    fit_kwargs = {'batch_size' : 20, 'epochs' : 0, 'verbose':1, 'validation_split':0, 'shuffle':True, 
     'class_weight':None, 'sample_weight':None, 'steps_per_epoch':None, 'validation_steps':None, 
     'validation_batch_size':None, 'validation_freq':1, 'max_queue_size':10, 'workers':1, 'use_multiprocessing':False},
 
-    metrics = [ssim_metric],
+    metrics = ['accuracy'],
 
     training_function = generator_training,
 
-    dataset = DataSet().load_discriminator_training_set(),
-    new = True
+    dataset = DataSet().load_discriminator_training_set(generator = "AutoEncoder-1.0-64x64.json"),
+    new = False
 )
 
 manager2.start_training()
@@ -81,10 +81,10 @@ manager1 = KerasTrainingManager(
     optimizer = Adam,
     optimizer_kwargs = {'learning_rate' : 0.001, 'beta_1' : 0.9, 'beta_2' : 0.999, 'epsilon' : 1e-7, 'amsgrad' : False},
     loss = LossLinearCombination,
-    loss_kwargs = {'losses' : [AdversarialLoss(adversarial_model= 'Discriminator-AutoEncoder-1.0-64x64.json'), MeanAbsoluteError], 'weights' : [1,1], 'bias_vector' : [0,0]},
+    loss_kwargs = {'losses' : [AdversarialLoss(model_path= 'logs/rafael_cifar_10/BinaryCrossentropy/Discriminator-AutoEncoder-1.0-64x64/0/model'), MeanAbsoluteError()], 'weights' : [1,1], 'bias_vector' : [0,0]},
     compile_kwargs = {'loss_weights' : None, 'weighted_metrics' : None, 'run_eagerly' : None, 'steps_per_execution' : None},
     
-    fit_kwargs = {'batch_size' : 20, 'epochs' : 20, 'verbose':1, 'validation_split':0, 'shuffle':True, 
+    fit_kwargs = {'batch_size' : 20, 'epochs' : 1, 'verbose':1, 'validation_split':0, 'shuffle':True, 
     'class_weight':None, 'sample_weight':None, 'steps_per_epoch':None, 'validation_steps':None, 
     'validation_batch_size':None, 'validation_freq':1, 'max_queue_size':10, 'workers':1, 'use_multiprocessing':False},
 
@@ -93,7 +93,7 @@ manager1 = KerasTrainingManager(
     training_function = generator_training,
 
     dataset = DataSet().load_rafael_cifar_10_noise_data(),
-    new = True
+    new = False
 )
 
 manager1.start_training()
