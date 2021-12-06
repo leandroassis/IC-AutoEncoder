@@ -123,9 +123,7 @@ class KerasTrainingManager (TrainingManagerABC,
         self.make_all_dirs()
 
         if new:
-            self.remove_last_save()
-
-            self.save_actual_model_pathname_as_last()
+            pass
 
         self.generators: dict = None
 
@@ -141,7 +139,8 @@ class KerasTrainingManager (TrainingManagerABC,
             custom_objs: dict = {}
 
             for metric in self.metrics:
-                custom_objs[metric.__name__] = metric
+                if not isinstance(metric, str):
+                    custom_objs[metric.__name__] = metric
 
             for callback in self.callbacks: 
                 custom_objs[callback.__class__.__name__] = callback
@@ -264,20 +263,22 @@ class KerasTrainingManager (TrainingManagerABC,
 
             Nothing
         """
-        
+        print(f"---> Initiatiating training number {self.training_idx}")
+
         self.training_function(self)
 
-        self.save_actual_model_pathname_as_last()
+        self._save_pathname_in_the_list()
 
         self.write_data_to_table(self.get_csv_data())
 
+        """
         image_cluster = self.get_example_imgs(self._get_model())
 
         descrptions = ["Inputs", "Outputs", "Expected", "Gaussian_filter"]
 
         for idx in range (4):
             self.write_images(image_cluster[idx], descrptions[idx])
-
+        """
 
     def _get_training_idx(self, new):
 
