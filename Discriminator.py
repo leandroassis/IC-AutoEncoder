@@ -3,9 +3,13 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.utils import plot_model
 from tensorflow.python.keras.layers.core import Dense, Dropout
 
+from os import environ
+
+environ["CUDA_VISIBLE_DEVICES"]="1"
 model_name = "Discriminator-AutoEncoder-1.0-64x64"
 
-inputs = Input(shape=(64,64,2))
+
+inputs = Input(shape=(64,64,1))
 layer_1 = Conv2D(filters = 10, kernel_size = 3, padding = 'same', activation = 'relu')(inputs)
 layer_2 = MaxPooling2D()(layer_1)
 layer_3 = Conv2D(filters = 20, kernel_size = 3, padding = 'same', activation = 'relu')(layer_2)
@@ -23,7 +27,7 @@ layer_14 = Dropout(0.3)(layer_13)
 layer_15 = Dense(50, activation='relu')(layer_14)
 layer_16 = Dense(1, activation='sigmoid')(layer_15)
 
-model = Model(inputs = inputs, outputs = layer_13, name = model_name)
+model = Model(inputs = inputs, outputs = layer_16, name = model_name)
 
 model_json = model.to_json(indent = 4)
 
@@ -31,4 +35,4 @@ with open("nNet_models/" + model_name + ".json", "w") as json_file:
     json_file.write(model_json)
     json_file.close()
 
-plot_model(model=model, to_file="nNet_models/PNG-Models/" + model_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
+plot_model(model=model, to_file="nNet_models/PNG-Models/" + model_name + '.png', show_shapes=True, rankdir= "TB", expand_nested = True )
