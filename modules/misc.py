@@ -5,7 +5,8 @@ Description
 The module contains functions that help in some process of a class method, or something similar.
 
 """
-from tensorflow.keras.models import Model
+from genericpath import isdir
+from tensorflow.keras.models import Model, model_from_json
 import json
 from tensorflow._api.v2.image import ssim
 from datetime import datetime as dt
@@ -43,19 +44,33 @@ class LSSIM (Loss):
 
 class AdversarialLoss(Loss):
 
-    def __init__(self, adversarial_model: Model, model_path, reduction=Reduction.AUTO, name=None):
-        self.name = adversarial_model.name
+    def __init__(self, adversarial_model: Model = None, model_path = None, models_json_path = "nNet_models", reduction=Reduction.AUTO, name: str = None):
+        
+        
         super().__init__(reduction=reduction, name=name)
 
-        if isinstance(adversarial_model, str):
-            self.adversarial_model = load_model(f"{model_path}/{adversarial_model}", compile = False)
+        if model_path:
+
+            if isdir(model_path):
+
+                 self.adversarial_model = load_model(model_path, compile = False)
+
+        elif isinstance(adversarial_model, str):
+            self.name = adversarial_model
+            with open(f"{models_json_path}/{adversarial_model}", 'r') as json_file:
+                architecture = json_file.read()
+                self.adversarial_model = model_from_json(architecture)
+                json_file.close()
         elif issubclass(adversarial_model, Model):
+            self.name = adversarial_model.name
             self.adversarial_model = adversarial_model
         else:
             raise Exception("Invalid model passed")
 
+        
+
     def call(self, y_true, y_pred):
-        return self.adversarial_model.predict(y_pred)
+        return self.adversarial_model.call(y_pred)
 
 
 class LossLinearCombination (Loss):
@@ -63,7 +78,7 @@ class LossLinearCombination (Loss):
     def __init__(self, losses: List[Loss], weights: list = None, bias_vector:list = None, name: str = "", reduction = Reduction.AUTO) -> None:
         standard_name = ''
         for loss in losses:
-            standard_name += f"-{loss().name}"
+            standard_name += f"-{loss.name}"
         standard_name = standard_name[1:]
         super(LossLinearCombination, self).__init__(name = standard_name, reduction = reduction)
         self.losses = losses
@@ -77,12 +92,11 @@ class LossLinearCombination (Loss):
             self.bias_vector = tf.zeros(shape=losses.__len__())
 
     def call(self, y_true,y_pred):
-        result = 0
         step1 = 0
         step2 = 0
 
         for loss, weight, bias in zip(self.losses, self.weights, self.bias_vector):
-            step1 += weight*loss().call(y_true, y_pred)
+            step1 += weight*loss.call(y_true, y_pred)
             step2 +=  bias*tf.ones(shape=step1.shape)
             
         return step1 + step2
