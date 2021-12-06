@@ -1,8 +1,14 @@
+"""
+    Model Info
+    ==========
 
+
+"""
 import json
-
 from tensorflow.python.keras.engine.training import Model
 
+class function:
+    pass
 
 
 def max_neural_net_deep(model: Model) -> dict:
@@ -82,7 +88,7 @@ def get_layer_distribution_and_count (model: Model, layer_class_name: str, deep_
 
 
 
-def get_number_of_layers_with_params(model) -> int:
+def get_number_of_layers_with_params (model) -> int:
     """
         Return the number of layers that have treinable parameters.
 
@@ -276,7 +282,7 @@ def get_number_of_regularizers(model, regularizer_type: str = "") -> dict:
     return number_of_regularizers
 
 
-def get_regularizer_map(model, regularizer_type: str = "", deep_function: function = max_neural_net_deep) -> dict:
+def get_regularizer_distribution (model, regularizer_type: str = "", deep_function: function = max_neural_net_deep) -> dict:
 
     """
         Get the distribution of regularizers for kernel, bias and activity in the model layers.
@@ -353,3 +359,23 @@ def get_regularizer_map(model, regularizer_type: str = "", deep_function: functi
         distribution_of_regularizers['kernel'] = distribution_of_regularizers['kernel']/( (max_depp)*(total_regularizers['kernel']) )
 
     return distribution_of_regularizers
+
+
+
+def get_parameters_variation_info (model: Model, deep_function: function = max_neural_net_deep):
+    """
+        Get the variation information of the parameters of the model
+
+        Receives: 
+            model: Keras model
+
+        Returns: 
+            Dict with kernel, bias, activity, and the distribution of the regularizer type respectively {'kernel': 0.45, ...}
+        
+        Raises:
+            Nothing
+    """
+    pass
+
+
+    
