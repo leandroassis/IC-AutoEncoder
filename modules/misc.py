@@ -6,20 +6,23 @@ The module contains functions that help in some process of a class method, or so
 
 """
 from genericpath import isdir
+from sklearn.metrics import mean_absolute_error
 from tensorflow.keras.models import Model, model_from_json
 import json
 from tensorflow._api.v2.image import ssim
 from datetime import datetime as dt
-from tensorflow.keras.losses import Loss, Reduction, MeanAbsoluteError
+from tensorflow.keras.losses import Loss, Reduction, MeanAbsoluteError, binary_crossentropy
 from sewar import psnrb
 from tensorflow import keras
 from typing import List
 import tensorflow as tf
 import numpy as np
+from glob import glob
 
 from tensorflow.python.framework.ops import Tensor
 from tensorflow.python.keras.saving.save import load_model
 from tensorflow.python.ops.tensor_array_ops import TensorArray
+
 
 
 class LSSIM (Loss):
@@ -44,37 +47,65 @@ class LSSIM (Loss):
 
 class AdversarialLoss(Loss):
 
-    def __init__(self, adversarial_model: Model = None, model_path = None, models_json_path = "nNet_models", reduction=Reduction.AUTO, name: str = None):
-        
+    def __init__(self, training_idx: int = None, model_name: str = None, custom_objects: dict = None, reduction=Reduction.AUTO, name: str = 'AdversarialLoss'):
         
         super().__init__(reduction=reduction, name=name)
 
-        if model_path:
+        if training_idx == None and model_name == None:
+            raise Exception("No model has bem passed, set a model name or training_idx")
 
-            if isdir(model_path):
+        if model_name:
+            self.adversarial_model = get_model(model_name = model_name)
 
-                 self.adversarial_model = load_model(model_path, compile = False)
+        if training_idx != None:
+            self.adversarial_model = get_model(training_idx = training_idx)
+    
+    @tf.autograph.experimental.do_not_convert
+    def call(self, y_true, y_pred):
+        return binary_crossentropy(y_pred = self.adversarial_model(y_pred), y_true = tf.ones(shape= (y_pred.shape[0], 1)))
 
-        elif isinstance(adversarial_model, str):
-            self.name = adversarial_model
-            with open(f"{models_json_path}/{adversarial_model}", 'r') as json_file:
-                architecture = json_file.read()
-                self.adversarial_model = model_from_json(architecture)
-                json_file.close()
-        elif issubclass(adversarial_model, Model):
-            self.name = adversarial_model.name
-            self.adversarial_model = adversarial_model
-        else:
-            raise Exception("Invalid model passed")
 
+class L1_AdversarialLoss(Loss):
+    def __init__(self, training_idx: int = None, model_name: str = None, custom_objects: dict = None, reduction=Reduction.AUTO, name: str = 'L1_AdversarialLoss'):
         
+        super().__init__(reduction=reduction, name=name)
+
+        if training_idx == None and model_name == None:
+            raise Exception("No model has bem passed, set a model name or training_idx")
+
+        if model_name:
+            self.adversarial_model = get_model(model_name = model_name)
+
+        if training_idx != None:
+            self.adversarial_model = get_model(training_idx = training_idx)
 
     def call(self, y_true, y_pred):
-        return self.adversarial_model.call(y_pred)
+        return binary_crossentropy(tf.ones(shape= (y_pred.shape[0], 1)), self.adversarial_model(y_pred)) + tf.keras.losses.mean_absolute_error(y_true, y_pred)
+
+
+class LSSIM_AdversarialLoss(Loss):
+    def __init__(self, training_idx: int = None, model_name: str = None, custom_objects: dict = None, reduction=Reduction.AUTO, name: str = 'LSSIM_AdversarialLoss'):
+        
+        super().__init__(reduction=reduction, name=name)
+
+        if training_idx == None and model_name == None:
+            raise Exception("No model has bem passed, set a model name or training_idx")
+
+        if model_name:
+            self.adversarial_model = get_model(model_name = model_name)
+
+        if training_idx != None:
+            self.adversarial_model = get_model(training_idx = training_idx)
+
+    def call(self, y_true, y_pred):
+        return binary_crossentropy(y_pred = self.adversarial_model(y_pred), y_true = tf.ones(shape= (y_pred.shape[0], 1))) + LSSIM().call(y_true,y_pred)
 
 
 class LossLinearCombination (Loss):
-
+    """
+        Important: If the loss was a "Loss" subclass, it has to be initiated previously.
+    
+    """
     def __init__(self, losses: List[Loss], weights: list = None, bias_vector:list = None, name: str = "", reduction = Reduction.AUTO) -> None:
         standard_name = ''
         for loss in losses:
@@ -96,8 +127,11 @@ class LossLinearCombination (Loss):
         step2 = 0
 
         for loss, weight, bias in zip(self.losses, self.weights, self.bias_vector):
-            step1 += weight*loss.call(y_true, y_pred)
-            step2 +=  bias*tf.ones(shape=step1.shape)
+            if issubclass(loss, Loss):
+                step1 += weight*loss.call(y_true, y_pred)
+            elif (loss.__class__.__name__ == 'function' or loss.__class__.__name__ == "Function"): # TF Function
+                step1 += weight*loss(y_true, y_pred)
+                step2 += bias*tf.ones(shape=step1.shape)
             
         return step1 + step2
 
@@ -123,7 +157,16 @@ def psnrb_metric (y_true,y_pred):
 
 def get_current_time_and_data ():
     '''
-        Retorna o tempo em horas:minutos, e data em ano-mes-dia (str)
+        Returns the current time and date.
+
+        Receives:
+            Nothing
+
+        Returns:
+            date, time (str) respectively
+
+        Raises:
+            Nothing
     '''
     current_datetime = dt.now()
     time = current_datetime.time()
@@ -150,3 +193,43 @@ def get_last_epoch (csv_pathname):
     last_epoch = int(last_line.split(';')[0])
     return last_epoch
 
+
+
+def get_model(training_idx: int = None, custom_objects: dict = None, compile = False, model_json_name: str = None, json_models_path: str = None) -> Model:
+    """
+    
+    """
+
+    if training_idx != None:
+        model_save_path = glob(f"logs/**/{training_idx}/model", recursive = True)
+
+        if model_save_path.__len__() != 1:
+            raise Exception(f"No training, or multiple trainings, found with the training index {training_idx}. This shouldn't be happening")
+
+        model_save_path = model_save_path[0]
+
+        model = load_model(model_save_path, custom_objects = custom_objects, compile = compile)
+
+        return model
+
+    if model_json_name:
+
+        if not json_models_path:
+
+            path = glob(f"**/{model_json_name}", recursive = True)
+
+            if path.__len__() != 1:
+                raise Exception(f"{json_models_path.__len__()} files, found with the name {model_json_name}")
+
+            path = path[0]
+
+        else:
+            path = f"{json_models_path}/{model_json_name}"
+
+
+        with open(path, 'r') as json_file:
+                architecture = json_file.read()
+                model = model_from_json(architecture)
+                json_file.close()
+
+        return model

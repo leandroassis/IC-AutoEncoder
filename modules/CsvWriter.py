@@ -10,7 +10,7 @@ class CsvWriter():
 
     def __init__(self, file_name, training_idx) -> None:
         """
-            Method that defines the name of the archive were data is saved etc
+            Method that defines the name of the archive were data is saved
 
             receives: 
                     file_name (without extentions)
@@ -20,29 +20,38 @@ class CsvWriter():
                 None
         """
         self.training_idx = training_idx
-        self.pathname = f"logs/{file_name}.csv"
+        self.trainings_data_path = f"logs/{file_name}.csv"
+        self.models_data_path = f"logs/models.csv"
 
 
-    def write_data_to_table (self, columns_and_values: dict) -> None:
+    def write_data_to_table (self, columns_and_values: dict, unique_identifier: str, table_path:str, write_over: bool = True) -> None:
         """
             Obs: All the dict data has to be str or number.
+
+            columns_and_values:
+                A dict with label and data
+
+            unique_identifier:
+                Column name that has unique values
+
+            table_path:
+                Path of csv file to save and load
         """
         new_data = DataFrame([columns_and_values])
 
-        if file_exists(self.pathname):
-            dataframe = read_csv(self.pathname, index_col=0)
+        if file_exists(table_path):
+            dataframe = read_csv(table_path, index_col=0)
         else:
             dataframe = DataFrame()
-            
 
         if dataframe.empty:
             dataframe = dataframe.append(new_data, ignore_index=True)
 
-        else:
-            if not dataframe.iloc[-1]['training_idx'] == self.training_idx:
-                dataframe = dataframe.append(new_data, ignore_index=True)
+        else: 
+            if columns_and_values[unique_identifier] in dataframe[unique_identifier].values and write_over: # checks if the table has data with the same unique identifier
+                dataframe.at[dataframe[unique_identifier] == columns_and_values[unique_identifier], columns_and_values.keys()] = columns_and_values.values() 
+                # and subscribe in the line
             else:
-                dataframe = dataframe.drop(dataframe.last_valid_index(), axis=0)
                 dataframe = dataframe.append(new_data, ignore_index=True)
 
-        dataframe.to_csv(self.pathname)
+        dataframe.to_csv(table_path)

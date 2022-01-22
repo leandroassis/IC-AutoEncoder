@@ -1,3 +1,9 @@
+import sys, os
+
+from tensorflow.python.keras.engine import training
+sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder'))
+sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder/modules'))
+
 import numpy as np
 import tensorflow as tf
 from tensorflow._api.v2.image import rgb_to_grayscale
@@ -7,6 +13,7 @@ from tensorflow.keras.datasets.cifar10 import load_data as cifar10_load
 from tensorflow.python.keras.saving.save import load_model
 from tensorflow.keras.models import Model, model_from_json
 
+from misc import get_model
 
 
 class DataMod ():
@@ -94,7 +101,7 @@ class DataSet ():
         """
         self.name: str = dataset_name
         self.description: str = "None"
-        self.parametros: dict = {}
+        self.parameters: dict = {}
         self.x_train: np.array  = x_train
         self.x_test: np.array  = x_test
         self.y_train: np.array  = y_train
@@ -126,7 +133,7 @@ class DataSet ():
 
         self.description("Cifar 10 data set with jpeg compression and uniform distribution noise")
         
-        self.parametros = {'jpeg_compress_quality' : jpeg_compress_quality,
+        self.parameters = {'jpeg_compress_quality' : jpeg_compress_quality,
                             'max_pixel_var' : max_pixel_var}
 
         return self
@@ -162,33 +169,26 @@ class DataSet ():
 
         return self
 
-    def load_discriminator_training_set(self, generator: Model = None, model_path = None, dataset = 'rafael_cifar_10'):
+    def load_discriminator_training_set(self, training_idx:int = None, generator_name: Model = None, custom_objs: dict = None, dataset = 'rafael_cifar_10'):
         """
         
         """
         print("Loading discriminator training set")
 
-        if not generator and not model_path:
-            raise Exception("No model or path passed")
+        if generator_name == None and training_idx == None:
+            raise Exception("No model name or training_idx")
 
-        if model_path:
-            generator = load_model(model_path, compile = False)
-            
-        
-        elif isinstance(generator, str):
-            with open(f"nNet_models/{generator}", 'r') as json_file:
-                architecture = json_file.read()
-                generator = model_from_json(architecture)
-                json_file.close()
-        elif issubclass(generator, Model):
-            generator = generator
-        else:
-            raise Exception("Invalid model passed")
+        if generator_name:
+            generator = get_model(model_json_name = generator_name)
+
+        if training_idx != None:
+            generator = get_model(training_idx = training_idx, custom_objects = custom_objs)
+
+        self.load_by_name(dataset)
 
         self.name = 'discriminator_training_set'
         self.description = "images with label 1 and 0 for real and fake imgs respectively"
-
-        self.load_by_name(dataset)
+        self.parameters = {'training_idx' : training_idx, 'generator_name' : generator_name, 'custom_objs' : custom_objs, 'dataset' : dataset}
 
         self.x_train = np.concatenate((self.y_train, generator.predict(self.x_train)))
         self.y_train = np.concatenate((np.ones(shape=(self.y_train.shape[0], 1)), np.zeros(shape = (self.y_train.shape[0], 1))))
@@ -216,7 +216,7 @@ class DataSet ():
         '''
         return self
 
-    def load_by_name(self, name:str):
+    def load_by_name(self, name:str, kwargs: dict = {}):
 
         if (name == "rafael_tinyImagenet"):
             self.load_rafael_tinyImagenet_64x64_noise_data()
@@ -225,4 +225,9 @@ class DataSet ():
         if (name == "rafael_cifar_10"):
             self.load_rafael_cifar_10_noise_data()
             return self
+
+        if (name == "discriminator_training_set"):
+            self.load_discriminator_training_set(**kwargs)
+
+        return self
     

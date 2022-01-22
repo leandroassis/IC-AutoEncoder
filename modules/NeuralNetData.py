@@ -20,21 +20,8 @@ class NeuralNetDataABC (ABC):
         super().__init__()
 
 
-    def get_all_data(self) -> dict:
-        """
-            Returns all data in a dict
-
-            :Receives: None
-
-            :Return: `dict`
-
-            :Raise: None
-        """
-        return self.__dict__
-
-
     @abstractmethod
-    def get_csv_data(self) -> dict:
+    def get_model_csv_data(self) -> dict:
         """
             Get all data to save in the table of training data.
 
@@ -69,10 +56,10 @@ class KerasNeuralNetData(NeuralNetDataABC):
                 json_file.close()
 
         else:
-            self._model = model
+            self.model = model
 
         if self.model == None:
-            raise Exception("No model passed to te class")
+            raise Exception("No model passed to the class")
 
         self.model_name = self.model.name
 
@@ -122,7 +109,7 @@ class KerasNeuralNetData(NeuralNetDataABC):
         super().__init__()
 
 
-    def get_csv_data(self) -> dict:
+    def get_model_csv_data(self) -> dict:
         """
             Get all data to save in the table of training data.
 

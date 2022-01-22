@@ -34,8 +34,7 @@ class KerasDirManager (DirManagerABC):
         
         self.model_save_pathname = f"logs/{dataset_name}/{loss_name}/{model_name}/{training_idx}/model"
         self.csv_pathname = f"logs/{dataset_name}/{loss_name}/{model_name}/{training_idx}/CsvLoger.csv"
-        
-        self.models_table_pathname = f'logs/models_table'
+        self.attributes_save_pathname = f"logs/{dataset_name}/{loss_name}/{model_name}/{training_idx}/KTM_attributes.pkl"
         
     def make_all_dirs (self) -> None:
 
@@ -52,29 +51,3 @@ class KerasDirManager (DirManagerABC):
 
     def get_actual_training_logs_size (self):
         pass
-
-    def _load_saved_models_file (self) -> DataFrame:
-        """
-        
-        
-        """
-        if file_exists(self.models_table_pathname):
-
-            models_saved = read_csv(self.models_table_pathname)
-
-        else:
-
-            models_saved = DataFrame()
-
-        return models_saved
-            
-    
-    def _save_pathname_in_the_list(self) -> None:
-        """
-        
-        """
-        models_saved = self._load_saved_models_file()
-
-        models_saved["model_save_pathname"] = self.model_save_pathname
-
-        models_saved.to_csv(self.models_table_pathname)
