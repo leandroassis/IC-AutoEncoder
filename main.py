@@ -1,3 +1,4 @@
+from unittest.mock import NonCallableMock
 from tensorflow.keras.optimizers import Adam, SGD
 from tensorflow.keras.callbacks import Callback, CSVLogger, TensorBoard
 from tensorflow.python.saved_model.loader_impl import parse_saved_model
@@ -8,7 +9,7 @@ from modules.TrainingManager import KerasTrainingManager
 from os import environ
 import tensorboard
 
-from modules.TrainingFunctions import generator_training
+from modules.TrainingFunctions import *
 
 environ["CUDA_VISIBLE_DEVICES"]="1"
 
@@ -43,9 +44,9 @@ manager1 = KerasTrainingManager(
     "AutoEncoder-1.0-64x64.json",
     optimizer = Adam,
     optimizer_kwargs = {'learning_rate' : 0.001, 'beta_1' : 0.9, 'beta_2' : 0.999, 'epsilon' : 1e-7, 'amsgrad' : False},
-    loss = L1_AdversarialLoss,
-    loss_kwargs = {'training_idx' : 0},
-    compile_kwargs = {'loss_weights' : None, 'weighted_metrics' : None, 'run_eagerly' : None, 'steps_per_execution' : None},
+    loss = [MeanAbsoluteError, AdversarialLoss],
+    loss_kwargs = [None,{'training_idx' : 0}],
+    compile_kwargs = {'loss_weights' : [1,1], 'weighted_metrics' : None, 'run_eagerly' : None, 'steps_per_execution' : None},
     
     fit_kwargs = {'batch_size' : 20, 'epochs' : 5, 'verbose':1, 'validation_split':0, 'shuffle':True, 
     'class_weight':None, 'sample_weight':None, 'steps_per_epoch':None, 'validation_steps':None, 
@@ -55,7 +56,7 @@ manager1 = KerasTrainingManager(
 
     callbacks = None,
 
-    training_function = generator_training,
+    training_function = multiple_losses,
 
     dataset = DataSet().load_rafael_cifar_10_noise_data(),
 

@@ -233,3 +233,17 @@ def get_model(training_idx: int = None, custom_objects: dict = None, compile = F
                 json_file.close()
 
         return model
+
+
+def get_loss_name(loss):
+
+    if isinstance(loss, list):
+        loss_name:str = ""
+        for item in loss:
+            loss_name += f"{item.__name__}+"
+        loss_name = loss_name[:-1]
+
+    elif issubclass(loss, Loss):
+        loss_name = loss.__name__
+
+    return loss_name

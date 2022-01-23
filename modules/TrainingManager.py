@@ -35,7 +35,7 @@ from DirManager import KerasDirManager
 from TensorBoardWriter import TensorBoardWriter
 
 from glob import glob
-from misc import get_model, get_current_time_and_data
+from misc import get_loss_name, get_model, get_current_time_and_data
 
 class function:
     pass
@@ -139,7 +139,7 @@ class KerasTrainingManager (TrainingManagerABC,
         KerasDirManager.__init__(self, model_name = self.neural_net_data.model_name, 
                                 dataset_name = self.dataset.name,
                                 training_idx = self.training_idx,
-                                loss_name = self.loss.__name__)
+                                loss_name = get_loss_name(self.loss))
 
         CsvWriter.__init__(self, file_name = "AllTrainingData", training_idx = self.training_idx)
 
@@ -167,26 +167,9 @@ class KerasTrainingManager (TrainingManagerABC,
                 for callback in self.callbacks: 
                     custom_objs[callback.__class__.__name__] = callback
 
-            custom_objs[self.loss.__name__] = self.loss(**self.loss_kwargs) if self.loss_kwargs else self.loss()
-
             custom_objs[self.optimizer.__name__] = self.optimizer(**self.optimizer_kwargs) if self.optimizer_kwargs else self.optimizer()
 
-            model = load_model(self.model_save_pathname, custom_objects = custom_objs, compile = False)
-
-            if self.optimizer_kwargs:
-                optimizer = self.optimizer(**self.optimizer_kwargs)
-            else:
-                optimizer = self.optimizer()
-            
-            if self.loss_kwargs:
-                loss = self.loss(**self.loss_kwargs)
-            else:
-                loss = self.loss()
-            
-            model.compile(optimizer = optimizer,
-                           loss = loss,
-                           metrics = self.metrics,
-                           **self.compile_kwargs)
+            model = load_model(self.model_save_pathname, compile = False)
 
             print("---> Model loaded")
 
@@ -275,23 +258,15 @@ class KerasTrainingManager (TrainingManagerABC,
         """
         date, time = get_current_time_and_data()
 
-        try:
-            loss_name = self.loss.name
-        except AttributeError:
-            try: 
-                loss_name = self.loss.__name__
-            except AttributeError:
-                Exception ("The class don't have a __name__ atribute ?????") # Isso provavelmente nunca vai acontecer
-
         training_results = self.get_best_results()
 
         training_params_and_data: dict = {
             "training_idx" : self.training_idx,
             "model_name" : self.neural_net_data.model_name,
             "optimizer" : self.optimizer.__name__,
-            "optimizer_args" : self.optimizer_kwargs,
-            "loss" : loss_name,
-            "loss_args" : self.loss_kwargs,
+            "optimizer_kwargs" : self.optimizer_kwargs,
+            "loss" : get_loss_name(self.loss),
+            "loss_kwargs" : self.loss_kwargs,
             "compile_kwargs" : self.compile_kwargs,
             "fit_kwargs" : self.fit_kwargs,
             "dataset" : self.dataset.name,

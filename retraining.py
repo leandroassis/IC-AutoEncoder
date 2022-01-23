@@ -12,11 +12,11 @@ from modules.TrainingFunctions import generator_training
 environ["CUDA_VISIBLE_DEVICES"]="1"
 
 
-for k in range(5):
-    discriminator = KerasTrainingManager(training_idx = 0)
-    generator = KerasTrainingManager(training_idx = 1)
+for k in range(1):
+    discriminator = KerasTrainingManager(training_idx = 2)
+    generator = KerasTrainingManager(training_idx = 3)
 
     discriminator.change_parameters(dataset=DataSet().load_discriminator_training_set(training_idx = generator.training_idx))
     discriminator.start_training(epochs=2)
+    generator.change_parameters(loss = [MeanAbsoluteError, AdversarialLoss], loss_kwargs =  [None,{'training_idx' : 2}])
     generator.start_training(epochs=2)
-
