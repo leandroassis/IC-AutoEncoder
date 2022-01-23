@@ -261,7 +261,7 @@ class KerasTrainingManager (TrainingManagerABC,
         training_results = self.get_best_results()
 
         training_params_and_data: dict = {
-            "training_idx" : self.training_idx,
+            "training_idx" : int(self.training_idx),
             "model_name" : self.neural_net_data.model_name,
             "optimizer" : self.optimizer.__name__,
             "optimizer_kwargs" : self.optimizer_kwargs,

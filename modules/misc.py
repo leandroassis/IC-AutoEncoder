@@ -19,6 +19,8 @@ import tensorflow as tf
 import numpy as np
 from glob import glob
 
+import math
+from tensorflow._api.v2.signal import dct, idct
 from tensorflow.keras.layers import Layer
 from tensorflow.python.framework.ops import Tensor
 from tensorflow.python.keras.saving.save import load_model
@@ -65,8 +67,79 @@ class AdversarialLoss(Loss):
     def call(self, y_true, y_pred):
         return binary_crossentropy(y_pred = self.adversarial_model(y_pred), y_true = tf.ones(shape= (y_pred.shape[0], 1)))
 
-class DCTLayer (Layer):
+    
+
+class DCTL2D (Layer):
+    """
+    
+    
+    """
+    
+    def __init__(self, trainable=True, name=None, dtype=None, dynamic=False, **kwargs):
+
+        super().__init__(trainable, name, dtype, dynamic, **kwargs)
+
+
+    def call(self, inputs, **kwargs):
+
+        op1 = tf.matmul(self.C, inputs)
+        output = tf.matmul(op1, self.C, transpose_b = True)
+
+        return output
+
+    def build(self, input_shape):
+
+        assert input_shape[-2:] == (8,8)
+
+        C = np.empty(shape = (8,8), dtype = float)
+
+        for j in range(0,8):
+            C[0,j] = np.sqrt(8)
+
+        for i in range(1, 8):
+            for j in range(0,8):
+                C[i,j] = 0.5*tf.math.cos((2*j+1)*i*math.pi/16)
+
+        self.C = tf.constant(C, dtype=tf.float32)
+
+        return super(DCTL2D, self).build(input_shape)
+
+
+class IDCT2D (Layer):
+    """
+    
+    
+    """
+    
+    def __init__(self, trainable=True, name=None, dtype=None, dynamic=False, **kwargs):
+
+
+        super().__init__(trainable, name, dtype, dynamic, **kwargs)
+
     pass
+
+    
+    def call(self, inputs, **kwargs):
+
+        op1 = tf.matmul(self.inverse_C, inputs)
+        output = tf.matmul(op1, self.inverse_C, transpose_b = True)
+
+        return output
+
+    def build(self, input_shape):
+
+        C = np.empty(shape = (8,8), dtype = float)
+
+        for j in range(0,8):
+            C[0,j] = np.sqrt(8)
+
+        for i in range(1, 8):
+            for j in range(0,8):
+                C[i,j] = 0.5*tf.math.cos((2*j+1)*i*math.pi/16)
+
+        self.inverse_C = tf.linalg.inv(tf.constant(C, dtype=tf.float32))
+
+        return super().build(input_shape)
 
 
 def ssim_metric (y_true,y_pred, max_val = 255, filter_size = 9, filter_sigma = 1.5, k1=0.01, k2=0.03):

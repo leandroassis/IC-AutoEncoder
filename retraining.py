@@ -22,7 +22,8 @@ def generator_discriminator_training():
         generator.start_training(epochs=2)
 
 def normal_training():
-    pass
+    generator = KerasTrainingManager(training_idx=4)
+    generator.start_training(epochs=10)
 
 if __name__ == "__main__":
-    generator_discriminator_training()
+    normal_training()

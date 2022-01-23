@@ -3,7 +3,7 @@ from tensorflow.keras.optimizers import Adam, SGD
 from tensorflow.keras.callbacks import Callback, CSVLogger, TensorBoard
 from tensorflow.python.saved_model.loader_impl import parse_saved_model
 from tensorflow.keras.losses import MSE, MeanAbsoluteError, BinaryCrossentropy
-from modules.misc import LSSIM, ssim_metric, psnrb_metric, AdversarialLoss, L1_AdversarialLoss, LSSIM_AdversarialLoss
+from modules.misc import LSSIM, ssim_metric
 from modules.DataMod import DataSet
 from modules.TrainingManager import KerasTrainingManager
 from os import environ
