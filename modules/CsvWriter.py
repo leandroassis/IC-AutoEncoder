@@ -42,16 +42,21 @@ class CsvWriter():
         if file_exists(table_path):
             dataframe = read_csv(table_path, index_col=0)
         else:
-            dataframe = DataFrame()
+            dataframe = DataFrame(columns = columns_and_values.keys(), index=unique_identifier)
 
         if dataframe.empty:
             dataframe = dataframe.append(new_data, ignore_index=True)
 
         else: 
-            if columns_and_values[unique_identifier] in dataframe[unique_identifier].values and write_over: # checks if the table has data with the same unique identifier
-                dataframe.at[dataframe[unique_identifier] == columns_and_values[unique_identifier], columns_and_values.keys()] = columns_and_values.values() 
+            if columns_and_values[unique_identifier] in dataframe.index and write_over: # checks if the table has data with the same unique identifier
+                index = columns_and_values.pop(unique_identifier)
+                dataframe.loc[dataframe.index == index, list(columns_and_values.keys())] = list(columns_and_values.values())
+                #dataframe.at[dataframe[unique_identifier] == columns_and_values[unique_identifier], columns_and_values.keys()] = columns_and_values.values() 
                 # and subscribe in the line
             else:
-                dataframe = dataframe.append(new_data, ignore_index=True)
+                if not (columns_and_values[unique_identifier] in dataframe.index):
+                    dataframe = dataframe.append(new_data, ignore_index=True)
 
+        if dataframe.index.name != unique_identifier:
+            dataframe.set_index(unique_identifier, inplace=True)
         dataframe.to_csv(table_path)
