@@ -19,6 +19,7 @@ import tensorflow as tf
 import numpy as np
 from glob import glob
 
+from tensorflow.keras.layers import Layer
 from tensorflow.python.framework.ops import Tensor
 from tensorflow.python.keras.saving.save import load_model
 from tensorflow.python.ops.tensor_array_ops import TensorArray
@@ -64,76 +65,8 @@ class AdversarialLoss(Loss):
     def call(self, y_true, y_pred):
         return binary_crossentropy(y_pred = self.adversarial_model(y_pred), y_true = tf.ones(shape= (y_pred.shape[0], 1)))
 
-
-class L1_AdversarialLoss(Loss):
-    def __init__(self, training_idx: int = None, model_name: str = None, custom_objects: dict = None, reduction=Reduction.AUTO, name: str = 'L1_AdversarialLoss'):
-        
-        super().__init__(reduction=reduction, name=name)
-
-        if training_idx == None and model_name == None:
-            raise Exception("No model has bem passed, set a model name or training_idx")
-
-        if model_name:
-            self.adversarial_model = get_model(model_name = model_name)
-
-        if training_idx != None:
-            self.adversarial_model = get_model(training_idx = training_idx)
-
-    def call(self, y_true, y_pred):
-        return binary_crossentropy(tf.ones(shape= (y_pred.shape[0], 1)), self.adversarial_model(y_pred)) + tf.keras.losses.mean_absolute_error(y_true, y_pred)
-
-
-class LSSIM_AdversarialLoss(Loss):
-    def __init__(self, training_idx: int = None, model_name: str = None, custom_objects: dict = None, reduction=Reduction.AUTO, name: str = 'LSSIM_AdversarialLoss'):
-        
-        super().__init__(reduction=reduction, name=name)
-
-        if training_idx == None and model_name == None:
-            raise Exception("No model has bem passed, set a model name or training_idx")
-
-        if model_name:
-            self.adversarial_model = get_model(model_name = model_name)
-
-        if training_idx != None:
-            self.adversarial_model = get_model(training_idx = training_idx)
-
-    def call(self, y_true, y_pred):
-        return binary_crossentropy(y_pred = self.adversarial_model(y_pred), y_true = tf.ones(shape= (y_pred.shape[0], 1))) + LSSIM().call(y_true,y_pred)
-
-
-class LossLinearCombination (Loss):
-    """
-        Important: If the loss was a "Loss" subclass, it has to be initiated previously.
-    
-    """
-    def __init__(self, losses: List[Loss], weights: list = None, bias_vector:list = None, name: str = "", reduction = Reduction.AUTO) -> None:
-        standard_name = ''
-        for loss in losses:
-            standard_name += f"-{loss.name}"
-        standard_name = standard_name[1:]
-        super(LossLinearCombination, self).__init__(name = standard_name, reduction = reduction)
-        self.losses = losses
-        self.weights = weights
-        self.bias_vector = bias_vector
-
-        if not self.weights:
-            self.weights = tf.ones(shape=losses.__len__())
-
-        if not self.bias_vector:
-            self.bias_vector = tf.zeros(shape=losses.__len__())
-
-    def call(self, y_true,y_pred):
-        step1 = 0
-        step2 = 0
-
-        for loss, weight, bias in zip(self.losses, self.weights, self.bias_vector):
-            if issubclass(loss, Loss):
-                step1 += weight*loss.call(y_true, y_pred)
-            elif (loss.__class__.__name__ == 'function' or loss.__class__.__name__ == "Function"): # TF Function
-                step1 += weight*loss(y_true, y_pred)
-                step2 += bias*tf.ones(shape=step1.shape)
-            
-        return step1 + step2
+class DCTLayer (Layer):
+    pass
 
 
 def ssim_metric (y_true,y_pred, max_val = 255, filter_size = 9, filter_sigma = 1.5, k1=0.01, k2=0.03):
