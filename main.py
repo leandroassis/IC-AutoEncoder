@@ -1,17 +1,18 @@
-from unittest.mock import NonCallableMock
+from unittest.mock import NonCallableMagicMock, NonCallableMock
 from tensorflow.keras.optimizers import Adam, SGD
 from tensorflow.keras.callbacks import Callback, CSVLogger, TensorBoard
 from tensorflow.python.saved_model.loader_impl import parse_saved_model
 from tensorflow.keras.losses import MSE, MeanAbsoluteError, BinaryCrossentropy
-from modules.misc import LSSIM, ssim_metric
+from modules.misc import LSSIM, AdversarialLoss, L1AdversarialLoss, ssim_metric
 from modules.DataMod import DataSet
 from modules.TrainingManager import KerasTrainingManager
 from os import environ
 import tensorboard
+from glob import glob
 
 from modules.TrainingFunctions import *
 
-environ["CUDA_VISIBLE_DEVICES"]="3"
+environ["CUDA_VISIBLE_DEVICES"]="2"
 
 '''
 manager2 = KerasTrainingManager(
@@ -39,30 +40,37 @@ manager2 = KerasTrainingManager(
 manager2.start_training()
 '''
 
+models = glob(f"./nNet_models/*.json", recursive = True)
+models.remove('./nNet_models/Discriminator-AutoEncoder-1.0-64x64.json')
+models.reverse()
 
-manager1 = KerasTrainingManager(
-    "AutoEncoder-1.0-64x64.json",
-    optimizer = Adam,
-    optimizer_kwargs = {'learning_rate' : 0.001, 'beta_1' : 0.9, 'beta_2' : 0.999, 'epsilon' : 1e-7, 'amsgrad' : False},
-    loss = MeanAbsoluteError,
-    loss_kwargs = {},
-    compile_kwargs = {'loss_weights' : None, 'weighted_metrics' : None, 'run_eagerly' : None, 'steps_per_execution' : None},
-    
-    fit_kwargs = {'batch_size' : 20, 'epochs' : 5, 'verbose':1, 'validation_split':0, 'shuffle':True, 
-    'class_weight':None, 'sample_weight':None, 'steps_per_epoch':None, 'validation_steps':None, 
-    'validation_batch_size':None, 'validation_freq':1, 'max_queue_size':10, 'workers':1, 'use_multiprocessing':False},
+for model in models:
 
-    metrics = [ssim_metric],
+    model = model[14:]
 
-    callbacks = None,
+    manager1 = KerasTrainingManager(
+        model,
+        optimizer = Adam,
+        optimizer_kwargs = {'learning_rate' : 0.001, 'beta_1' : 0.9, 'beta_2' : 0.999, 'epsilon' : 1e-7, 'amsgrad' : False},
+        loss = LSSIM,
+        loss_kwargs = {'max_val':255, 'filter_size':9, 'filter_sigma':1.5, 'k1':0.01, 'k2':0.03},
+        compile_kwargs = {'loss_weights' : None, 'weighted_metrics' : None, 'run_eagerly' : None, 'steps_per_execution' : None},
+        
+        fit_kwargs = {'batch_size' : 20, 'epochs' : 15, 'verbose':1, 'validation_split':0, 'shuffle':True, 
+        'class_weight':None, 'sample_weight':None, 'steps_per_epoch':None, 'validation_steps':None, 
+        'validation_batch_size':None, 'validation_freq':1, 'max_queue_size':10, 'workers':1, 'use_multiprocessing':False},
 
-    training_function = generator_training,
+        metrics = [ssim_metric],
 
-    dataset = DataSet().load_rafael_cifar_10_noise_data(),
+        callbacks = None,
 
-    best_selector_metrics = [min, max]
-)
+        training_function = generator_training,
 
-manager1.start_training()
+        dataset = DataSet().load_rafael_cifar_10_noise_data(),
+
+        best_selector_metrics = [min, max]
+    )
+
+    manager1.start_training()
 
 

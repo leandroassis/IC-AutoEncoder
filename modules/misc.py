@@ -68,6 +68,31 @@ class AdversarialLoss(Loss):
         return binary_crossentropy(y_pred = self.adversarial_model(y_pred), y_true = tf.ones(shape= (y_pred.shape[0], 1)))
 
     
+class L1AdversarialLoss(Loss):
+
+    def __init__(self, w1 = 1, w2 = 1, training_idx: int = None, model_name: str = None, custom_objects: dict = None, reduction=Reduction.AUTO, name: str = 'L1_AdversarialLoss'):
+        
+        super().__init__(reduction=reduction, name=name)
+
+        if training_idx == None and model_name == None:
+            raise Exception("No model has bem passed, set a model name or training_idx")
+
+        if model_name:
+            self.adversarial_model = get_model(model_name = model_name)
+
+        if training_idx != None:
+            self.adversarial_model = get_model(training_idx = training_idx)
+
+        self.w1 = w1
+        self.w2 = w2
+    
+    @tf.autograph.experimental.do_not_convert
+    def call(self, y_true, y_pred):
+        return self.w1*binary_crossentropy(y_pred = self.adversarial_model(y_pred), 
+                                    y_true = tf.ones(shape= (y_pred.shape[0], 1))) + tf.reduce_mean(self.w2*MeanAbsoluteError().call(y_true, y_pred), axis = (1,2))
+
+    
+
 
 class DCTL2D (Layer):
     """

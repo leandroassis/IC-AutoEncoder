@@ -38,6 +38,7 @@ class CsvWriter():
                 Path of csv file to save and load
         """
         new_data = DataFrame([columns_and_values])
+        new_data.set_index(unique_identifier, inplace=True)
 
         if file_exists(table_path):
             dataframe = read_csv(table_path, index_col=0)
@@ -45,7 +46,7 @@ class CsvWriter():
             dataframe = DataFrame(columns = columns_and_values.keys(), index=unique_identifier)
 
         if dataframe.empty:
-            dataframe = dataframe.append(new_data, ignore_index=True)
+            dataframe = dataframe.append(new_data)
 
         else: 
             if columns_and_values[unique_identifier] in dataframe.index and write_over: # checks if the table has data with the same unique identifier
@@ -55,7 +56,7 @@ class CsvWriter():
                 # and subscribe in the line
             else:
                 if not (columns_and_values[unique_identifier] in dataframe.index):
-                    dataframe = dataframe.append(new_data, ignore_index=True)
+                    dataframe = dataframe.append(new_data)
 
         if dataframe.index.name != unique_identifier:
             dataframe.set_index(unique_identifier, inplace=True)

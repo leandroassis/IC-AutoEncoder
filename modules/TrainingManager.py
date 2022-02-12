@@ -135,6 +135,7 @@ class KerasTrainingManager (TrainingManagerABC,
 
             self.load_state()
 
+        self.loaded = False
 
         KerasDirManager.__init__(self, model_name = self.neural_net_data.model_name, 
                                 dataset_name = self.dataset.name,
@@ -173,10 +174,9 @@ class KerasTrainingManager (TrainingManagerABC,
 
             print("---> Model loaded")
 
-            return model
+            self.neural_net_data.model = model
 
-        else:
-            return self.neural_net_data.model
+            self.loaded = True
         
 
    

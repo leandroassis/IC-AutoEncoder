@@ -1,5 +1,6 @@
 
 from tensorflow.keras.callbacks import Callback, CSVLogger, TensorBoard
+from tensorflow.keras.losses import Loss
 from modules.TrainingManager import KerasTrainingManager
 from tensorflow.keras.models import Model
 
@@ -14,8 +15,11 @@ def generator_training(self: KerasTrainingManager, epochs = None) -> None:
         y_train = self.dataset.y_train
         y_test = self.dataset.y_test
         
-
-        neural_net: Model = self._get_model()    
+        if not self.loaded:
+            self._get_model()
+            neural_net: Model = self.neural_net_data.model 
+        else:
+            neural_net: Model = self.neural_net_data.model 
 
         if self.optimizer_kwargs:
             optimizer = self.optimizer(**self.optimizer_kwargs)
@@ -81,7 +85,10 @@ def multiple_losses (self: KerasTrainingManager, epochs = None):
             if kwarg:
                 losses.append(loss(**kwarg))
             else:
-                losses.append(loss())
+                if issubclass(loss, Loss):
+                    losses.append(loss())
+                else:
+                    losses.append(loss)
             
             
         neural_net.compile(optimizer = optimizer,
