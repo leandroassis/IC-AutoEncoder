@@ -12,7 +12,7 @@ from glob import glob
 
 from modules.TrainingFunctions import *
 
-environ["CUDA_VISIBLE_DEVICES"]="2"
+environ["CUDA_VISIBLE_DEVICES"]="3"
 
 '''
 manager2 = KerasTrainingManager(
@@ -39,14 +39,16 @@ manager2 = KerasTrainingManager(
 
 manager2.start_training()
 '''
-
+'''
 models = glob(f"./nNet_models/*.json", recursive = True)
 models.remove('./nNet_models/Discriminator-AutoEncoder-1.0-64x64.json')
 models.reverse()
+model = model[14:]
+'''
 
-for model in models:
+for model in ['Conv-1.0-64x64.json']:
 
-    model = model[14:]
+    #for optimizer, optimizer_kwargs in [(SGD, {'learning_rate':0.01, 'momentum':0.95} )]:
 
     manager1 = KerasTrainingManager(
         model,
@@ -56,7 +58,7 @@ for model in models:
         loss_kwargs = {'max_val':255, 'filter_size':9, 'filter_sigma':1.5, 'k1':0.01, 'k2':0.03},
         compile_kwargs = {'loss_weights' : None, 'weighted_metrics' : None, 'run_eagerly' : None, 'steps_per_execution' : None},
         
-        fit_kwargs = {'batch_size' : 20, 'epochs' : 15, 'verbose':1, 'validation_split':0, 'shuffle':True, 
+        fit_kwargs = {'batch_size' : 20, 'epochs' : 20, 'verbose':1, 'validation_split':0, 'shuffle':True, 
         'class_weight':None, 'sample_weight':None, 'steps_per_epoch':None, 'validation_steps':None, 
         'validation_batch_size':None, 'validation_freq':1, 'max_queue_size':10, 'workers':1, 'use_multiprocessing':False},
 

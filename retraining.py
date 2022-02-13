@@ -21,8 +21,8 @@ def generator_discriminator_training():
         generator.start_training(epochs=3)
 
 def normal_training():
-    generator = KerasTrainingManager(training_idx=7)
-    generator.start_training(epochs=1)
+    generator = KerasTrainingManager(training_idx=47)
+    generator.start_training(epochs=10)
 
 if __name__ == "__main__":
-    generator_discriminator_training()
+    normal_training()
