@@ -46,7 +46,7 @@ models.reverse()
 model = model[14:]
 '''
 
-for model in ['Conv-1.0-64x64.json']:
+for model in ['Conv-1.2-64x64.json', 'Conv-1.3-64x64.json']:
 
     #for optimizer, optimizer_kwargs in [(SGD, {'learning_rate':0.01, 'momentum':0.95} )]:
 
