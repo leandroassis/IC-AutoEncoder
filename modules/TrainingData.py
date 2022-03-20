@@ -1,6 +1,5 @@
 import sys, os
 
-from tensorflow.python.eager.monitoring import Metric
 sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder'))
 sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder/modules'))
 
