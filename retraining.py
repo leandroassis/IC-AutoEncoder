@@ -2,13 +2,14 @@ from tensorflow.keras.optimizers import Adam, SGD
 from tensorflow.keras.callbacks import Callback, CSVLogger, TensorBoard
 from tensorflow.python.saved_model.loader_impl import parse_saved_model
 from tensorflow.keras.losses import MSE, MeanAbsoluteError, BinaryCrossentropy
-from modules.misc import LSSIM, L1AdversarialLoss, ssim_metric, psnrb_metric, AdversarialLoss
+from modules.CustomLosses import LSSIM, L1AdversarialLoss, AdversarialLoss
+from modules.misc import ssim_metric, psnrb_metric
 from modules.DataMod import DataSet
 from modules.TrainingManager import KerasTrainingManager
 from os import environ
 import tensorboard
 
-environ["CUDA_VISIBLE_DEVICES"]="2"
+environ["CUDA_VISIBLE_DEVICES"]="1"
 
 def generator_discriminator_training():
     discriminator = KerasTrainingManager(training_idx = 9)
@@ -21,8 +22,8 @@ def generator_discriminator_training():
         generator.start_training(epochs=3)
 
 def normal_training():
-    generator = KerasTrainingManager(training_idx=46)
-    generator.start_training(epochs=5)
+    generator = KerasTrainingManager(training_idx=56)
+    generator.start_training(epochs=10)
 
 if __name__ == "__main__":
     normal_training()

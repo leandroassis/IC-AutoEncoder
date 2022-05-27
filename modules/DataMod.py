@@ -142,10 +142,10 @@ class DataSet ():
     def load_rafael_cifar_10_noise_data (self):
         self.name = "rafael_cifar_10"
         self.description = "Cifar 10 with bad quality"
-        self.x_train = np.load("/home/rafaeltadeu/autoencoder/X_64x64_treino.npy")
-        self.x_test = np.load("/home/rafaeltadeu/autoencoder/X_64x64_teste.npy")
-        self.y_train = np.load("/home/rafaeltadeu/autoencoder/Y_64x64_treino.npy")
-        self.y_test = np.load("/home/rafaeltadeu/autoencoder/Y_64x64_teste.npy")
+        self.x_train = np.load("/home/rafaeltadeu/old/autoencoder/X_64x64_treino.npy")
+        self.x_test = np.load("/home/rafaeltadeu/old/autoencoder/X_64x64_teste.npy")
+        self.y_train = np.load("/home/rafaeltadeu/old/autoencoder/Y_64x64_treino.npy")
+        self.y_test = np.load("/home/rafaeltadeu/old/autoencoder/Y_64x64_teste.npy")
 
         self.x_test = self.x_test.astype('float32')
         self.x_train = self.x_train.astype('float32')
@@ -157,10 +157,10 @@ class DataSet ():
     def load_rafael_tinyImagenet_64x64_noise_data (self):
         self.name = "rafael_tinyImagenet"
         self.description = "tinyImagenet with bad quality"
-        self.x_train = np.load("/home/rafaeltadeu/autoencoder/X_tinyImagenet_64x64_treino.npy")
-        self.x_test = np.load("/home/rafaeltadeu/autoencoder/X_tinyImagenet_64x64_teste.npy")
-        self.y_train = np.load("/home/rafaeltadeu/autoencoder/Y_tinyImagenet_64x64_treino.npy")
-        self.y_test = np.load("/home/rafaeltadeu/autoencoder/Y_tinyImagenet_64x64_teste.npy")
+        self.x_train = np.load("/home/rafaeltadeu/old/autoencoder/X_tinyImagenet_64x64_treino.npy")
+        self.x_test = np.load("/home/rafaeltadeu/old/autoencoder/X_tinyImagenet_64x64_teste.npy")
+        self.y_train = np.load("/home/rafaeltadeu/old/autoencoder/Y_tinyImagenet_64x64_treino.npy")
+        self.y_test = np.load("/home/rafaeltadeu/old/autoencoder/Y_tinyImagenet_64x64_teste.npy")
         
         self.x_test = self.x_test.astype('float32')
         self.x_train = self.x_train.astype('float32')
@@ -230,4 +230,3 @@ class DataSet ():
             self.load_discriminator_training_set(**kwargs)
 
         return self
-    

@@ -1,5 +1,5 @@
 from tensorflow.keras.losses import Loss, Reduction, MeanAbsoluteError, binary_crossentropy
-from misc import get_model
+from modules.misc import get_model
 import tensorflow as tf
 from tensorflow._api.v2.image import ssim
 
@@ -25,11 +25,11 @@ class LSSIM (Loss):
 
 class AdversarialLoss(Loss):
 
-    def __init__(self, training_idx: int = None, model_name: str = None, custom_objects: dict = None, reduction=Reduction.AUTO, name: str = 'AdversarialLoss'):
+    def __init__(self, training_idx: int = None, model = None, model_name: str = None, custom_objects: dict = None, reduction=Reduction.AUTO, name: str = 'AdversarialLoss'):
         
         super().__init__(reduction=reduction, name=name)
 
-        if training_idx == None and model_name == None:
+        if training_idx == None and model_name == None and model == None:
             raise Exception("No model has bem passed, set a model name or training_idx")
 
         if model_name:
@@ -37,6 +37,9 @@ class AdversarialLoss(Loss):
 
         if training_idx != None:
             self.adversarial_model = get_model(training_idx = training_idx)
+
+        if model != None:
+            self.adversarial_model = model
     
     @tf.autograph.experimental.do_not_convert
     def call(self, y_true, y_pred):

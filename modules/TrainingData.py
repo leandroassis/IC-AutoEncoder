@@ -95,7 +95,7 @@ class KerasTrainingData ():
         return results
 
 
-    def get_example_imgs (self, model: Model, num_imgs = 4, seed = 12321) -> tf.Tensor :
+    def get_example_imgs (self, model: Model , num_imgs = 4, seed = 12321) -> tf.Tensor :
 
         rd.seed(seed)
 

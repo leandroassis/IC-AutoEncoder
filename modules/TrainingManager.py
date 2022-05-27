@@ -7,10 +7,6 @@
 """
 import sys, os
 import pickle
-from attr import attributes
-import attr
-
-from tensorflow.python import training
 
 sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder'))
 sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder/modules'))
