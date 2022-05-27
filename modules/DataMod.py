@@ -230,3 +230,15 @@ class DataSet ():
             self.load_discriminator_training_set(**kwargs)
 
         return self
+
+
+class DataSetInformationColector ():
+
+    def __init__(self) -> None:
+        pass
+
+    def get_information_quatity ():
+        pass
+
+    def get_entropy ():
+        pass
