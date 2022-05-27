@@ -74,7 +74,8 @@ class KerasTrainingManager (TrainingManagerABC,
                  dataset: DataSet = None,
                  training_function: function = None,
                  training_idx: int = None,
-                 best_selector_metrics: int = None
+                 best_selector_metrics: int = None,
+                 csv_name = "AllTrainingData.csv"
                  ) -> None:
         """
         
@@ -138,7 +139,7 @@ class KerasTrainingManager (TrainingManagerABC,
                                 training_idx = self.training_idx,
                                 loss_name = get_loss_name(self.loss))
 
-        CsvWriter.__init__(self, file_name = "AllTrainingData", training_idx = self.training_idx)
+        CsvWriter.__init__(self, file_name = csv_name, training_idx = self.training_idx)
 
         TensorBoardWriter.__init__(self, file_path= self.logs_dir)
 
