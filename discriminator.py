@@ -2,19 +2,18 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Add , In
 from tensorflow.keras.models import Model
 from tensorflow.keras.utils import plot_model
 
-model_name = "Discriminator-Dense1-2"
+model_name = "Discriminator-Dense-1.0"
 
-inputs = Input(shape=(1))
-layer_1 = Dense(units = 5, activation = 'relu')(inputs)
-layer_2 = Dense(units = 15, activation = 'relu')(layer_1)
-layer_3 = Dense(units = 25, activation = 'relu')(layer_2)
-layer_4 = Dense(units = 40, activation = 'relu')(layer_3)
-layer_5 = Dense(units = 30, activation = 'relu')(layer_4)
-layer_6 = Dense(units = 20, activation = 'relu')(layer_5)
-layer_7 = Dense(units = 10, activation = 'relu')(layer_6)
-layer_8 = Dense(units = 1, activation = 'sigmoid')(layer_7)
+inputs = Input(shape=(100))
+layer_1 = Dense(units = 50, activation = 'relu')(inputs)
+layer_2 = Dense(units = 40, activation = 'relu')(layer_1)
+layer_3 = Dense(units = 30, activation = 'relu')(layer_2)
+layer_4 = Dense(units = 15, activation = 'relu')(layer_3)
+layer_5 = Dense(units = 10, activation = 'relu')(layer_4)
+layer_6 = Dense(units = 5, activation = 'relu')(layer_5)
+layer_7 = Dense(units = 1, activation = 'sigmoid')(layer_6)
 
-model = Model(inputs = inputs, outputs = layer_8, name = model_name)
+model = Model(inputs = inputs, outputs = layer_7, name = model_name)
 
 model_json = model.to_json(indent = 4)
 

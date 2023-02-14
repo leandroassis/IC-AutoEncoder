@@ -11,7 +11,7 @@ from tensorflow.keras.layers import Layer
 from tensorflow._api.v2.image import ssim
 from datetime import datetime as dt
 
-from sewar import psnrb
+#from sewar import psnrb
 import tensorflow as tf
 import numpy as np
 from glob import glob
@@ -212,7 +212,7 @@ def get_loss_name(loss):
     return loss_name
 
 
-
+'''
 
 def _compute_bef(im, block_size=8):
 	"""Calculates Blocking Effect Factor (BEF) for a given grayscale/one channel image
@@ -313,3 +313,4 @@ def psnrb(GT, P):
 		psnr_b = 10 * tf.math.log(1/mse_b)/tf.math.log(10)
 
 	return psnr_b
+'''

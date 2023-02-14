@@ -1,7 +1,6 @@
 # IC-AutoEncoder
 
 
-
 ## Motivação
 
 Este projeto de iniciação científica tem como objetivo buscar uma rede neural ótima para a redução de ruído de imagens.
