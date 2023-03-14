@@ -147,10 +147,10 @@ class DataSet ():
         self.y_train = np.load("/home/rafaeltadeu/old/autoencoder/Y_64x64_treino.npy")
         self.y_test = np.load("/home/rafaeltadeu/old/autoencoder/Y_64x64_teste.npy")
 
-        self.x_test = self.x_test.astype('float32')
-        self.x_train = self.x_train.astype('float32')
-        self.y_test = self.y_test.astype('float32')
-        self.y_train = self.y_train.astype('float32')
+        self.x_test = self.x_test.astype('float64')
+        self.x_train = self.x_train.astype('float64')
+        self.y_test = self.y_test.astype('float64')
+        self.y_train = self.y_train.astype('float64')
         
         return self
 
