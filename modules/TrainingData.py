@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/
 
 from abc import ABC, abstractmethod
 
-from DirManager import KerasDirManager
+from TensorflowUtils.DirManager import KerasDirManager
 from finding_best_sigma import find_best_sigma_for_ssim
 
 from tensorflow.keras.models import Model, load_model

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod, abstractproperty
 from dataclasses import dataclass
 from typing import Any
 from tensorflow.keras.models import Model, model_from_json
-from KerasModelInfo import *
+from TensorflowUtils.KerasModelInfo import *
 
 
 

@@ -25,9 +25,9 @@ from tensorflow.python.lib.io.file_io import file_exists
 
 from pandas import read_csv
 
-from NeuralNetData import KerasNeuralNetData
+from TensorflowUtils.NeuralNetData import KerasNeuralNetData
 from DataMod import DataSet
-from DirManager import KerasDirManager
+from TensorflowUtils.DirManager import KerasDirManager
 from TensorBoardWriter import TensorBoardWriter
 
 from glob import glob

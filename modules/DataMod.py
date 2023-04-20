@@ -10,8 +10,8 @@ from tensorflow._api.v2.image import rgb_to_grayscale
 from io import BytesIO
 from PIL import Image
 from tensorflow.keras.datasets.cifar10 import load_data as cifar10_load
-from tensorflow.python.keras.saving.save import load_model
-from tensorflow.keras.models import Model, model_from_json
+from TensorflowUtils.DataSet import DataSetABC
+from tensorflow.keras.models import Model
 
 from misc import get_model
 
@@ -80,7 +80,7 @@ class DataMod ():
         """
         pass
 
-class DataSet ():
+class DataSet (DataSetABC):
     """
     A classe guarda os dados para o treino das redes neurais.
     Os datasets podem ser passados pelo construtor ou carregados pelos metodos correspondentes
@@ -230,15 +230,7 @@ class DataSet ():
             self.load_discriminator_training_set(**kwargs)
 
         return self
+    
+    def get_metadata (self) -> dict:
 
-
-class DataSetInformationColector ():
-
-    def __init__(self) -> None:
-        pass
-
-    def get_information_quatity ():
-        pass
-
-    def get_entropy ():
-        pass
+        return {"name":self.name, "parameters": self.parameters}

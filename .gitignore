@@ -11,5 +11,7 @@ Datasets_rafael
 rasc.py
 ML*
 docs
-logs/*
-!logs/*.csv
+logs*/*
+!logs*/*.csv
+Logs/*
+!Logs/*.csv
