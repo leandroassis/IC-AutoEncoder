@@ -1,3 +1,6 @@
 [submodule "ImageMetrics"]
 	path = ImageMetrics
 	url = https://github.com/AlanPXD/ImageMetrics
+[submodule "TensoflowUtils"]
+	path = TensoflowUtils
+	url = https://github.com/AlanPXD/TensoflowUtils
