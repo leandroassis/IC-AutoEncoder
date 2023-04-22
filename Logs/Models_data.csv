@@ -1,2 +1,14 @@
 model_name,total_params,params_distribution,total_layers,total_treinable_layers,total_paths,total_kernel_regularizers,total_bias_regularizers,total_activity_regularizers,kernel_regularizers_distribution,bias_regularizers_distribution,activity_regularizers_distribution,kernel_regularizers_L1_distribution,bias_regularizers_L1_distribution,activity_regularizers_L1_distribution,kernel_regularizers_L2_distribution,bias_regularizers_L2_distribution,activity_regularizers_L2_distribution,initializer_count,dropout_count,dropout_distribution,batch_normalization_count,batch_normalization_distribution
-AutoEncoder-2.0-64x64,388896,0.4632441823104622,21,14,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 14}, 'bias': {'Zeros': 14}}",0,0,0,0
+Conv-1.0-64x64,10,0.5,2,1,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 1}, 'bias': {'Zeros': 1}}",0,0,0,0
+Conv-1.1-64x64,65,0.5,2,1,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 1}, 'bias': {'Zeros': 1}}",0,0,0,0
+AutoEncoder-0.2-64x64,919,0.5678273485672832,6,3,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 3}, 'bias': {'Zeros': 3}}",0,0,0,0
+Conv-3.2-64x64,919,0.5508705114254625,4,3,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 3}, 'bias': {'Zeros': 3}}",0,0,0,0
+Conv-2.1-64x64,1217,0.4913722267871816,3,2,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 2}, 'bias': {'Zeros': 2}}",0,0,0,0
+Conv-3.0-64x64,142,0.4964788732394366,4,3,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 3}, 'bias': {'Zeros': 3}}",0,0,0,0
+Conv-1.2-64x64,5,0.5,2,1,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 1}, 'bias': {'Zeros': 1}}",0,0,0,0
+Conv-12.0-64x64,91791,0.4922646178651669,13,12,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 12}, 'bias': {'Zeros': 12}}",0,0,0,0
+Conv-1.3-64x64,26,0.5,2,1,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 1}, 'bias': {'Zeros': 1}}",0,0,0,0
+AutoEncoder-0.1-64x64,919,0.4231048240841494,6,3,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 3}, 'bias': {'Zeros': 3}}",0,0,0,0
+Unet2.2-64x64,1778481,0.2619853439658557,46,36,4,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 36}, 'bias': {'Zeros': 36}}",0,0,0,0
+Conv-5.0-64x64,4637,0.5071526130400402,6,5,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 5}, 'bias': {'Zeros': 5}}",0,0,0,0
+Conv-4.0-64x64,1546,0.4996119016817594,5,4,1,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,"{'kernel': {'GlorotUniform': 4}, 'bias': {'Zeros': 4}}",0,0,0,0

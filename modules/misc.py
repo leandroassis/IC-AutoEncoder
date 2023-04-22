@@ -182,7 +182,7 @@ def get_model(training_idx: int = None, custom_objects: dict = None, compile = F
             path = glob(f"**/{model_json_name}", recursive = True)
 
             if path.__len__() != 1:
-                raise Exception(f"{path.__len__()} files, found with the name {model_json_name}")
+                raise Exception(f"{path.__len__()} files, found with the name {model_json_name}: {path}")
 
             path = path[0]
 
