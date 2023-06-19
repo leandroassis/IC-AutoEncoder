@@ -5,7 +5,7 @@ from os import environ
 import sys
 sys.path.insert(1, '/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder/modules/')
 sys.path.insert(1, '/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder')
-from NeuralNetData import KerasNeuralNetData
+from TensorflowUtils.NeuralNetData import KerasNeuralNetData
 
 import unittest
 

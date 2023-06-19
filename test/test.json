@@ -1,6 +1,0 @@
-{
-    "search_mode": "all_combinations",
-    "model_name" : ["teste"],
-    "optimzer_name" : ["Adam"]
-    
-}

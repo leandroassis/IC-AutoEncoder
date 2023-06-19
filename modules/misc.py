@@ -5,87 +5,96 @@ Description
 The module contains functions that help in some process of a class method, or something similar.
 
 """
-from tensorflow.keras.models import Model
-import json
+from tensorflow.keras.models import Model, model_from_json
+from tensorflow.keras.losses import Loss, Reduction, MeanAbsoluteError, binary_crossentropy
+from tensorflow.keras.layers import Layer
 from tensorflow._api.v2.image import ssim
 from datetime import datetime as dt
-from tensorflow.keras.losses import Loss, Reduction, MeanAbsoluteError
-from sewar import psnrb
-from tensorflow import keras
-from typing import List
+
+#from sewar import psnrb
 import tensorflow as tf
 import numpy as np
+from glob import glob
 
+import math
+from tensorflow._api.v2.signal import dct, idct
 from tensorflow.python.framework.ops import Tensor
 from tensorflow.python.keras.saving.save import load_model
 from tensorflow.python.ops.tensor_array_ops import TensorArray
+    
 
 
-class LSSIM (Loss):
+class DCTL2D (Layer):
+    """
+    
+    
+    """
+    
+    def __init__(self, trainable=True, name=None, dtype=None, dynamic=False, **kwargs):
 
-    def __init__(self, max_val = 255, filter_size=9, filter_sigma=1.5, k1=0.01, k2=0.03, name = "LSSIM", reduction = Reduction.AUTO) -> None:
-        
-        super(LSSIM, self).__init__(name = name, reduction = reduction)
-        self.max_val = max_val
-        self.filter_size = filter_size
-        self.filter_sigma = filter_sigma
-        self.k1 = k1
-        self.k2 = k2
+        super().__init__(trainable, name, dtype, dynamic, **kwargs)
+
+
+    def call(self, inputs, **kwargs):
+
+        op1 = tf.matmul(self.C, inputs)
+        output = tf.matmul(op1, self.C, transpose_b = True)
+
+        return output
+
+    def build(self, input_shape):
+
+        assert input_shape[-2:] == (8,8)
+
+        C = np.empty(shape = (8,8), dtype = float)
+
+        for j in range(0,8):
+            C[0,j] = np.sqrt(8)
+
+        for i in range(1, 8):
+            for j in range(0,8):
+                C[i,j] = 0.5*tf.math.cos((2*j+1)*i*math.pi/16)
+
+        self.C = tf.constant(C, dtype=tf.float32)
+
+        return super(DCTL2D, self).build(input_shape)
+
+
+class IDCT2D (Layer):
+    """
+    
+    
+    """
+    
+    def __init__(self, trainable=True, name=None, dtype=None, dynamic=False, **kwargs):
+
+
+        super().__init__(trainable, name, dtype, dynamic, **kwargs)
+
+    pass
 
     
-    def call (self,y_true,y_pred):
-        return 1-ssim(y_true, y_pred, max_val = self.max_val,
-                      filter_size = self.filter_size,
-                      filter_sigma = self.filter_sigma,
-                      k1 = self.k1,
-                      k2 = self.k2)
+    def call(self, inputs, **kwargs):
 
+        op1 = tf.matmul(self.inverse_C, inputs)
+        output = tf.matmul(op1, self.inverse_C, transpose_b = True)
 
-class AdversarialLoss(Loss):
+        return output
 
-    def __init__(self, adversarial_model: Model, model_path, reduction=Reduction.AUTO, name=None):
-        self.name = adversarial_model.name
-        super().__init__(reduction=reduction, name=name)
+    def build(self, input_shape):
 
-        if isinstance(adversarial_model, str):
-            self.adversarial_model = load_model(f"{model_path}/{adversarial_model}", compile = False)
-        elif issubclass(adversarial_model, Model):
-            self.adversarial_model = adversarial_model
-        else:
-            raise Exception("Invalid model passed")
+        C = np.empty(shape = (8,8), dtype = float)
 
-    def call(self, y_true, y_pred):
-        return self.adversarial_model.predict(y_pred)
+        for j in range(0,8):
+            C[0,j] = np.sqrt(8)
 
+        for i in range(1, 8):
+            for j in range(0,8):
+                C[i,j] = 0.5*tf.math.cos((2*j+1)*i*math.pi/16)
 
-class LossLinearCombination (Loss):
+        self.inverse_C = tf.linalg.inv(tf.constant(C, dtype=tf.float32))
 
-    def __init__(self, losses: List[Loss], weights: list = None, bias_vector:list = None, name: str = "", reduction = Reduction.AUTO) -> None:
-        standard_name = ''
-        for loss in losses:
-            standard_name += f"-{loss().name}"
-        standard_name = standard_name[1:]
-        super(LossLinearCombination, self).__init__(name = standard_name, reduction = reduction)
-        self.losses = losses
-        self.weights = weights
-        self.bias_vector = bias_vector
-
-        if not self.weights:
-            self.weights = tf.ones(shape=losses.__len__())
-
-        if not self.bias_vector:
-            self.bias_vector = tf.zeros(shape=losses.__len__())
-
-    def call(self, y_true,y_pred):
-        result = 0
-        step1 = 0
-        step2 = 0
-
-        for loss, weight, bias in zip(self.losses, self.weights, self.bias_vector):
-            step1 += weight*loss().call(y_true, y_pred)
-            step2 +=  bias*tf.ones(shape=step1.shape)
-            
-        return step1 + step2
+        return 
 
 
 def ssim_metric (y_true,y_pred, max_val = 255, filter_size = 9, filter_sigma = 1.5, k1=0.01, k2=0.03):
@@ -97,19 +106,30 @@ def ssim_metric (y_true,y_pred, max_val = 255, filter_size = 9, filter_sigma = 1
 
 
 def psnrb_metric (y_true,y_pred):
-    if len(y_true.shape) == 4:
-        result = []
-        for idx in range(y_true.shape[0]):
-            result.append(psnrb (y_true[idx], y_pred[idx]))
-        return result
+    result = []
+    
+    x = tf.make_ndarray(y_pred)
+    y = tf.make_ndarray(y_true)
+    
 
-    return psnrb (y_true, y_pred)
+    for idx in range(y_true.shape[0]):
+        result.append(psnrb(x[idx], y[idx]))
+    return result
 
 
 
 def get_current_time_and_data ():
     '''
-        Retorna o tempo em horas:minutos, e data em ano-mes-dia (str)
+        Returns the current time and date.
+
+        Receives:
+            Nothing
+
+        Returns:
+            date, time (str) respectively
+
+        Raises:
+            Nothing
     '''
     current_datetime = dt.now()
     time = current_datetime.time()
@@ -136,3 +156,57 @@ def get_last_epoch (csv_pathname):
     last_epoch = int(last_line.split(';')[0])
     return last_epoch
 
+
+
+def get_model(training_idx: int = None, custom_objects: dict = None, compile = False, model_json_name: str = None, json_models_path: str = None) -> Model:
+    """
+    
+    """
+
+    if training_idx != None:
+        model_save_path = glob(f"logs/**/{training_idx}/model", recursive = True)
+
+        if model_save_path.__len__() != 1:
+            raise Exception(f"No training, or multiple trainings, found with the training index {training_idx}. This shouldn't be happening")
+
+        model_save_path = model_save_path[0]
+
+        model = load_model(model_save_path, custom_objects = custom_objects, compile = compile)
+
+        return model
+
+    if model_json_name:
+
+        if not json_models_path:
+
+            path = glob(f"**/{model_json_name}", recursive = True)
+
+            if path.__len__() != 1:
+                raise Exception(f"{path.__len__()} files, found with the name {model_json_name}: {path}")
+
+            path = path[0]
+
+        else:
+            path = f"{json_models_path}/{model_json_name}"
+
+
+        with open(path, 'r') as json_file:
+                architecture = json_file.read()
+                model = model_from_json(architecture)
+                json_file.close()
+
+        return model
+
+
+def get_loss_name(loss):
+
+    if isinstance(loss, list):
+        loss_name:str = ""
+        for item in loss:
+            loss_name += f"{item.__name__}+"
+        loss_name = loss_name[:-1]
+
+    elif issubclass(loss, Loss):
+        loss_name = loss.__name__
+
+    return loss_name

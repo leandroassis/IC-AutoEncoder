@@ -1,12 +1,11 @@
 import sys, os
 
-from tensorflow.python.eager.monitoring import Metric
 sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder'))
 sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder/modules'))
 
 from abc import ABC, abstractmethod
 
-from DirManager import KerasDirManager
+from TensorflowUtils.DirManager import KerasDirManager
 from finding_best_sigma import find_best_sigma_for_ssim
 
 from tensorflow.keras.models import Model, load_model
@@ -26,7 +25,6 @@ class KerasTrainingData ():
     def __init__(self) -> None:
         pass
         
-        
     
     def get_csv_training_history (self) -> DataFrame:
         """
@@ -37,7 +35,6 @@ class KerasTrainingData ():
 
 
     def get_best_results(self, metrics_names:list = ['loss'],
-                        best = [min],
                         validation = True,
                         last_results = True) -> dict:
         """
@@ -64,15 +61,23 @@ class KerasTrainingData ():
             A `dict` that cotains all names and results
 
         """
+        metrics_list = metrics_names.copy()
+        best = self.best_selector_metrics
 
         results = {}
 
         for metric in self.metrics:
-            metrics_names.append(metric.__name__)
+
+            if isinstance(metric, str):
+                metrics_list.append(metric)
+            else:
+                metrics_list.append(metric.__name__)
+
+            best.append(max)
 
         dataframe: DataFrame = self.get_csv_training_history ()
 
-        for metric, func in zip(metrics_names, best):
+        for metric, func in zip(metrics_list, best):
             results[f"best_{metric}"] = func(dataframe[metric])
             results[f"best_{metric}_epoch"] = dataframe.loc[dataframe[metric] == results[f"best_{metric}"]]['epoch'].iloc[0]
 
@@ -81,7 +86,7 @@ class KerasTrainingData ():
                 results[f"best_val_{metric}_epoch"] = dataframe.loc[dataframe[f"val_{metric}"] == results[f"best_val_{metric}"]]['epoch'].iloc[0]
 
         if last_results:
-            for metric in metrics_names:
+            for metric in metrics_list:
                 results[f"last_{metric}"] = dataframe[metric].tolist()[-1]
         
             results['last_epoch'] = dataframe['epoch'].tolist()[-1]
@@ -90,7 +95,7 @@ class KerasTrainingData ():
         return results
 
 
-    def get_example_imgs (self, model: Model, num_imgs = 4, seed = 12321) -> tf.Tensor :
+    def get_example_imgs (self, model: Model , num_imgs = 4, seed = 12321) -> tf.Tensor :
 
         rd.seed(seed)
 

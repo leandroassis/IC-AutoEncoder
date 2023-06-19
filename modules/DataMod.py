@@ -1,12 +1,19 @@
+import sys, os
+
+from tensorflow.python.keras.engine import training
+sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder'))
+sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder/modules'))
+
 import numpy as np
 import tensorflow as tf
 from tensorflow._api.v2.image import rgb_to_grayscale
 from io import BytesIO
 from PIL import Image
 from tensorflow.keras.datasets.cifar10 import load_data as cifar10_load
-from tensorflow.python.keras.saving.save import load_model
+from TensorflowUtils.DataSet import DataSetABC
 from tensorflow.keras.models import Model
 
+from misc import get_model
 
 
 class DataMod ():
@@ -66,9 +73,14 @@ class DataMod ():
         
         self.dataSet = np.array(self.dataSet, dtype = 'uint8')
 
+    def normalize_dataset(self):
+        """
+        
+        
+        """
+        pass
 
-
-class DataSet ():
+class DataSet (DataSetABC):
     """
     A classe guarda os dados para o treino das redes neurais.
     Os datasets podem ser passados pelo construtor ou carregados pelos metodos correspondentes
@@ -89,7 +101,7 @@ class DataSet ():
         """
         self.name: str = dataset_name
         self.description: str = "None"
-        self.parametros: dict = {}
+        self.parameters: dict = {}
         self.x_train: np.array  = x_train
         self.x_test: np.array  = x_test
         self.y_train: np.array  = y_train
@@ -121,7 +133,7 @@ class DataSet ():
 
         self.description("Cifar 10 data set with jpeg compression and uniform distribution noise")
         
-        self.parametros = {'jpeg_compress_quality' : jpeg_compress_quality,
+        self.parameters = {'jpeg_compress_quality' : jpeg_compress_quality,
                             'max_pixel_var' : max_pixel_var}
 
         return self
@@ -130,25 +142,25 @@ class DataSet ():
     def load_rafael_cifar_10_noise_data (self):
         self.name = "rafael_cifar_10"
         self.description = "Cifar 10 with bad quality"
-        self.x_train = np.load("/home/rafaeltadeu/autoencoder/X_64x64_treino.npy")
-        self.x_test = np.load("/home/rafaeltadeu/autoencoder/X_64x64_teste.npy")
-        self.y_train = np.load("/home/rafaeltadeu/autoencoder/Y_64x64_treino.npy")
-        self.y_test = np.load("/home/rafaeltadeu/autoencoder/Y_64x64_teste.npy")
+        self.x_train = np.load("/home/rafaeltadeu/old/autoencoder/X_64x64_treino.npy")
+        self.x_test = np.load("/home/rafaeltadeu/old/autoencoder/X_64x64_teste.npy")
+        self.y_train = np.load("/home/rafaeltadeu/old/autoencoder/Y_64x64_treino.npy")
+        self.y_test = np.load("/home/rafaeltadeu/old/autoencoder/Y_64x64_teste.npy")
 
-        self.x_test = self.x_test.astype('float32')
-        self.x_train = self.x_train.astype('float32')
-        self.y_test = self.y_test.astype('float32')
-        self.y_train = self.y_train.astype('float32')
+        self.x_test = self.x_test.astype('float64')
+        self.x_train = self.x_train.astype('float64')
+        self.y_test = self.y_test.astype('float64')
+        self.y_train = self.y_train.astype('float64')
         
         return self
 
     def load_rafael_tinyImagenet_64x64_noise_data (self):
         self.name = "rafael_tinyImagenet"
         self.description = "tinyImagenet with bad quality"
-        self.x_train = np.load("/home/rafaeltadeu/autoencoder/X_tinyImagenet_64x64_treino.npy")
-        self.x_test = np.load("/home/rafaeltadeu/autoencoder/X_tinyImagenet_64x64_teste.npy")
-        self.y_train = np.load("/home/rafaeltadeu/autoencoder/Y_tinyImagenet_64x64_treino.npy")
-        self.y_test = np.load("/home/rafaeltadeu/autoencoder/Y_tinyImagenet_64x64_teste.npy")
+        self.x_train = np.load("/home/rafaeltadeu/old/autoencoder/X_tinyImagenet_64x64_treino.npy")
+        self.x_test = np.load("/home/rafaeltadeu/old/autoencoder/X_tinyImagenet_64x64_teste.npy")
+        self.y_train = np.load("/home/rafaeltadeu/old/autoencoder/Y_tinyImagenet_64x64_treino.npy")
+        self.y_test = np.load("/home/rafaeltadeu/old/autoencoder/Y_tinyImagenet_64x64_teste.npy")
         
         self.x_test = self.x_test.astype('float32')
         self.x_train = self.x_train.astype('float32')
@@ -157,36 +169,37 @@ class DataSet ():
 
         return self
 
-    def load_discriminator_training_set(self, generator: Model = None, model_path = None, dataset = 'rafael_cifar_10'):
+    def load_discriminator_training_set(self, training_idx:int = None, generator_name: Model = None, custom_objs: dict = None, dataset = 'rafael_cifar_10'):
         """
         
         """
+        print("Loading discriminator training set")
 
-        if not generator and not model_path:
-            raise Exception("No model or path passed")
+        if generator_name == None and training_idx == None:
+            raise Exception("No model name or training_idx")
 
-        if model_path:
-            self.generator = load_model(model_path, compile = False)
-            
-        elif issubclass(generator, Model):
-            self.generator = generator
-        else:
-            raise Exception("Invalid model passed")
+        if generator_name:
+            generator = get_model(model_json_name = generator_name)
 
-        self.name = 'discriminator_training_set'
-        self.description = "images with label 1 and 0 for real and fake imgs respectively"
+        if training_idx != None:
+            generator = get_model(training_idx = training_idx, custom_objects = custom_objs)
 
         self.load_by_name(dataset)
 
-        self.x_train = self.y_train.append(generator.predict(self.x_train))
-        self.y_train = np.ones(shape=self.y_train.shape[0]).append(np.zeros(self.x_train.shape[0]))
+        self.name = 'discriminator_training_set'
+        self.description = "images with label 1 and 0 for real and fake imgs respectively"
+        self.parameters = {'training_idx' : training_idx, 'generator_name' : generator_name, 'custom_objs' : custom_objs, 'dataset' : dataset}
 
-        self.x_test = self.y_test.append(generator.predict(self.x_test))
-        self.y_test = np.ones(shape=self.y_test.shape[0]).append(np.zeros(self.x_test.shape[0]))
+        self.x_train = np.concatenate((self.y_train, generator.predict(self.x_train)))
+        self.y_train = np.concatenate((np.ones(shape=(self.y_train.shape[0], 1)), np.zeros(shape = (self.y_train.shape[0], 1))))
+
+        self.x_test = np.concatenate((self.y_test, generator.predict(self.x_test)))
+        self.y_test = np.concatenate((np.ones(shape= (self.y_test.shape[0], 1)), np.zeros(shape= (self.y_test.shape[0],1))))
 
         assert self.x_train.shape[0] == self.y_train.shape[0]
         assert self.x_test.shape[0] == self.y_test.shape[0]
         
+        '''
         idx = tf.range(start=0, limit=tf.shape(self.x_train)[0], dtype=tf.int32)
 
         idx = tf.random.shuffle(idx)
@@ -200,10 +213,10 @@ class DataSet ():
 
         self.x_test = tf.gather(self.x_test, idx) 
         self.y_test = tf.gather(self.y_test, idx)
-
+        '''
         return self
 
-    def load_by_name(self, name:str):
+    def load_by_name(self, name:str, kwargs: dict = {}):
 
         if (name == "rafael_tinyImagenet"):
             self.load_rafael_tinyImagenet_64x64_noise_data()
@@ -212,4 +225,12 @@ class DataSet ():
         if (name == "rafael_cifar_10"):
             self.load_rafael_cifar_10_noise_data()
             return self
+
+        if (name == "discriminator_training_set"):
+            self.load_discriminator_training_set(**kwargs)
+
+        return self
     
+    def get_metadata (self) -> dict:
+
+        return {"name":self.name, "parameters": self.parameters}
