@@ -13,14 +13,14 @@ layer_5 = Conv2D(filters = 20, kernel_size = 4, padding = 'same', activation = '
 layer_6 = Add()([layer_3, layer_5])
 layer_7 = Conv2D(filters = 1, kernel_size = 4, padding = 'same', activation = 'relu')(layer_6)
 
-model = Model(inputs = inputs, outputs = layer_7, name = model_name)
+residualAutoEncoder = Model(inputs = inputs, outputs = layer_7, name = model_name)
 
-model_json = model.to_json(indent = 4)
+model_json = residualAutoEncoder.to_json(indent = 4)
 
 with open("nNet_models/GAN" + model_name + ".json", "w") as json_file:
     json_file.write(model_json)
     json_file.close()
 
-plot_model(model=model, to_file="nNet_models/PNG-Models/" + model_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
+plot_model(model=residualAutoEncoder, to_file="nNet_models/PNG-Models/" + model_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
 
-print(model.count_params())
+print(residualAutoEncoder.count_params())

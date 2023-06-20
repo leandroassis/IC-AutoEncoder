@@ -216,6 +216,26 @@ class DataSet (DataSetABC):
         '''
         return self
 
+    def concatenateDataSets(self, datase1 : DataSet, dataset2 : DataSet):
+        """
+        Concatenate two datasets into a new dataset
+        if suceeds, returns 1, else returns 0
+        """
+
+        self.name = dataset1.name + "_" + dataset2.name
+        self.description = "Concatenation of " + dataset1.name + " and " + dataset2.name + " datasets"
+        
+        try:
+            self.x_train = np.concatenate((self.x_train, dataset2.x_train))
+            self.y_train = np.concatenate((self.y_train, dataset2.y_train))
+            self.x_test = np.concatenate((self.x_test, dataset2.x_test))
+            self.y_test = np.concatenate((self.y_test, dataset2.y_test))
+        except:
+            print("Error concatenating datasets")
+            return 0
+    
+        return 1 
+
     def load_by_name(self, name:str, kwargs: dict = {}):
 
         if (name == "rafael_tinyImagenet"):

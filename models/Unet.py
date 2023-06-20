@@ -69,12 +69,12 @@ RightLayer1_5 = kr.layers.Conv2D( filters= 4, kernel_size=8, activation='relu' ,
 RightLayer1_6 = kr.layers.Conv2D( filters= 2, kernel_size=8, activation='relu' , padding='same' )(RightLayer1_5)
 RightLayer1_7 = kr.layers.Conv2D( filters= 1, kernel_size=8, activation='relu' , padding='same' )(RightLayer1_6)
 
-model = kr.models.Model(inputs=inputs, outputs=RightLayer1_7, name=model_file_name)
+unet = kr.models.Model(inputs=inputs, outputs=RightLayer1_7, name=model_file_name)
 
-model_json = model.to_json(indent=4)
+model_json = unet.to_json(indent=4)
 
 with open("nNet_models/" + model_file_name + '.json', "w") as json_file:
     json_file.write(model_json)
     json_file.close()
 
-plot_model(model=model, to_file="nNet_models/PNG-Models/" + model_file_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
+plot_model(model=unet, to_file="nNet_models/PNG-Models/" + model_file_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
