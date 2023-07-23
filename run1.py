@@ -1,7 +1,6 @@
 from sys import path
 from os import getcwd, environ
 
-path.insert(0, getcwd()) # adding IC-AutoEncoder folder to path
 
 from modules.DataMod import DataSet
 from modules.CustomLosses import LSSIM
@@ -12,7 +11,7 @@ import mlflow.keras
 
 from models.autoEncoder import autoEncoder
 
-#environ["CUDA_VISIBLE_DEVICES"] = "1"
+environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 
 tinyDataSet, cifarDataSet, cifarAndTinyDataSet = DataSet(), DataSet(), DataSet()
