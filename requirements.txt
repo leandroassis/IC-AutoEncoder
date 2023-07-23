@@ -5,3 +5,5 @@ pandas
 nbformat
 ipython
 Csvwriter
+mlflow
+pydot
