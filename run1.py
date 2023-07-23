@@ -12,7 +12,7 @@ import mlflow.keras
 
 from models.autoEncoder import autoEncoder
 
-environ["CUDA_VISIBLE_DEVICES"] = "1"
+#environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 
 tinyDataSet, cifarDataSet, cifarAndTinyDataSet = DataSet(), DataSet(), DataSet()
