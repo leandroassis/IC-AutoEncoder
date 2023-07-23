@@ -216,7 +216,7 @@ class DataSet (DataSetABC):
         '''
         return self
 
-    def concatenateDataSets(self, datase1 : DataSet, dataset2 : DataSet):
+    def concatenateDataSets(self, dataset1, dataset2):
         """
         Concatenate two datasets into a new dataset
         if suceeds, returns 1, else returns 0
@@ -226,10 +226,10 @@ class DataSet (DataSetABC):
         self.description = "Concatenation of " + dataset1.name + " and " + dataset2.name + " datasets"
         
         try:
-            self.x_train = np.concatenate((self.x_train, dataset2.x_train))
-            self.y_train = np.concatenate((self.y_train, dataset2.y_train))
-            self.x_test = np.concatenate((self.x_test, dataset2.x_test))
-            self.y_test = np.concatenate((self.y_test, dataset2.y_test))
+            self.x_train = np.concatenate((dataset1.x_train, dataset2.x_train))
+            self.y_train = np.concatenate((dataset1.y_train, dataset2.y_train))
+            self.x_test = np.concatenate((dataset1.x_test, dataset2.x_test))
+            self.y_test = np.concatenate((dataset1.y_test, dataset2.y_test))
         except:
             print("Error concatenating datasets")
             return 0
