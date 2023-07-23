@@ -1,7 +1,6 @@
 from sys import path
 from os import getcwd, environ
 
-
 from modules.DataMod import DataSet
 from modules.CustomLosses import LSSIM
 from modules.misc import ssim_metric, psnrb_metric
@@ -11,7 +10,7 @@ import mlflow.keras
 
 from models.autoEncoder import autoEncoder
 
-environ["CUDA_VISIBLE_DEVICES"] = "1"
+environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 
 tinyDataSet, cifarDataSet, cifarAndTinyDataSet = DataSet(), DataSet(), DataSet()
