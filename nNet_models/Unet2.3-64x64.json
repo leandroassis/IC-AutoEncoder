@@ -2,6 +2,7 @@
     "class_name": "Functional",
     "config": {
         "name": "Unet2.3-64x64",
+        "trainable": true,
         "layers": [
             {
                 "class_name": "InputLayer",
@@ -15,23 +16,23 @@
                     "dtype": "float32",
                     "sparse": false,
                     "ragged": false,
-                    "name": "input_1"
+                    "name": "input_3"
                 },
-                "name": "input_1",
+                "name": "input_3",
                 "inbound_nodes": []
             },
             {
                 "class_name": "Conv2D",
                 "config": {
-                    "name": "conv2d",
+                    "name": "conv2d_19",
                     "trainable": true,
+                    "dtype": "float32",
                     "batch_input_shape": [
                         null,
                         32,
                         32,
                         1
                     ],
-                    "dtype": "float32",
                     "filters": 40,
                     "kernel_size": [
                         8,
@@ -66,11 +67,11 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                 },
-                "name": "conv2d",
+                "name": "conv2d_19",
                 "inbound_nodes": [
                     [
                         [
-                            "input_1",
+                            "input_3",
                             0,
                             0,
                             {}
@@ -81,7 +82,7 @@
             {
                 "class_name": "Conv2D",
                 "config": {
-                    "name": "conv2d_1",
+                    "name": "conv2d_20",
                     "trainable": true,
                     "dtype": "float32",
                     "filters": 50,
@@ -123,1137 +124,11 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                 },
-                "name": "conv2d_1",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_2",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 60,
-                    "kernel_size": [
-                        8,
-                        8
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_2",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_1",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_3",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 70,
-                    "kernel_size": [
-                        8,
-                        8
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_3",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_2",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_4",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 75,
-                    "kernel_size": [
-                        8,
-                        8
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_4",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_3",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "MaxPooling2D",
-                "config": {
-                    "name": "max_pooling2d",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "pool_size": [
-                        2,
-                        2
-                    ],
-                    "padding": "valid",
-                    "strides": [
-                        2,
-                        2
-                    ],
-                    "data_format": "channels_last"
-                },
-                "name": "max_pooling2d",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_4",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_5",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 20,
-                    "kernel_size": [
-                        6,
-                        6
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_5",
-                "inbound_nodes": [
-                    [
-                        [
-                            "max_pooling2d",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_6",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 25,
-                    "kernel_size": [
-                        6,
-                        6
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_6",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_5",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_7",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 30,
-                    "kernel_size": [
-                        6,
-                        6
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_7",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_6",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_8",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 40,
-                    "kernel_size": [
-                        6,
-                        6
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_8",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_7",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_9",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 50,
-                    "kernel_size": [
-                        6,
-                        6
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_9",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_8",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "MaxPooling2D",
-                "config": {
-                    "name": "max_pooling2d_1",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "pool_size": [
-                        2,
-                        2
-                    ],
-                    "padding": "valid",
-                    "strides": [
-                        2,
-                        2
-                    ],
-                    "data_format": "channels_last"
-                },
-                "name": "max_pooling2d_1",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_9",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_10",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 40,
-                    "kernel_size": [
-                        4,
-                        4
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_10",
-                "inbound_nodes": [
-                    [
-                        [
-                            "max_pooling2d_1",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_11",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 50,
-                    "kernel_size": [
-                        4,
-                        4
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_11",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_10",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_12",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 60,
-                    "kernel_size": [
-                        4,
-                        4
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_12",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_11",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_13",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 70,
-                    "kernel_size": [
-                        4,
-                        4
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_13",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_12",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_14",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 80,
-                    "kernel_size": [
-                        4,
-                        4
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_14",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_13",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "MaxPooling2D",
-                "config": {
-                    "name": "max_pooling2d_2",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "pool_size": [
-                        2,
-                        2
-                    ],
-                    "padding": "valid",
-                    "strides": [
-                        2,
-                        2
-                    ],
-                    "data_format": "channels_last"
-                },
-                "name": "max_pooling2d_2",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_14",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_15",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 20,
-                    "kernel_size": [
-                        2,
-                        2
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_15",
-                "inbound_nodes": [
-                    [
-                        [
-                            "max_pooling2d_2",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_16",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 40,
-                    "kernel_size": [
-                        2,
-                        2
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_16",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_15",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_17",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 50,
-                    "kernel_size": [
-                        2,
-                        2
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_17",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_16",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_18",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 60,
-                    "kernel_size": [
-                        2,
-                        2
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_18",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_17",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_19",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 70,
-                    "kernel_size": [
-                        2,
-                        2
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
-                "name": "conv2d_19",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_18",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "UpSampling2D",
-                "config": {
-                    "name": "up_sampling2d",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "size": [
-                        2,
-                        2
-                    ],
-                    "data_format": "channels_last",
-                    "interpolation": "nearest"
-                },
-                "name": "up_sampling2d",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_19",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Concatenate",
-                "config": {
-                    "name": "concatenate",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "axis": -1
-                },
-                "name": "concatenate",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_14",
-                            0,
-                            0,
-                            {}
-                        ],
-                        [
-                            "up_sampling2d",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Conv2D",
-                "config": {
-                    "name": "conv2d_20",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "filters": 30,
-                    "kernel_size": [
-                        4,
-                        4
-                    ],
-                    "strides": [
-                        1,
-                        1
-                    ],
-                    "padding": "same",
-                    "data_format": "channels_last",
-                    "dilation_rate": [
-                        1,
-                        1
-                    ],
-                    "groups": 1,
-                    "activation": "relu",
-                    "use_bias": true,
-                    "kernel_initializer": {
-                        "class_name": "GlorotUniform",
-                        "config": {
-                            "seed": null
-                        }
-                    },
-                    "bias_initializer": {
-                        "class_name": "Zeros",
-                        "config": {}
-                    },
-                    "kernel_regularizer": null,
-                    "bias_regularizer": null,
-                    "activity_regularizer": null,
-                    "kernel_constraint": null,
-                    "bias_constraint": null
-                },
                 "name": "conv2d_20",
                 "inbound_nodes": [
                     [
                         [
-                            "concatenate",
+                            "conv2d_19",
                             0,
                             0,
                             {}
@@ -1267,10 +142,10 @@
                     "name": "conv2d_21",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 25,
+                    "filters": 60,
                     "kernel_size": [
-                        4,
-                        4
+                        8,
+                        8
                     ],
                     "strides": [
                         1,
@@ -1319,10 +194,10 @@
                     "name": "conv2d_22",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 20,
+                    "filters": 70,
                     "kernel_size": [
-                        4,
-                        4
+                        8,
+                        8
                     ],
                     "strides": [
                         1,
@@ -1371,10 +246,10 @@
                     "name": "conv2d_23",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 18,
+                    "filters": 75,
                     "kernel_size": [
-                        4,
-                        4
+                        8,
+                        8
                     ],
                     "strides": [
                         1,
@@ -1418,15 +293,44 @@
                 ]
             },
             {
+                "class_name": "MaxPooling2D",
+                "config": {
+                    "name": "max_pooling2d_3",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "pool_size": [
+                        2,
+                        2
+                    ],
+                    "padding": "valid",
+                    "strides": [
+                        2,
+                        2
+                    ],
+                    "data_format": "channels_last"
+                },
+                "name": "max_pooling2d_3",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_23",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
                 "class_name": "Conv2D",
                 "config": {
                     "name": "conv2d_24",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 15,
+                    "filters": 20,
                     "kernel_size": [
-                        4,
-                        4
+                        6,
+                        6
                     ],
                     "strides": [
                         1,
@@ -1461,58 +365,7 @@
                 "inbound_nodes": [
                     [
                         [
-                            "conv2d_23",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "UpSampling2D",
-                "config": {
-                    "name": "up_sampling2d_1",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "size": [
-                        2,
-                        2
-                    ],
-                    "data_format": "channels_last",
-                    "interpolation": "nearest"
-                },
-                "name": "up_sampling2d_1",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_24",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Concatenate",
-                "config": {
-                    "name": "concatenate_1",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "axis": -1
-                },
-                "name": "concatenate_1",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_9",
-                            0,
-                            0,
-                            {}
-                        ],
-                        [
-                            "up_sampling2d_1",
+                            "max_pooling2d_3",
                             0,
                             0,
                             {}
@@ -1526,7 +379,7 @@
                     "name": "conv2d_25",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 30,
+                    "filters": 25,
                     "kernel_size": [
                         6,
                         6
@@ -1564,7 +417,7 @@
                 "inbound_nodes": [
                     [
                         [
-                            "concatenate_1",
+                            "conv2d_24",
                             0,
                             0,
                             {}
@@ -1578,7 +431,7 @@
                     "name": "conv2d_26",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 25,
+                    "filters": 30,
                     "kernel_size": [
                         6,
                         6
@@ -1630,7 +483,7 @@
                     "name": "conv2d_27",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 20,
+                    "filters": 40,
                     "kernel_size": [
                         6,
                         6
@@ -1682,7 +535,7 @@
                     "name": "conv2d_28",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 18,
+                    "filters": 50,
                     "kernel_size": [
                         6,
                         6
@@ -1729,15 +582,44 @@
                 ]
             },
             {
+                "class_name": "MaxPooling2D",
+                "config": {
+                    "name": "max_pooling2d_4",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "pool_size": [
+                        2,
+                        2
+                    ],
+                    "padding": "valid",
+                    "strides": [
+                        2,
+                        2
+                    ],
+                    "data_format": "channels_last"
+                },
+                "name": "max_pooling2d_4",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_28",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
                 "class_name": "Conv2D",
                 "config": {
                     "name": "conv2d_29",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 15,
+                    "filters": 40,
                     "kernel_size": [
-                        6,
-                        6
+                        4,
+                        4
                     ],
                     "strides": [
                         1,
@@ -1772,58 +654,7 @@
                 "inbound_nodes": [
                     [
                         [
-                            "conv2d_28",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "UpSampling2D",
-                "config": {
-                    "name": "up_sampling2d_2",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "size": [
-                        2,
-                        2
-                    ],
-                    "data_format": "channels_last",
-                    "interpolation": "nearest"
-                },
-                "name": "up_sampling2d_2",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_29",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
-                "class_name": "Concatenate",
-                "config": {
-                    "name": "concatenate_2",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "axis": -1
-                },
-                "name": "concatenate_2",
-                "inbound_nodes": [
-                    [
-                        [
-                            "conv2d_4",
-                            0,
-                            0,
-                            {}
-                        ],
-                        [
-                            "up_sampling2d_2",
+                            "max_pooling2d_4",
                             0,
                             0,
                             {}
@@ -1837,10 +668,10 @@
                     "name": "conv2d_30",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 12,
+                    "filters": 50,
                     "kernel_size": [
-                        8,
-                        8
+                        4,
+                        4
                     ],
                     "strides": [
                         1,
@@ -1875,7 +706,7 @@
                 "inbound_nodes": [
                     [
                         [
-                            "concatenate_2",
+                            "conv2d_29",
                             0,
                             0,
                             {}
@@ -1889,10 +720,10 @@
                     "name": "conv2d_31",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 8,
+                    "filters": 60,
                     "kernel_size": [
-                        8,
-                        8
+                        4,
+                        4
                     ],
                     "strides": [
                         1,
@@ -1941,10 +772,10 @@
                     "name": "conv2d_32",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 6,
+                    "filters": 70,
                     "kernel_size": [
-                        8,
-                        8
+                        4,
+                        4
                     ],
                     "strides": [
                         1,
@@ -1993,10 +824,10 @@
                     "name": "conv2d_33",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 4,
+                    "filters": 80,
                     "kernel_size": [
-                        8,
-                        8
+                        4,
+                        4
                     ],
                     "strides": [
                         1,
@@ -2040,15 +871,44 @@
                 ]
             },
             {
+                "class_name": "MaxPooling2D",
+                "config": {
+                    "name": "max_pooling2d_5",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "pool_size": [
+                        2,
+                        2
+                    ],
+                    "padding": "valid",
+                    "strides": [
+                        2,
+                        2
+                    ],
+                    "data_format": "channels_last"
+                },
+                "name": "max_pooling2d_5",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_33",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
                 "class_name": "Conv2D",
                 "config": {
                     "name": "conv2d_34",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 2,
+                    "filters": 20,
                     "kernel_size": [
-                        8,
-                        8
+                        2,
+                        2
                     ],
                     "strides": [
                         1,
@@ -2083,7 +943,7 @@
                 "inbound_nodes": [
                     [
                         [
-                            "conv2d_33",
+                            "max_pooling2d_5",
                             0,
                             0,
                             {}
@@ -2097,10 +957,10 @@
                     "name": "conv2d_35",
                     "trainable": true,
                     "dtype": "float32",
-                    "filters": 1,
+                    "filters": 40,
                     "kernel_size": [
-                        8,
-                        8
+                        2,
+                        2
                     ],
                     "strides": [
                         1,
@@ -2142,23 +1002,1164 @@
                         ]
                     ]
                 ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_36",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 50,
+                    "kernel_size": [
+                        2,
+                        2
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_36",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_35",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_37",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 60,
+                    "kernel_size": [
+                        2,
+                        2
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_37",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_36",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_38",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 70,
+                    "kernel_size": [
+                        2,
+                        2
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_38",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_37",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "UpSampling2D",
+                "config": {
+                    "name": "up_sampling2d_3",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "size": [
+                        2,
+                        2
+                    ],
+                    "data_format": "channels_last",
+                    "interpolation": "nearest"
+                },
+                "name": "up_sampling2d_3",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_38",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Concatenate",
+                "config": {
+                    "name": "concatenate",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "axis": -1
+                },
+                "name": "concatenate",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_33",
+                            0,
+                            0,
+                            {}
+                        ],
+                        [
+                            "up_sampling2d_3",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_39",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 30,
+                    "kernel_size": [
+                        4,
+                        4
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_39",
+                "inbound_nodes": [
+                    [
+                        [
+                            "concatenate",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_40",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 25,
+                    "kernel_size": [
+                        4,
+                        4
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_40",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_39",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_41",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 20,
+                    "kernel_size": [
+                        4,
+                        4
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_41",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_40",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_42",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 18,
+                    "kernel_size": [
+                        4,
+                        4
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_42",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_41",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_43",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 15,
+                    "kernel_size": [
+                        4,
+                        4
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_43",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_42",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "UpSampling2D",
+                "config": {
+                    "name": "up_sampling2d_4",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "size": [
+                        2,
+                        2
+                    ],
+                    "data_format": "channels_last",
+                    "interpolation": "nearest"
+                },
+                "name": "up_sampling2d_4",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_43",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Concatenate",
+                "config": {
+                    "name": "concatenate_1",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "axis": -1
+                },
+                "name": "concatenate_1",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_28",
+                            0,
+                            0,
+                            {}
+                        ],
+                        [
+                            "up_sampling2d_4",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_44",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 30,
+                    "kernel_size": [
+                        6,
+                        6
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_44",
+                "inbound_nodes": [
+                    [
+                        [
+                            "concatenate_1",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_45",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 25,
+                    "kernel_size": [
+                        6,
+                        6
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_45",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_44",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_46",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 20,
+                    "kernel_size": [
+                        6,
+                        6
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_46",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_45",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_47",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 18,
+                    "kernel_size": [
+                        6,
+                        6
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_47",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_46",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_48",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 15,
+                    "kernel_size": [
+                        6,
+                        6
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_48",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_47",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "UpSampling2D",
+                "config": {
+                    "name": "up_sampling2d_5",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "size": [
+                        2,
+                        2
+                    ],
+                    "data_format": "channels_last",
+                    "interpolation": "nearest"
+                },
+                "name": "up_sampling2d_5",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_48",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Concatenate",
+                "config": {
+                    "name": "concatenate_2",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "axis": -1
+                },
+                "name": "concatenate_2",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_23",
+                            0,
+                            0,
+                            {}
+                        ],
+                        [
+                            "up_sampling2d_5",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_49",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 12,
+                    "kernel_size": [
+                        8,
+                        8
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_49",
+                "inbound_nodes": [
+                    [
+                        [
+                            "concatenate_2",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_50",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 8,
+                    "kernel_size": [
+                        8,
+                        8
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_50",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_49",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_51",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 6,
+                    "kernel_size": [
+                        8,
+                        8
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_51",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_50",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_52",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 4,
+                    "kernel_size": [
+                        8,
+                        8
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_52",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_51",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_53",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 2,
+                    "kernel_size": [
+                        8,
+                        8
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_53",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_52",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
+            },
+            {
+                "class_name": "Conv2D",
+                "config": {
+                    "name": "conv2d_54",
+                    "trainable": true,
+                    "dtype": "float32",
+                    "filters": 1,
+                    "kernel_size": [
+                        8,
+                        8
+                    ],
+                    "strides": [
+                        1,
+                        1
+                    ],
+                    "padding": "same",
+                    "data_format": "channels_last",
+                    "dilation_rate": [
+                        1,
+                        1
+                    ],
+                    "groups": 1,
+                    "activation": "relu",
+                    "use_bias": true,
+                    "kernel_initializer": {
+                        "class_name": "GlorotUniform",
+                        "config": {
+                            "seed": null
+                        }
+                    },
+                    "bias_initializer": {
+                        "class_name": "Zeros",
+                        "config": {}
+                    },
+                    "kernel_regularizer": null,
+                    "bias_regularizer": null,
+                    "activity_regularizer": null,
+                    "kernel_constraint": null,
+                    "bias_constraint": null
+                },
+                "name": "conv2d_54",
+                "inbound_nodes": [
+                    [
+                        [
+                            "conv2d_53",
+                            0,
+                            0,
+                            {}
+                        ]
+                    ]
+                ]
             }
         ],
         "input_layers": [
             [
-                "input_1",
+                "input_3",
                 0,
                 0
             ]
         ],
         "output_layers": [
             [
-                "conv2d_35",
+                "conv2d_54",
                 0,
                 0
             ]
         ]
     },
-    "keras_version": "2.4.0",
+    "keras_version": "2.12.0",
     "backend": "tensorflow"
 }
