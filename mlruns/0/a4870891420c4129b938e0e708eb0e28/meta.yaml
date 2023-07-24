@@ -1,0 +1,15 @@
+artifact_uri: file:///home/leandrosantos/IC-AutoEncoder/mlruns/0/a4870891420c4129b938e0e708eb0e28/artifacts
+end_time: 1690160279518
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: a4870891420c4129b938e0e708eb0e28
+run_name: AutoEncoder-2.3-64x64rafael_tinyImagenet
+run_uuid: a4870891420c4129b938e0e708eb0e28
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1690160267081
+status: 4
+tags: []
+user_id: leandrosantos

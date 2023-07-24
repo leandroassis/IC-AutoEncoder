@@ -1,0 +1,11 @@
+digest: f3ba4a99
+name: dataset
+profile: '{"features_shape": [100000, 64, 64, 1], "features_size": 409600000, "features_nbytes":
+  1638400000, "targets_shape": [100000, 64, 64, 1], "targets_size": 409600000, "targets_nbytes":
+  1638400000}'
+schema: '{"mlflow_tensorspec": {"features": "[{\"type\": \"tensor\", \"tensor-spec\":
+  {\"dtype\": \"float32\", \"shape\": [-1, 64, 64, 1]}}]", "targets": "[{\"type\":
+  \"tensor\", \"tensor-spec\": {\"dtype\": \"float32\", \"shape\": [-1, 64, 64, 1]}}]"}}'
+source: '{"tags": {"mlflow.user": "leandrosantos", "mlflow.source.name": "run1.py",
+  "mlflow.source.type": "LOCAL", "mlflow.source.git.commit": "994b201981b6038cc4a7edd679d4fa16a2189046"}}'
+source_type: code
