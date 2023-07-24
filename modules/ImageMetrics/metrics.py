@@ -257,7 +257,6 @@ def psnrb (target_imgs: tf.Tensor, degraded_imgs: tf.Tensor, ) -> tf.float32:
 if __name__ == "__main__":
 	
 	from os import environ
-	environ["CUDA_VISIBLE_DEVICES"]="2"
 	
 	img1_np = 4* np.ones(shape=(2,12,12,1))#np.random.normal(127, 25, size = (2,64,64,1))
 	img2_np = 4 * np.ones(shape=(2,12,12,1))#np.random.normal(127, 35/3, size = (2,64,64,1))

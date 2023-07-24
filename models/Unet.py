@@ -6,9 +6,6 @@ from tensorflow import keras as kr
 
 model_file_name = "Unet2.3-64x64"
 
-
-environ["CUDA_VISIBLE_DEVICES"]="1"
-
 #Left frist block:
 inputs = kr.layers.Input(shape=(64,64,1))
 LeftLayer1_1 = kr.layers.Conv2D(filters= 40, kernel_size=8, input_shape=(32,32,1), activation='relu', padding='same') (inputs)
