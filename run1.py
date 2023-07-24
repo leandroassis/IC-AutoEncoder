@@ -11,10 +11,6 @@ from modules.misc import ssim_metric
 from modules.ImageMetrics.metrics import three_ssim, psnrb
 from tensorflow.keras.optimizers import Adam
 
-from models.autoEncoder import autoEncoder
-from models.ResidualAutoencoder import residualAutoEncoder
-from models.Unet import unet
-
 from keras import models
 
 import mlflow.keras
