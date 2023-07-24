@@ -83,7 +83,7 @@ def train_model(model, dataset : DataSet):
                                         use_multiprocessing = False
                                 )
 
-                                model.save_weights("models/weights/run1/" + model.name + dataset.name + loss +".h5")
+                                model.save_weights("logs/weights/run1/" + model.name + dataset.name + loss +".h5")
 
                         except Exception as e:
                                 file.write(f"Error {e}: Error fitting and saving {model.name} with {dataset.name} dataset\n")
