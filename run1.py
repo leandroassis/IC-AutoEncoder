@@ -110,7 +110,7 @@ for proc in procs:
         proc.join()
 '''
 
-for path in ["models/arch/AutoEncoder-2.3-64x64.json", "models/arch/GANResidualAutoEncoder-0.1-64x64.json", "models/arch/Unet2.3-64x64.json"]:
+for path in ["models/arch/AutoEncoder-2.3-64x64.json", "models/arch/ResidualAutoEncoder-0.1-64x64.json", "models/arch/Unet2.3-64x64.json"]:
         # reads the model
         with open(path, "r") as json_file:
                 model = models.model_from_json(json_file.read())
