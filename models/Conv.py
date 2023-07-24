@@ -11,7 +11,7 @@ model = Model(inputs = inputs, outputs = layer_1, name = model_name)
 
 model_json = model.to_json(indent = 4)
 
-with open("nNet_models/" + model_name + ".json", "w") as json_file:
+with open("models/arch/" + model_name + ".json", "w") as json_file:
     json_file.write(model_json)
 
-plot_model(model=model, to_file="nNet_models/PNG-Models/" + model_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
+plot_model(model=model, to_file="models/arch/photos/" + model_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )

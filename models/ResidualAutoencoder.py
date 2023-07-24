@@ -17,10 +17,9 @@ residualAutoEncoder = Model(inputs = inputs, outputs = layer_7, name = model_nam
 
 model_json = residualAutoEncoder.to_json(indent = 4)
 
-with open("nNet_models/GAN" + model_name + ".json", "w") as json_file:
+with open("models/arch/" + model_name + ".json", "w") as json_file:
     json_file.write(model_json)
-    json_file.close()
 
-plot_model(model=residualAutoEncoder, to_file="nNet_models/PNG-Models/" + model_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
+plot_model(model=residualAutoEncoder, to_file="models/arch/photos/" + model_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
 
 print(residualAutoEncoder.count_params())

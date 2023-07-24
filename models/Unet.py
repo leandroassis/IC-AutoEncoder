@@ -70,8 +70,8 @@ unet = kr.models.Model(inputs=inputs, outputs=RightLayer1_7, name=model_file_nam
 
 model_json = unet.to_json(indent=4)
 
-with open("nNet_models/" + model_file_name + '.json', "w") as json_file:
+with open("models/arch/" + model_file_name + '.json', "w") as json_file:
     json_file.write(model_json)
     json_file.close()
 
-plot_model(model=unet, to_file="nNet_models/PNG-Models/" + model_file_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
+plot_model(model=unet, to_file="models/arch/photos/" + model_file_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
