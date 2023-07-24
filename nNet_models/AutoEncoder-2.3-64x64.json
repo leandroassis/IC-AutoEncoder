@@ -2,7 +2,6 @@
     "class_name": "Functional",
     "config": {
         "name": "AutoEncoder-2.3-64x64",
-        "trainable": true,
         "layers": [
             {
                 "class_name": "InputLayer",
@@ -927,6 +926,6 @@
             ]
         ]
     },
-    "keras_version": "2.12.0",
+    "keras_version": "2.11.0",
     "backend": "tensorflow"
 }

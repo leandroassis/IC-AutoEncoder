@@ -7,5 +7,5 @@ schema: '{"mlflow_tensorspec": {"features": "[{\"type\": \"tensor\", \"tensor-sp
   {\"dtype\": \"float32\", \"shape\": [-1, 64, 64, 1]}}]", "targets": "[{\"type\":
   \"tensor\", \"tensor-spec\": {\"dtype\": \"float32\", \"shape\": [-1, 64, 64, 1]}}]"}}'
 source: '{"tags": {"mlflow.user": "leandrosantos", "mlflow.source.name": "run1.py",
-  "mlflow.source.type": "LOCAL", "mlflow.source.git.commit": "994b201981b6038cc4a7edd679d4fa16a2189046"}}'
+  "mlflow.source.type": "LOCAL", "mlflow.source.git.commit": "fa707a3c0841facc6f72e8edf5520961c160b9ed"}}'
 source_type: code
