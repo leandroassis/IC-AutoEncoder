@@ -1,8 +1,9 @@
 artifact_uri: file:///home/leandrosantos/IC-AutoEncoder/mlruns/0/7fc81c1e02774fb2b6e1e5e90c5fb5d6/artifacts
+deleted_time: 1690165825279
 end_time: 1690163134820
 entry_point_name: ''
 experiment_id: '0'
-lifecycle_stage: active
+lifecycle_stage: deleted
 run_id: 7fc81c1e02774fb2b6e1e5e90c5fb5d6
 run_name: AutoEncoder-2.3-64x64rafael_tinyImagenet
 run_uuid: 7fc81c1e02774fb2b6e1e5e90c5fb5d6
