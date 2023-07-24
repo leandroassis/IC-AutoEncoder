@@ -12,19 +12,16 @@ path.insert(0, getcwd() + "/modules/")
 environ["CUDA_VISIBLE_DEVICES"] = "3,1"
 
 from modules.DataMod import DataSet
-from modules.CustomLosses import LSSIM
+from modules.CustomLosses import LSSIM, LPSNRB, L3SSIM
 from modules.misc import ssim_metric
-from modules.ImageMetrics.metrics import three_ssim
+from modules.ImageMetrics.metrics import three_ssim, psnrb
 from tensorflow.keras.optimizers import Adam
+
+from keras import models
 
 import mlflow.keras
 
-from models.autoEncoder import autoEncoder
-from models.ResidualAutoencoder import residualAutoEncoder
-from models.Unet import unet
-
 import multiprocessing
-from datetime import datetime
 
 
 # ## Fetching Datasets
@@ -47,39 +44,29 @@ cifarAndTinyDataSet = cifarAndTinyDataSet.concatenateDataSets(cifarDataSet, tiny
 # In[ ]:
 
 
-# to do: 
-# paralelize the training (does it's necessary?)
-# batch size shoudn't be specified (keras API doc), does it affect the training?
-
-# training with LSSIM loss function and ssim and psnrb metrics
-
-
-# In[ ]:
-
-
-# compiles all the models
-
-autoEncoder.compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = LSSIM(), metrics = [ssim_metric, three_ssim])
-unet.compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = LSSIM(), metrics = [ssim_metric, three_ssim])
-residualAutoEncoder.compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = LSSIM(), metrics = [ssim_metric, three_ssim])
-
-
-# In[ ]:
-
-
+# fix bath_size and epochs (how to decide the number of epochs and batch size?)
 batch_size = 20
 epochs = 15
-# how to decide the number of epochs and batch size?
-
-file = open("logs/run1.txt", "w")
 
 mlflow.keras.autolog()
 
-# function to parallelize the training
-def train_model_paralel(model):
-        # trains the models with the datasets
-        print(model.name)
-        for dataset in [tinyDataSet, cifarDataSet, cifarAndTinyDataSet]:
+# trains a model with a datasets
+def train_model(model, dataset : DataSet):
+
+        file = open("logs/run1.txt", "w")
+
+        # training for each loss
+        losses = {"LSSIM":LSSIM(), "LPSNRB":LPSNRB(), "L3SSIM":L3SSIM()}
+
+        for loss in losses:
+
+                try:
+                        model.compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = losses[loss], metrics = [ssim_metric, three_ssim, psnrb])
+                except Exception as e:
+                        file.write(f"Error {e}: Error compiling {model.name} with {dataset.name} dataset\n")
+                        continue
+                
+
                 with mlflow.start_run(run_name= model.name + dataset.name):
                         
                         try:
@@ -101,43 +88,39 @@ def train_model_paralel(model):
                                         workers = 1,
                                         use_multiprocessing = False
                                 )
-                                model.save_weights("models/weights/run1/" + model.name + dataset.name + ".h5")
 
-                                score = model.evaluate(dataset.x_test, dataset.y_test, verbose = 1)
+                                model.save_weights("models/weights/run1/" + model.name + dataset.name + loss +".h5")
 
                         except Exception as e:
-                                file.write(f"Error {e}: Error training {model.name} with {dataset.name} dataset\n")
-                                file.write(e.__cause__)
-                                file.write(e.__context__)
+                                file.write(f"Error {e}: Error fitting and saving {model.name} with {dataset.name} dataset\n")
+        file.close()
 
 
 # In[ ]:
 
-
-start_date = datetime.now()
 
 procs = []
 
-#multiprocessing.set_start_method("spawn")
 
-# launches the training in parallel
-for model in [autoEncoder, unet, residualAutoEncoder]:
-        train_model_paralel(model)
-        #proc = multiprocessing.Process(target=train_model_paralel, args=(model, ))
-        #proc.start()
-        #procs.append(proc)
+# to do: paralelize the training
+'''
+multiprocessing.set_start_method('spawn')
+
+for dataset in [tinyDataSet, cifarDataSet, cifarAndTinyDataSet]:
+        proc = multiprocessing.Process(target=train_model, args=(dataset, ))
+        procs.append(proc)
 
 # waits for the training to finish
-#for proc in procs:
-#        proc.join()
+for proc in procs:
+        proc.start()
+        proc.join()
+'''
 
-end_date = datetime.now()
-
-
-# In[ ]:
-
-
-file.write("Start date: " + str(start_date) + "\n")
-file.write("End date: " + str(end_date) + "\n")
-file.write("Duration: " + str(end_date - start_date) + "\n")
+for path in ["models/arch/AutoEncoder-2.3-64x64.json", "models/arch/GANResidualAutoEncoder-0.1-64x64.json", "models/arch/Unet2.3-64x64.json"]:
+        # reads the model
+        with open(path, "r") as json_file:
+                model = models.model_from_json(json_file.read())
+        
+        for dataset in [tinyDataSet, cifarDataSet, cifarAndTinyDataSet]:
+                train_model(model, dataset)
 
