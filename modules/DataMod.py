@@ -234,7 +234,7 @@ class DataSet (DataSetABC):
             print("Error concatenating datasets")
             return 0
     
-        return 1 
+        return self
 
     def load_by_name(self, name:str, kwargs: dict = {}):
 
