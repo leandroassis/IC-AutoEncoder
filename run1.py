@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 from sys import path
 from os import getcwd, environ
 
@@ -16,6 +10,10 @@ from modules.CustomLosses import LSSIM, LPSNRB, L3SSIM
 from modules.misc import ssim_metric
 from modules.ImageMetrics.metrics import three_ssim, psnrb
 from tensorflow.keras.optimizers import Adam
+
+from models.autoEncoder import autoEncoder
+from models.ResidualAutoencoder import residualAutoEncoder
+from models.Unet import unet
 
 from keras import models
 
