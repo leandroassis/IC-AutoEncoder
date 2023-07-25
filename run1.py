@@ -45,48 +45,54 @@ epochs = 15
 mlflow.keras.autolog()
 
 # trains a model with a datasets
-def train_model(model, dataset : DataSet):
+def train_models(dataset : DataSet):
 
         file = open("logs/logs.txt", "w")
 
         # training for each loss
         losses = {"LSSIM":LSSIM(), "LPSNRB":LPSNRB(), "L3SSIM":L3SSIM()}
 
+        # for each loss
         for loss in losses:
-
-                try:
-                        model.compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = losses[loss], metrics = [ssim_metric, three_ssim, psnrb])
-                except Exception as e:
-                        file.write(f"Error {e}: Error compiling {model.name} with {dataset.name} dataset\n")
-                        continue
-                
-
-                with mlflow.start_run(run_name= model.name + dataset.name):
+                # train each model
+                for path in ["models/arch/AutoEncoder-2.3-64x64.json", "models/arch/ResidualAutoEncoder-0.1-64x64.json", "models/arch/Unet2.3-64x64.json"]:
+                        # reads the model
+                        with open(path, "r") as json_file:
+                                model = models.model_from_json(json_file.read())
                         
                         try:
-                                history = model.fit(
-                                        x = dataset.x_train,
-                                        y = dataset.y_train,
-                                        batch_size = batch_size,
-                                        epochs = epochs,
-                                        verbose = 1,
-                                        validation_split = 0,
-                                        shuffle = True,
-                                        class_weight = None,
-                                        sample_weight = None,
-                                        steps_per_epoch = None,
-                                        validation_steps = None,
-                                        validation_batch_size = None,
-                                        validation_freq = 1,
-                                        max_queue_size = 10,
-                                        workers = 1,
-                                        use_multiprocessing = False
-                                )
-
-                                model.save_weights("logs/run1/weights/" + model.name + dataset.name + loss +".h5")
-
+                                model.compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = losses[loss], metrics = [ssim_metric, three_ssim, psnrb])
                         except Exception as e:
-                                file.write(f"Error {e}: Error fitting and saving {model.name} with {dataset.name} dataset\n")
+                                file.write(f"Error {e}: Error compiling {model.name} with {dataset.name} dataset\n")
+                                continue
+                        
+
+                        with mlflow.start_run(run_name= model.name + dataset.name):
+                                
+                                try:
+                                        history = model.fit(
+                                                x = dataset.x_train,
+                                                y = dataset.y_train,
+                                                batch_size = batch_size,
+                                                epochs = epochs,
+                                                verbose = 1,
+                                                validation_split = 0,
+                                                shuffle = True,
+                                                class_weight = None,
+                                                sample_weight = None,
+                                                steps_per_epoch = None,
+                                                validation_steps = None,
+                                                validation_batch_size = None,
+                                                validation_freq = 1,
+                                                max_queue_size = 10,
+                                                workers = 1,
+                                                use_multiprocessing = False
+                                        )
+
+                                        model.save_weights("logs/run1/weights/" + model.name + dataset.name + loss +".h5")
+
+                                except Exception as e:
+                                        file.write(f"Error {e}: Error fitting and saving {model.name} with {dataset.name} dataset\n")
         file.close()
 
 
@@ -110,11 +116,7 @@ for proc in procs:
         proc.join()
 '''
 
-for path in ["models/arch/AutoEncoder-2.3-64x64.json", "models/arch/ResidualAutoEncoder-0.1-64x64.json", "models/arch/Unet2.3-64x64.json"]:
-        # reads the model
-        with open(path, "r") as json_file:
-                model = models.model_from_json(json_file.read())
-        
-        for dataset in [tinyDataSet, cifarDataSet, cifarAndTinyDataSet]:
-                train_model(model, dataset)
+# for each dataset
+for dataset in [tinyDataSet, cifarDataSet, cifarAndTinyDataSet]:
+        train_models(dataset)
 
