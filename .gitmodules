@@ -1,6 +1,6 @@
 [submodule "ImageMetrics"]
-	path = ImageMetrics
+	path = modules/ImageMetrics
 	url = https://github.com/AlanPXD/ImageMetrics
 [submodule "TensorflowUtils"]
-	path = TensorflowUtils
+	path = modules/TensorflowUtils
 	url = https://github.com/AlanPXD/TensorflowUtils

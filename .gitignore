@@ -11,8 +11,8 @@ Datasets_rafael
 rasc.py
 ML*
 docs
-logs*/*
 !logs*/*.csv
 Logs/*
 !Logs/*.csv
 .ipynb_checkpoints
+output.txt

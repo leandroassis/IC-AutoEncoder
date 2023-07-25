@@ -1,7 +1,9 @@
-tensorflow
-keras
+tensorflow==2.11
+matplotlib==3.5
 plotly
 pandas
 nbformat
 ipython
 Csvwriter
+mlflow
+pydot
