@@ -1,0 +1,15 @@
+artifact_uri: file:///home/leandrosantos/IC-AutoEncoder/mlruns/0/fb1af952a63f4c8f83fa4b6b5e6a7eff/artifacts
+end_time: 1690334906262
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: fb1af952a63f4c8f83fa4b6b5e6a7eff
+run_name: ResidualAutoEncoder-0.1-64x64rafael_cifar_10_rafael_tinyImagenet
+run_uuid: fb1af952a63f4c8f83fa4b6b5e6a7eff
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1690333108927
+status: 3
+tags: []
+user_id: leandrosantos

@@ -1,0 +1,15 @@
+artifact_uri: file:///home/leandrosantos/IC-AutoEncoder/mlruns/0/922662157fa44210a656c9ecabe698db/artifacts
+end_time: 1690287656240
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 922662157fa44210a656c9ecabe698db
+run_name: AutoEncoder-2.3-64x64rafael_cifar_10
+run_uuid: 922662157fa44210a656c9ecabe698db
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1690286858972
+status: 3
+tags: []
+user_id: leandrosantos

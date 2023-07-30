@@ -1,0 +1,1 @@
+Error Failed copying input tensor from /job:localhost/replica:0/task:0/device:CPU:0 to /job:localhost/replica:0/task:0/device:GPU:0 in order to run _EagerConst: Dst tensor is not initialized.: Error fitting and saving Unet2.3-64x64 with rafael_cifar_10_rafael_tinyImagenet dataset
