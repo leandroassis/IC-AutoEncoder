@@ -20,9 +20,6 @@ import multiprocessing
 
 # ## Fetching Datasets
 
-# In[ ]:
-
-
 # creates the datasets
 tinyDataSet, cifarDataSet, cifarAndTinyDataSet = DataSet(), DataSet(), DataSet()
 
@@ -34,9 +31,6 @@ cifarAndTinyDataSet = cifarAndTinyDataSet.concatenateDataSets(cifarDataSet, tiny
 
 
 # ## Training Models
-
-# In[ ]:
-
 
 # fix bath_size and epochs (how to decide the number of epochs and batch size?)
 batch_size = 20
@@ -63,7 +57,7 @@ def train_models(dataset : DataSet):
                         try:
                                 model.compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = losses[loss], metrics = [ssim_metric, three_ssim, psnrb])
                         except Exception as e:
-                                file.write(f"Error {e}: Error compiling {model.name} with {dataset.name} dataset\n")
+                                file.write(f"Error {e}: Error compiling {model.name} with {dataset.name} dataset and loss {loss}\n")
                                 continue
                         
 
@@ -92,15 +86,11 @@ def train_models(dataset : DataSet):
                                         model.save_weights("logs/run1/weights/" + model.name + dataset.name + loss +".h5")
 
                                 except Exception as e:
-                                        file.write(f"Error {e}: Error fitting and saving {model.name} with {dataset.name} dataset\n")
+                                        file.write(f"Error {e}: Error fitting and saving {model.name} with {dataset.name} dataset and loss {loss}\n")
         file.close()
 
 
-# In[ ]:
-
-
 procs = []
-
 
 # to do: paralelize the training
 '''
@@ -119,4 +109,3 @@ for proc in procs:
 # for each dataset
 for dataset in [tinyDataSet, cifarDataSet, cifarAndTinyDataSet]:
         train_models(dataset)
-
