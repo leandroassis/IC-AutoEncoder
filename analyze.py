@@ -24,6 +24,54 @@ cifarDataSet = cifarDataSet.load_rafael_cifar_10_noise_data()
 # concatenates the datasets
 cifarAndTinyDataSet = cifarAndTinyDataSet.concatenateDataSets(cifarDataSet, tinyDataSet)
 
+def plot_model_comparison_graphic(num_sets = 3, num_subplots = 3):
+    barWidth = 0.13
+
+    pos_barra = [[x for x in range(num_sets)]]
+
+    for _ in range(num_subplots):
+        pos_barra.append([x + barWidth for x in pos_barra[-1]])
+
+    fig, ax = plt.subplots(num_subplots, 1, figsize=(8, 8))
+    ax1 = ax.twinx()
+    ax2 = ax.twinx()
+
+    plt.setp(ax, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['autEnc', 'Unet', 'resAut'])
+    plt.setp(ax, ylabel='ssim', xlabel='Modelos')
+    plt.setp(ax1, ylabel='psnr', xlabel='Modelos')
+    plt.setp(ax2, ylabel='3ssim', xlabel='Modelos')
+
+    fig.tight_layout(pad=3.0)
+
+    for idx, funcao in enumerate(["cifar-10", "tinyimg", "cifar+tiny"]):
+        mediaFlops, stdFlops = resultadosO4.getFLOPSValues(funcao)
+        
+        ax[0].bar(pos_barra[idx], mediaFlops, width = barWidth, label = funcao)
+        ax[0].grid(axis='y', alpha=0.75)
+        ax[0].set_title("Loss: LSSIM", fontsize=10)
+        ax[0].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), shadow=True, ncol=num_sets)
+        
+        ax1[0].bar(pos_barra[idx], mediaFlops, width = barWidth, label = funcao)
+        ax2[0].bar(pos_barra[idx], mediaFlops, width = barWidth, label = funcao)
+
+    # O3
+    for idx, funcao in enumerate(["normal", "avx", "unroll", "block"]):
+        mediaFlops, stdFlops = resultadosO3.getFLOPSValues(funcao)
+
+        ax[1].bar(pos_barra[idx], mediaFlops, width = barWidth, label = funcao)
+        ax[1].grid(axis='y', alpha=0.75)
+        ax[1].set_title("O3", fontsize=10)
+
+    # O0
+    for idx, funcao in enumerate(["normal", "avx", "unroll", "block"]):
+        mediaFlops, stdFlops = resultadosO0.getFLOPSValues(funcao)
+
+        ax[2].bar(pos_barra[idx], mediaFlops, width = barWidth, label = funcao)
+        ax[2].grid(axis='y', alpha=0.75)
+        ax[2].set_title("O0", fontsize=10)
+
+     
+
 def plot_model_graphic(model, dataset, output_path):
         # plots the model
 
@@ -69,13 +117,13 @@ for model in NNmodels:
                 for dataset in [cifarAndTinyDataSet, cifarDataSet, tinyDataSet]:
                     if dataset.name in filename:
                         try:
-                            loss, ssim, tssim, psnrb = NNmodels[model].evaluate(x = dataset.x_test, y = dataset.y_test)
+                            loss_r, ssim, tssim, psnrb = NNmodels[model].evaluate(x = dataset.x_test, y = dataset.y_test)
                         except:
                             print("Error evaluating model: " + filename.split(".h5")[0])
                             print("\n")
                         else:
                             with open("logs/run1/metrics/results.csv", "a") as results:
-                                results.write(filename.split(".h5")[0] + "," + str(loss) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb) + "\n")
+                                results.write(str(model) + "," + str(dataset.name) + "," + str(loss.name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb) + "\n")
 
                         plot_model_graphic(NNmodels[model], dataset, "logs/run1/plots/"+filename.split(".h5")[0]+".png")
 
