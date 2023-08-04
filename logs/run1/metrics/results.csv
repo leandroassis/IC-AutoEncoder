@@ -1,0 +1,5 @@
+model_name,loss_name,dataset_name,ssim,tssim,psnrb
+AutoEncoder,LSSIM,tinyDataSet,0.000000,0.000000,0.07000
+AutoEncoder,L3SSIM,smallDataSet,0.000000,0.000000,0.056000
+AutoEncoder,PSNRB,mediumDataSet,0.000000,0.000000,0.4500000
+Unet

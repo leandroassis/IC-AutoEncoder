@@ -7,7 +7,7 @@ environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 from modules.DataMod import DataSet
 from modules.CustomLosses import LSSIM, LPSNRB, L3SSIM
-from modules.misc import ssim_metric
+from modules.misc import ssim_metric, psnrb_metric
 from modules.ImageMetrics.metrics import three_ssim, psnrb
 from tensorflow.keras.optimizers import Adam
 
@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 import random as rd
 
 from keras import models 
+
+import pandas as pd
 
 tinyDataSet, cifarDataSet, cifarAndTinyDataSet = DataSet(), DataSet(), DataSet()
 
@@ -24,54 +26,89 @@ cifarDataSet = cifarDataSet.load_rafael_cifar_10_noise_data()
 # concatenates the datasets
 cifarAndTinyDataSet = cifarAndTinyDataSet.concatenateDataSets(cifarDataSet, tinyDataSet)
 
-def plot_model_comparison_graphic(num_sets = 3, num_subplots = 3):
-    barWidth = 0.13
+def get_models_mean_score(loss_name, metric_name):
+    results_csv = pd.read_csv("logs/run1/metrics/results.csv")
 
+    mean = []
+    std = []
+    
+    # filter the goal metric results by the model name and dataset name which has the loss name
+
+    for model_name in ["AutoEncoder-2.3-64x64", "Unet2.3-64x64", "ResidualAutoEncoder-0.1-64x64"]:
+         for dataset_name in ["rafael_tinyImagenet", "rafael_cifar_10", "rafael_cifar_10_rafael_tinyImagenet"]:
+            filtered_results = results_csv[(results_csv["model_name"] == model_name) & (results_csv["loss_name"] == loss_name) & (results_csv["dataset_name"] == dataset_name)]
+            mean.append(filtered_results[metric_name].mean())
+            std.append(filtered_results[metric_name].std())
+
+    return mean, std
+
+def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
+    barWidth = 0.12
     pos_barra = [[x for x in range(num_sets)]]
 
-    for _ in range(num_subplots):
+    for _ in range(num_sets-1):
         pos_barra.append([x + barWidth for x in pos_barra[-1]])
 
-    fig, ax = plt.subplots(num_subplots, 1, figsize=(8, 8))
-    ax1 = ax.twinx()
-    ax2 = ax.twinx()
+    fig, ax = plt.subplots(num_subplots, 1, figsize=(12, 12))
+    plt.setp(ax, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['AE+tiny', 'AE+cifar', 'AE+both', 'UN+tiny', 'UN+cifar', 'UN+both', 'RAE+tiny', 'RAE+cifar', 'RAE+both'])
+    plt.setp(ax, ylabel='Score')
 
-    plt.setp(ax, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['autEnc', 'Unet', 'resAut'])
-    plt.setp(ax, ylabel='ssim', xlabel='Modelos')
-    plt.setp(ax1, ylabel='psnr', xlabel='Modelos')
-    plt.setp(ax2, ylabel='3ssim', xlabel='Modelos')
+    ax2 = ax.twinx()
+    ax3 = ax.twinx()
 
     fig.tight_layout(pad=3.0)
 
-    for idx, funcao in enumerate(["cifar-10", "tinyimg", "cifar+tiny"]):
-        mediaFlops, stdFlops = resultadosO4.getFLOPSValues(funcao)
-        
-        ax[0].bar(pos_barra[idx], mediaFlops, width = barWidth, label = funcao)
-        ax[0].grid(axis='y', alpha=0.75)
-        ax[0].set_title("Loss: LSSIM", fontsize=10)
-        ax[0].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), shadow=True, ncol=num_sets)
-        
-        ax1[0].bar(pos_barra[idx], mediaFlops, width = barWidth, label = funcao)
-        ax2[0].bar(pos_barra[idx], mediaFlops, width = barWidth, label = funcao)
+    for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
+        scores, std_scores = get_models_mean_score("LSSIM", metric)
 
-    # O3
-    for idx, funcao in enumerate(["normal", "avx", "unroll", "block"]):
-        mediaFlops, stdFlops = resultadosO3.getFLOPSValues(funcao)
+        if metric == "ssim": 
+            ax[0].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax[0].grid(axis='y', alpha=0.75)
+            ax[0].set_title("Loss = LSSIM", fontsize=10)
+            ax[0].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), shadow=True, ncol=num_sets)
+        elif metric == "tssim":
+            ax2[0].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax2[0].grid(axis='y', alpha=0.75)            
+        else:
+            ax3[0].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax3[0].grid(axis='y', alpha=0.75)
 
-        ax[1].bar(pos_barra[idx], mediaFlops, width = barWidth, label = funcao)
-        ax[1].grid(axis='y', alpha=0.75)
-        ax[1].set_title("O3", fontsize=10)
+    for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
+        scores, std_scores = get_models_mean_score("L3SSIM", metric)
 
-    # O0
-    for idx, funcao in enumerate(["normal", "avx", "unroll", "block"]):
-        mediaFlops, stdFlops = resultadosO0.getFLOPSValues(funcao)
+        if metric == "ssim": 
+            ax[1].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax[1].grid(axis='y', alpha=0.75)
+            ax[1].set_title("Loss = L3SSIM", fontsize=10)
+            ax[1].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), shadow=True, ncol=num_sets)
+        elif metric == "tssim":
+            ax2[1].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax2[1].grid(axis='y', alpha=0.75)            
+        else:
+            ax3[1].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax3[1].grid(axis='y', alpha=0.75)
 
-        ax[2].bar(pos_barra[idx], mediaFlops, width = barWidth, label = funcao)
-        ax[2].grid(axis='y', alpha=0.75)
-        ax[2].set_title("O0", fontsize=10)
+    for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
+        scores, std_scores = get_models_mean_score("LPSNRB", metric)
 
-     
+        if metric == "ssim": 
+            ax[2].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax[2].grid(axis='y', alpha=0.75)
+            ax[2].set_title("Loss = LPSNRB", fontsize=10)
+            ax[2].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), shadow=True, ncol=num_sets)
+        elif metric == "tssim":
+            ax2[2].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax2[2].grid(axis='y', alpha=0.75)            
+        else:
+            ax3[2].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax3[2].grid(axis='y', alpha=0.75)
 
+    ax.set_ylabel('ssim')
+    ax2.set_ylabel('3ssim')
+    ax3.set_ylabel('psnrb')
+
+    plt.savefig("logs/run1/plots/model_comparison.png")
+    
 def plot_model_graphic(model, dataset, output_path):
         # plots the model
 
@@ -105,6 +142,10 @@ for path in ["AutoEncoder-2.3-64x64.json", "ResidualAutoEncoder-0.1-64x64.json",
                 NNmodels[model.name] = model
 
 
+with open("logs/run1/metrics/results.csv") as results_csv:
+     results_csv.write("model_name,loss_name,dataset_name,ssim,tssim,psnrb\n")
+     
+
 for model in NNmodels:
     for (dirpath, dirnames, filenames) in walk("logs/run1/weights/"):
         for filename in filenames:
@@ -122,8 +163,8 @@ for model in NNmodels:
                             print("Error evaluating model: " + filename.split(".h5")[0])
                             print("\n")
                         else:
-                            with open("logs/run1/metrics/results.csv", "a") as results:
-                                results.write(str(model) + "," + str(dataset.name) + "," + str(loss.name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb) + "\n")
+                            with open("logs/run1/metrics/results.csv", "a") as results_csv:
+                                results_csv.write(str(model) + "," + str(dataset.name) + "," + str(loss.name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb) + "\n")
 
                         plot_model_graphic(NNmodels[model], dataset, "logs/run1/plots/"+filename.split(".h5")[0]+".png")
 

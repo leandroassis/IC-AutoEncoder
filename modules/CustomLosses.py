@@ -72,7 +72,7 @@ class L3SSIM (Loss):
 
 class LPSNRB (Loss):
 
-    def __init__(self, reduction=Reduction.AUTO, name=None):
+    def __init__(self, reduction=Reduction.AUTO, name="LPSNRB"):
         super(LPSNRB, self).__init__(reduction, name)
 
     def call(self, y_true, y_pred):

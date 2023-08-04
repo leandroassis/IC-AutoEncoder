@@ -72,7 +72,7 @@ def train_models(dataset : DataSet):
                                                 verbose = 1,
                                                 validation_split = 0,
                                                 shuffle = True,
-                                                class_weight = None,
+                                                class_weNoneight = None,
                                                 sample_weight = None,
                                                 steps_per_epoch = None,
                                                 validation_steps = None,
