@@ -142,7 +142,7 @@ for path in ["AutoEncoder-2.3-64x64.json", "ResidualAutoEncoder-0.1-64x64.json",
                 NNmodels[model.name] = model
 
 
-with open("logs/run1/metrics/results.csv") as results_csv:
+with open("logs/run1/metrics/results.csv", "w") as results_csv:
      results_csv.write("model_name,loss_name,dataset_name,ssim,tssim,psnrb\n")
      
 
