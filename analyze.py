@@ -168,3 +168,4 @@ for model in NNmodels:
 
                         plot_model_graphic(NNmodels[model], dataset, "logs/run1/plots/"+filename.split(".h5")[0]+".png")
 
+plot_model_comparison_graphic()
