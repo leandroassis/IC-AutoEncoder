@@ -203,7 +203,7 @@ for model in NNmodels:
 
                             print("Saving results...")
                             with open("logs/run1/metrics/results.csv", "a") as results_csv:
-                                results_csv.write(str(model) + "," + str(dataset.name) + "," + str(loss.name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb_s) + "\n")
+                                results_csv.write(str(model) + "," + str(loss.name) + "," + str(dataset.name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb_s) + "\n")
                             print("Results saved!")
                         
                         print("Generating model graphic...")

@@ -1,4 +1,4 @@
-model_name,loss_name,dataset_name,ssim,tssim,psnrb
+model_name,dataset_name,loss,ssim,tssim,psnrb
 AutoEncoder-2.3-64x64,rafael_cifar_10_rafael_tinyImagenet,LSSIM,0.8138290047645569,0.8335707187652588,24.09528160095215
 AutoEncoder-2.3-64x64,rafael_cifar_10_rafael_tinyImagenet,L3SSIM,0.815611720085144,0.8409714102745056,24.38214874267578
 AutoEncoder-2.3-64x64,rafael_cifar_10_rafael_tinyImagenet,LPSNRB,0.76487135887146,0.7958450317382812,24.726703643798828
