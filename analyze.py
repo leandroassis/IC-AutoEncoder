@@ -163,7 +163,7 @@ for model in NNmodels:
                      continue
                 
                 NNmodels[model].load_weights("logs/run1/weights/"+filename)
-                loss = LSSIM() if "LSSIM" in filename else L3SSIM() if "L3SSIM" in filename
+                loss = LSSIM() if "LSSIM" in filename else L3SSIM() if "L3SSIM" in filename else LSSIM()
                 NNmodels[model].compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = loss, metrics = [ssim_metric, three_ssim, psnrb])
 
                 for dataset in [cifarAndTinyDataSet, cifarDataSet, tinyDataSet]:
