@@ -3,7 +3,7 @@ from os import getcwd, environ, walk
 
 path.insert(0, getcwd())
 path.insert(0, getcwd() + "/modules/")
-#environ["CUDA_VISIBLE_DEVICES"] = "3"
+environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 from modules.DataMod import DataSet
 from modules.CustomLosses import LSSIM, LPSNRB, L3SSIM
@@ -112,23 +112,30 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
 def plot_model_graphic(model, dataset, output_path):
         # plots the model
 
-        plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(8, 8))
 
         columns = 3
         rows = 5
+
+        plt.subplot(rows, columns, 1)
+        plt.title("Noise Image")
+        plt.subplot(rows, columns, 2)
+        plt.title("Goal Image")
+        plt.subplot(rows, columns, 3)
+        plt.title("Output Image")
 
         for idx in range(rows):
                 magic_number = rd.randint(0, len(dataset.x_test) - 1)
 
                 plt.subplot(rows, columns, columns*idx + 1)
-                plt.title("Original Image")
-                plt.imshow(dataset.x_test[magic_number])
+                plt.imshow(dataset.x_test[magic_number], cmap="gray")
+                plt.axis("off")
                 plt.subplot(rows, columns, columns*idx + 2)
-                plt.title("Goal Image")
-                plt.imshow(dataset.y_test[magic_number])
+                plt.imshow(dataset.y_test[magic_number], cmap="gray")
+                plt.axis("off")
                 plt.subplot(rows, columns, columns*idx + 3)
-                plt.title("Predicted Image")
-                plt.imshow(model.predict(dataset.x_test[magic_number][0]))
+                plt.imshow(model.predict(dataset.x_test[magic_number])[0], cmap="gray")
+                plt.axis("off")
 
         plt.savefig(output_path)
         plt.close()
@@ -153,14 +160,17 @@ for model in NNmodels:
 
                 NNmodels[model].load_weights("logs/run1/weights/"+filename)
                 loss = LSSIM() if "LSSIM" in filename else LPSNRB() if "LPSNRB" in filename else L3SSIM() if "L3SSIM" in filename else LSSIM()
-                NNmodels[model].compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = loss, metrics = [ssim_metric, three_ssim, psnrb])
+                NNmodels[model].compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = loss, metrics = [ssim_metric, three_ssim, psnrb_metric])
 
                 for dataset in [cifarAndTinyDataSet, cifarDataSet, tinyDataSet]:
                     if dataset.name in filename:
                         try:
                             loss_r, ssim, tssim, psnrb = NNmodels[model].evaluate(x = dataset.x_test, y = dataset.y_test)
-                        except:
+                        except KeyboardInterrupt:
+                             exit()
+                        except Exception as e:
                             print("Error evaluating model: " + filename.split(".h5")[0])
+                            print(e)
                             print("\n")
                         else:
                             with open("logs/run1/metrics/results.csv", "a") as results_csv:
