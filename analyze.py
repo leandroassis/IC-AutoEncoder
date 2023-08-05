@@ -55,11 +55,17 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
         pos_barra.append([x + barWidth for x in pos_barra[-1]])
 
     fig, ax = plt.subplots(num_subplots, 1, figsize=(12, 12))
-    plt.setp(ax, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['AE+tiny', 'AE+cifar', 'AE+both', 'UN+tiny', 'UN+cifar', 'UN+both', 'RAE+tiny', 'RAE+cifar', 'RAE+both'])
-    plt.setp(ax, ylabel='Score')
-
     ax2 = ax.twinx()
     ax3 = ax.twinx()
+
+    plt.setp(ax, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['AE+tiny', 'AE+cifar', 'AE+both', 'UN+tiny', 'UN+cifar', 'UN+both', 'RAE+tiny', 'RAE+cifar', 'RAE+both'])
+    plt.setp(ax2, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['AE+tiny', 'AE+cifar', 'AE+both', 'UN+tiny', 'UN+cifar', 'UN+both', 'RAE+tiny', 'RAE+cifar', 'RAE+both'])
+    plt.setp(ax3, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['AE+tiny', 'AE+cifar', 'AE+both', 'UN+tiny', 'UN+cifar', 'UN+both', 'RAE+tiny', 'RAE+cifar', 'RAE+both'])
+
+    plt.setp(ax, ylabel='Score')
+    plt.setp(ax2, ylabel='Score')
+    plt.setp(ax3, ylabel='Score')
+
 
     fig.tight_layout(pad=3.0)
 
@@ -173,18 +179,16 @@ for model in NNmodels:
                 if "PSNRB" in filename:
                      continue
                 
-                print("Evaluating model "+filename.split(".h5")[0])
-                
                 print("Loading models weights and compiling  it...")
                 NNmodels[model].load_weights("logs/run1/weights/"+filename)
                 loss = LSSIM() if "LSSIM" in filename else L3SSIM() if "L3SSIM" in filename else LSSIM()
-                NNmodels[model].compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = loss, metrics = [ssim_metric, three_ssim, psnrb])
+                NNmodels[model].compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = loss, metrics = [ssim_metric, three_ssim, psnrb_metric])
                 print("Weights loaded and model compiled!")
 
                 for dataset in [cifarAndTinyDataSet, cifarDataSet, tinyDataSet]:
                     if dataset.name in filename:
                         try:
-                            print("Evaluating model...")
+                            print("Evaluating model "+filename.split(".h5")[0] + " with dataset "+dataset.name+"...")
                             loss_r, ssim, tssim, psnrb = NNmodels[model].evaluate(x = dataset.x_test, y = dataset.y_test)
                         except KeyboardInterrupt:
                              exit()
@@ -203,6 +207,7 @@ for model in NNmodels:
                         print("Generating model graphic...")
                         plot_model_graphic(NNmodels[model], dataset, "logs/run1/plots/"+filename.split(".h5")[0]+".png")
                         print("Model graphic generated!")
+                        break
 
 print("Models analysis finished!")
 
