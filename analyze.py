@@ -134,7 +134,9 @@ def plot_model_graphic(model, dataset, output_path):
                 plt.imshow(dataset.y_test[magic_number], cmap="gray")
                 plt.axis("off")
                 plt.subplot(rows, columns, columns*idx + 3)
-                plt.imshow(model.predict(dataset.x_test[magic_number])[0], cmap="gray")
+                #plt.imshow(model.predict(dataset.x_test[magic_number])[0], cmap="gray")
+                print(model.predict(dataset.x_test[magic_number]))
+                print(model.predict(dataset.x_test[magic_number]).shape)
                 plt.axis("off")
 
         plt.savefig(output_path)
@@ -160,7 +162,7 @@ for model in NNmodels:
 
                 NNmodels[model].load_weights("logs/run1/weights/"+filename)
                 loss = LSSIM() if "LSSIM" in filename else LPSNRB() if "LPSNRB" in filename else L3SSIM() if "L3SSIM" in filename else LSSIM()
-                NNmodels[model].compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = loss, metrics = [ssim_metric, three_ssim, psnrb_metric])
+                NNmodels[model].compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = loss, metrics = [ssim_metric, three_ssim])
 
                 for dataset in [cifarAndTinyDataSet, cifarDataSet, tinyDataSet]:
                     if dataset.name in filename:
