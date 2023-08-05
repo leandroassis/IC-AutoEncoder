@@ -48,13 +48,13 @@ def get_models_mean_score(loss_name, metric_name):
     return mean, std
 
 def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
-    barWidth = 0.12
+    barWidth = 0.15
     pos_barra = [[x for x in range(num_sets)]]
 
     for _ in range(num_sets-1):
         pos_barra.append([x + barWidth for x in pos_barra[-1]])
 
-    fig, ax = plt.subplots(num_subplots, 1, figsize=(10, 10))
+    fig, ax = plt.subplots(num_subplots, 1, figsize=(12, 10))
     plt.setp(ax, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['AE+tiny', 'AE+cifar', 'AE+both', 'UN+tiny', 'UN+cifar', 'UN+both', 'RAE+tiny', 'RAE+cifar', 'RAE+both'])
     plt.setp(ax, ylabel='Score')
 
@@ -65,6 +65,7 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
     ax6 = ax[2].twinx()
     ax7 = ax[2].twinx()
 
+    # sets the y-axis labels
     ax[0].set_ylabel('ssim')
     ax[1].set_ylabel('ssim')
     ax[2].set_ylabel('ssim')
@@ -75,54 +76,74 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
     ax5.set_ylabel('psnrb')
     ax7.set_ylabel('psnrb')
 
+    # move the last y-axis spine over to the right by 20% of the width of the axes
+    ax3.spines['right'].set_position(('outward', 60))
+    ax5.spines['right'].set_position(('outward', 60))
+    ax7.spines['right'].set_position(('outward', 60))
+
     fig.tight_layout(pad=3.0)
+
+    color1, color2, color3 = plt.cm.viridis([0, .5, .9])
+
+    ax[0].yaxis.label.set_color(color1)
+    ax2.yaxis.label.set_color(color2)
+    ax3.yaxis.label.set_color(color3)
+    
+    ax[1].yaxis.label.set_color(color1)
+    ax4.yaxis.label.set_color(color2)
+    ax5.yaxis.label.set_color(color3)
+
+    ax[2].yaxis.label.set_color(color1)
+    ax6.yaxis.label.set_color(color2)
+    ax7.yaxis.label.set_color(color3)
+
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("LSSIM", metric)
 
         if metric == "ssim": 
-            ax[0].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax[0].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
             ax[0].grid(axis='y', alpha=0.75)
             ax[0].set_title("Loss = LSSIM", fontsize=10)
-            ax[0].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), shadow=True, ncol=num_sets)
+            ax[0].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05))
         elif metric == "tssim":
-            ax2.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax2.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
+            ax2.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05))
             ax2.grid(axis='y', alpha=0.75)            
         else:
-            ax3.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax3.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
+            ax3.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05))
             ax3.grid(axis='y', alpha=0.75)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("L3SSIM", metric)
 
         if metric == "ssim": 
-            ax[1].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax[1].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
             ax[1].grid(axis='y', alpha=0.75)
             ax[1].set_title("Loss = L3SSIM", fontsize=10)
-            ax[1].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), shadow=True, ncol=num_sets)
         elif metric == "tssim":
-            ax4.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax4.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
             ax4.grid(axis='y', alpha=0.75)            
         else:
-            ax5.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax5.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
             ax5.grid(axis='y', alpha=0.75)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("LPSNRB", metric)
 
         if metric == "ssim": 
-            ax[2].bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax[2].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
             ax[2].grid(axis='y', alpha=0.75)
             ax[2].set_title("Loss = LPSNRB", fontsize=10)
-            ax[2].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), shadow=True, ncol=num_sets)
         elif metric == "tssim":
-            ax6.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax6.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
             ax6.grid(axis='y', alpha=0.75)            
         else:
-            ax7.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax7.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
             ax7.grid(axis='y', alpha=0.75)
 
-    plt.savefig("logs/run1/plots/model_comparison.png")
+    plt.savefig("logs/run1/plots/model_comparison.png", dpi=600)
     
 def plot_model_graphic(model, dataset, output_path):
         # plots the model
