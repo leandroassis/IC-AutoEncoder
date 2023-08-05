@@ -148,7 +148,7 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
 def plot_model_graphic(model, dataset, output_path):
         # plots the model
 
-        plt.figure(figsize=(8, 8))
+        plt.figure(figsize=(12, 12))
 
         columns = 3
         rows = 5
@@ -170,10 +170,7 @@ def plot_model_graphic(model, dataset, output_path):
                 plt.imshow(dataset.y_test[magic_number], cmap="gray")
                 plt.axis("off")
                 plt.subplot(rows, columns, columns*idx + 3)
-                #plt.imshow(model.predict(dataset.x_test[magic_number])[0], cmap="gray")
-                #print(model.predict(dataset.x_test[magic_number]))
-                print(dataset.x_test[magic_number].shape)
-                print(model.predict(dataset.x_test[magic_number]).shape)
+                plt.imshow(model.predict(dataset.x_test)[magic_number], cmap="gray")
                 plt.axis("off")
 
         plt.savefig(output_path)
