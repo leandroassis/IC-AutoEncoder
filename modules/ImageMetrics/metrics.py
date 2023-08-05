@@ -232,7 +232,7 @@ def blocking_efect_factor (im: tf.Tensor, block_size = 8) -> tf.Tensor:
 
 
 
-def psnrb (target_imgs, degraded_imgs, ) -> tf.float32:
+def psnrb (target_imgs: tf.Tensor, degraded_imgs: tf.Tensor, ) -> tf.float32:
 	"""
 	Computes the PSNR-B for a batch of images
 

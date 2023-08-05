@@ -179,7 +179,7 @@ for model in NNmodels:
                 print("Loading models weights and compiling  it...")
                 NNmodels[model].load_weights("logs/run1/weights/"+filename)
                 loss = LSSIM() if "LSSIM" in filename else L3SSIM() if "L3SSIM" in filename else LPSNRB() if "LPSNRB" in filename else LSSIM()
-                NNmodels[model].compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = loss, metrics = [ssim_metric, three_ssim, psnrb_metric])
+                NNmodels[model].compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = loss, metrics = [ssim_metric, three_ssim, psnrb])
                 print("Weights loaded and model compiled!")
 
                 for dataset in [cifarAndTinyDataSet, cifarDataSet, tinyDataSet]:
