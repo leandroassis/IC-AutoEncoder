@@ -54,17 +54,16 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
     for _ in range(num_sets-1):
         pos_barra.append([x + barWidth for x in pos_barra[-1]])
 
-    fig, ax = plt.subplots(num_subplots, 1, figsize=(12, 12))
-    ax2 = ax.twinx()
-    ax3 = ax.twinx()
-
+    fig, ax = plt.subplots(num_subplots, 1, figsize=(10, 10))
     plt.setp(ax, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['AE+tiny', 'AE+cifar', 'AE+both', 'UN+tiny', 'UN+cifar', 'UN+both', 'RAE+tiny', 'RAE+cifar', 'RAE+both'])
-    plt.setp(ax2, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['AE+tiny', 'AE+cifar', 'AE+both', 'UN+tiny', 'UN+cifar', 'UN+both', 'RAE+tiny', 'RAE+cifar', 'RAE+both'])
-    plt.setp(ax3, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['AE+tiny', 'AE+cifar', 'AE+both', 'UN+tiny', 'UN+cifar', 'UN+both', 'RAE+tiny', 'RAE+cifar', 'RAE+both'])
-
     plt.setp(ax, ylabel='Score')
-    plt.setp(ax2, ylabel='Score')
-    plt.setp(ax3, ylabel='Score')
+
+    ax2 = ax[0].twinx()
+    ax3 = ax[0].twinx()
+    ax4 = ax[1].twinx()
+    ax5 = ax[1].twinx()
+    ax6 = ax[2].twinx()
+    ax7 = ax[2].twinx()
 
 
     fig.tight_layout(pad=3.0)
@@ -78,11 +77,11 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
             ax[0].set_title("Loss = LSSIM", fontsize=10)
             ax[0].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), shadow=True, ncol=num_sets)
         elif metric == "tssim":
-            ax2[0].bar(pos_barra[idx], scores, width = barWidth, label = metric)
-            ax2[0].grid(axis='y', alpha=0.75)            
+            ax2.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax2.grid(axis='y', alpha=0.75)            
         else:
-            ax3[0].bar(pos_barra[idx], scores, width = barWidth, label = metric)
-            ax3[0].grid(axis='y', alpha=0.75)
+            ax3.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax3.grid(axis='y', alpha=0.75)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("L3SSIM", metric)
@@ -93,11 +92,11 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
             ax[1].set_title("Loss = L3SSIM", fontsize=10)
             ax[1].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), shadow=True, ncol=num_sets)
         elif metric == "tssim":
-            ax2[1].bar(pos_barra[idx], scores, width = barWidth, label = metric)
-            ax2[1].grid(axis='y', alpha=0.75)            
+            ax4.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax4.grid(axis='y', alpha=0.75)            
         else:
-            ax3[1].bar(pos_barra[idx], scores, width = barWidth, label = metric)
-            ax3[1].grid(axis='y', alpha=0.75)
+            ax5.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax5.grid(axis='y', alpha=0.75)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("LPSNRB", metric)
@@ -108,11 +107,11 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
             ax[2].set_title("Loss = LPSNRB", fontsize=10)
             ax[2].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), shadow=True, ncol=num_sets)
         elif metric == "tssim":
-            ax2[2].bar(pos_barra[idx], scores, width = barWidth, label = metric)
-            ax2[2].grid(axis='y', alpha=0.75)            
+            ax6.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax6.grid(axis='y', alpha=0.75)            
         else:
-            ax3[2].bar(pos_barra[idx], scores, width = barWidth, label = metric)
-            ax3[2].grid(axis='y', alpha=0.75)
+            ax7.bar(pos_barra[idx], scores, width = barWidth, label = metric)
+            ax7.grid(axis='y', alpha=0.75)
 
     ax.set_ylabel('ssim')
     ax2.set_ylabel('3ssim')
