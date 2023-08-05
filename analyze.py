@@ -7,7 +7,7 @@ environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 from modules.DataMod import DataSet
 from modules.CustomLosses import LSSIM, LPSNRB, L3SSIM
-from modules.misc import ssim_metric, psnrb_metric
+from modules.misc import ssim_metric
 from modules.ImageMetrics.metrics import three_ssim, psnrb
 from tensorflow.keras.optimizers import Adam
 
@@ -186,7 +186,7 @@ for model in NNmodels:
                     if dataset.name in filename:
                         try:
                             print("Evaluating model "+filename.split(".h5")[0] + " with dataset "+dataset.name+"...")
-                            loss_r, ssim, tssim, psnrb = NNmodels[model].evaluate(x = dataset.x_test, y = dataset.y_test)
+                            loss_r, ssim, tssim, psnrb_s = NNmodels[model].evaluate(x = dataset.x_test, y = dataset.y_test)
                         except KeyboardInterrupt:
                              exit()
                         except Exception as e:
@@ -198,7 +198,7 @@ for model in NNmodels:
 
                             print("Saving results...")
                             with open("logs/run1/metrics/results.csv", "a") as results_csv:
-                                results_csv.write(str(model) + "," + str(dataset.name) + "," + str(loss.name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb) + "\n")
+                                results_csv.write(str(model) + "," + str(dataset.name) + "," + str(loss.name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb_s) + "\n")
                             print("Results saved!")
                         
                         print("Generating model graphic...")
