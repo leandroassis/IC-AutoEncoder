@@ -172,7 +172,8 @@ def plot_model_graphic(model, dataset, output_path):
                 plt.subplot(rows, columns, columns*idx + 3)
                 #plt.imshow(model.predict(dataset.x_test[magic_number])[0], cmap="gray")
                 #print(model.predict(dataset.x_test[magic_number]))
-                #print(model.predict(dataset.x_test[magic_number]).shape)
+                print(dataset.x_test[magic_number].shape)
+                print(model.predict(dataset.x_test[magic_number]).shape)
                 plt.axis("off")
 
         plt.savefig(output_path)
