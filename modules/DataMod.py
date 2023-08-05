@@ -1,8 +1,6 @@
 import sys, os
 
 from tensorflow.python.keras.engine import training
-sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder'))
-sys.path.insert(0, os.path.abspath('/home/apeterson056/AutoEncoder/codigoGitHub/IC-AutoEncoder/modules'))
 
 import numpy as np
 import tensorflow as tf
