@@ -108,8 +108,8 @@ def ssim_metric (y_true,y_pred, max_val = 255, filter_size = 9, filter_sigma = 1
 def psnrb_metric (y_true,y_pred):
     result = []
     
-    x = tf.make_ndarray(y_pred)
-    y = tf.make_ndarray(y_true)
+    x = y_pred.numpy()
+    y = y_true.numpy()
     
 
     for idx in range(y_true.shape[0]):
