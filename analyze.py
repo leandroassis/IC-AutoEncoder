@@ -65,6 +65,15 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
     ax6 = ax[2].twinx()
     ax7 = ax[2].twinx()
 
+    ax[0].set_ylabel('ssim')
+    ax[1].set_ylabel('ssim')
+    ax[2].set_ylabel('ssim')
+    ax2.set_ylabel('3ssim')
+    ax4.set_ylabel('3ssim')
+    ax6.set_ylabel('3ssim')
+    ax3.set_ylabel('psnrb')
+    ax5.set_ylabel('psnrb')
+    ax7.set_ylabel('psnrb')
 
     fig.tight_layout(pad=3.0)
 
@@ -112,10 +121,6 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
         else:
             ax7.bar(pos_barra[idx], scores, width = barWidth, label = metric)
             ax7.grid(axis='y', alpha=0.75)
-
-    ax.set_ylabel('ssim')
-    ax2.set_ylabel('3ssim')
-    ax3.set_ylabel('psnrb')
 
     plt.savefig("logs/run1/plots/model_comparison.png")
     
