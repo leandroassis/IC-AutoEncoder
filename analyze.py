@@ -160,6 +160,7 @@ def plot_model_graphic(model, dataset, output_path):
         plt.subplot(rows, columns, 3)
         plt.title("Output Image")
 
+        predicteds = model.predict(dataset.x_test)
         for idx in range(rows):
                 magic_number = rd.randint(0, len(dataset.x_test) - 1)
 
@@ -170,7 +171,7 @@ def plot_model_graphic(model, dataset, output_path):
                 plt.imshow(dataset.y_test[magic_number], cmap="gray")
                 plt.axis("off")
                 plt.subplot(rows, columns, columns*idx + 3)
-                plt.imshow(model.predict(dataset.x_test)[magic_number], cmap="gray")
+                plt.imshow(predicteds[magic_number], cmap="gray")
                 plt.axis("off")
 
         plt.savefig(output_path)
