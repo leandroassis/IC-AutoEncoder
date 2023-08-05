@@ -18,6 +18,9 @@ from keras import models
 
 import pandas as pd
 
+print("Libraries imported successfully!")
+
+print("Fetching datasets...")
 tinyDataSet, cifarDataSet, cifarAndTinyDataSet = DataSet(), DataSet(), DataSet()
 
 tinyDataSet = tinyDataSet.load_rafael_tinyImagenet_64x64_noise_data()
@@ -25,6 +28,8 @@ cifarDataSet = cifarDataSet.load_rafael_cifar_10_noise_data()
 
 # concatenates the datasets
 cifarAndTinyDataSet = cifarAndTinyDataSet.concatenateDataSets(cifarDataSet, tinyDataSet)
+
+print("Datasets fetched successfully!")
 
 def get_models_mean_score(loss_name, metric_name):
     results_csv = pd.read_csv("logs/run1/metrics/results.csv")
@@ -135,8 +140,8 @@ def plot_model_graphic(model, dataset, output_path):
                 plt.axis("off")
                 plt.subplot(rows, columns, columns*idx + 3)
                 #plt.imshow(model.predict(dataset.x_test[magic_number])[0], cmap="gray")
-                print(model.predict(dataset.x_test[magic_number]))
-                print(model.predict(dataset.x_test[magic_number]).shape)
+                #print(model.predict(dataset.x_test[magic_number]))
+                #print(model.predict(dataset.x_test[magic_number]).shape)
                 plt.axis("off")
 
         plt.savefig(output_path)
@@ -144,17 +149,23 @@ def plot_model_graphic(model, dataset, output_path):
 
 NNmodels = {}
 
+
+print("Loading models...")
 for path in ["AutoEncoder-2.3-64x64.json", "ResidualAutoEncoder-0.1-64x64.json", "Unet2.3-64x64.json"]:
         # reads the model
         with open("models/arch/"+path, "r") as json_file:
                 model = models.model_from_json(json_file.read())
                 NNmodels[model.name] = model
+print("Models loaded!")
 
-
+print("Inicializing results sheet...")
 with open("logs/run1/metrics/results.csv", "w") as results_csv:
      results_csv.write("model_name,loss_name,dataset_name,ssim,tssim,psnrb\n")
+
+print("Results sheet inicialized!")
      
 
+print("Starting models analysis...")
 for model in NNmodels:
     for (dirpath, dirnames, filenames) in walk("logs/run1/weights/"):
         for filename in filenames:
@@ -162,13 +173,18 @@ for model in NNmodels:
                 if "PSNRB" in filename:
                      continue
                 
+                print("Evaluating model "+filename.split(".h5")[0])
+                
+                print("Loading models weights and compiling  it...")
                 NNmodels[model].load_weights("logs/run1/weights/"+filename)
                 loss = LSSIM() if "LSSIM" in filename else L3SSIM() if "L3SSIM" in filename else LSSIM()
                 NNmodels[model].compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = loss, metrics = [ssim_metric, three_ssim, psnrb])
+                print("Weights loaded and model compiled!")
 
                 for dataset in [cifarAndTinyDataSet, cifarDataSet, tinyDataSet]:
                     if dataset.name in filename:
                         try:
+                            print("Evaluating model...")
                             loss_r, ssim, tssim, psnrb = NNmodels[model].evaluate(x = dataset.x_test, y = dataset.y_test)
                         except KeyboardInterrupt:
                              exit()
@@ -177,9 +193,19 @@ for model in NNmodels:
                             print(e)
                             print("\n")
                         else:
+                            print("Model evaluated!")
+
+                            print("Saving results...")
                             with open("logs/run1/metrics/results.csv", "a") as results_csv:
                                 results_csv.write(str(model) + "," + str(dataset.name) + "," + str(loss.name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb) + "\n")
-
+                            print("Results saved!")
+                        
+                        print("Generating model graphic...")
                         plot_model_graphic(NNmodels[model], dataset, "logs/run1/plots/"+filename.split(".h5")[0]+".png")
+                        print("Model graphic generated!")
 
+print("Models analysis finished!")
+
+print("Generating model comparison graphic...")
 plot_model_comparison_graphic()
+print("Model comparison graphic generated!")
