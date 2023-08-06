@@ -104,16 +104,13 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
         if metric == "ssim": 
             ax[0].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
             ax[0].set_title("Loss = LSSIM", fontsize=10)
-            #ax[0].legend(loc='upper left', bbox_to_anchor=(0.0, 1.0), shadow=True, ncol=1)
+            ax[0].legend(loc='upper left', bbox_to_anchor=(0.0, 1.0), shadow=True, ncol=1)
         elif metric == "tssim":
             ax2.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
-            #ax2.legend(loc='upper left', bbox_to_anchor=(0.0, 0.85), shadow=True, ncol=1)
+            ax2.legend(loc='upper left', bbox_to_anchor=(0.0, 0.85), shadow=True, ncol=1)
         else:
             ax3.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
-            #ax3.legend(loc='upper left', bbox_to_anchor=(0.0, 0.70), shadow=True, ncol=1)
-        
-        plt.legend(loc='center', bbox_to_anchor=(0.5, 1.1), shadow=True, ncol=3)
-
+            ax3.legend(loc='upper left', bbox_to_anchor=(0.0, 0.70), shadow=True, ncol=1)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("L3SSIM", metric)
@@ -166,7 +163,7 @@ def plot_model_graphic(model, dataset, output_path, magic_number : list):
                 plt.imshow(predicteds[magic_number[idx]], cmap="gray")
                 plt.axis("off")
 
-        plt.savefig(output_path)
+        plt.savefig(output_path, dpi=600)
         plt.close()
 
 NNmodels = {}

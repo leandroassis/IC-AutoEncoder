@@ -44,12 +44,14 @@ def train_models(dataset : DataSet):
         file = open("logs/logs.txt", "w")
 
         # training for each loss
-        losses = {"LSSIM":LSSIM(), "LPSNRB":LPSNRB(), "L3SSIM":L3SSIM()}
+        #losses = {"LSSIM":LSSIM(), "LPSNRB":LPSNRB(), "L3SSIM":L3SSIM()}
+        losses = {"L3SSIM":L3SSIM()}
 
         # for each loss
         for loss in losses:
                 # train each model
-                for path in ["models/arch/AutoEncoder-2.3-64x64.json", "models/arch/ResidualAutoEncoder-0.1-64x64.json", "models/arch/Unet2.3-64x64.json"]:
+                #for path in ["models/arch/AutoEncoder-2.3-64x64.json", "models/arch/ResidualAutoEncoder-0.1-64x64.json", "models/arch/Unet2.3-64x64.json"]:
+                for path in ["models/arch/Unet2.3-64x64.json"]:
                         # reads the model
                         with open(path, "r") as json_file:
                                 model = models.model_from_json(json_file.read())
@@ -107,5 +109,6 @@ for proc in procs:
 '''
 
 # for each dataset
-for dataset in [tinyDataSet, cifarDataSet, cifarAndTinyDataSet]:
+#for dataset in [tinyDataSet, cifarDataSet, cifarAndTinyDataSet]:
+for dataset in [cifarAndTinyDataSet]:
         train_models(dataset)
