@@ -105,14 +105,11 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
             ax[0].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
             ax[0].grid(axis='y', alpha=0.75)
             ax[0].set_title("Loss = LSSIM", fontsize=10)
-            ax[0].legend(loc='upper center', bbox_to_anchor=(0.5, 1.05))
         elif metric == "tssim":
             ax2.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
-            ax2.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05))
             ax2.grid(axis='y', alpha=0.75)            
         else:
             ax3.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
-            ax3.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05))
             ax3.grid(axis='y', alpha=0.75)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
@@ -143,12 +140,14 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
             ax7.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
             ax7.grid(axis='y', alpha=0.75)
 
+    plt.legend(loc='best')
+
     plt.savefig("logs/run1/plots/model_comparison.png", dpi=600)
     
-def plot_model_graphic(model, dataset, output_path):
+def plot_model_graphic(model, dataset, output_path, magic_number):
         # plots the model
 
-        plt.figure(figsize=(12, 12))
+        plt.figure(figsize=(8, 8))
 
         columns = 3
         rows = 5
@@ -162,8 +161,6 @@ def plot_model_graphic(model, dataset, output_path):
 
         predicteds = model.predict(dataset.x_test)
         for idx in range(rows):
-                magic_number = rd.randint(0, len(dataset.x_test) - 1)
-
                 plt.subplot(rows, columns, columns*idx + 1)
                 plt.imshow(dataset.x_test[magic_number], cmap="gray")
                 plt.axis("off")
@@ -179,6 +176,7 @@ def plot_model_graphic(model, dataset, output_path):
 
 NNmodels = {}
 
+# TODO : AJEITAR LEGENDA DOS EIXOS
 
 print("Loading models...")
 for path in ["AutoEncoder-2.3-64x64.json", "ResidualAutoEncoder-0.1-64x64.json", "Unet2.3-64x64.json"]:
@@ -193,7 +191,7 @@ with open("logs/run1/metrics/results.csv", "w") as results_csv:
      results_csv.write("model_name,loss_name,dataset_name,ssim,tssim,psnrb\n")
 
 print("Results sheet inicialized!")
-     
+magic_number = rd.randint(0, 450)
 
 print("Starting models analysis...")
 for model in NNmodels:
@@ -227,7 +225,7 @@ for model in NNmodels:
                             print("Results saved!")
                         
                         print("Generating model graphic...")
-                        plot_model_graphic(NNmodels[model], dataset, "logs/run1/plots/"+filename.split(".h5")[0]+".png")
+                        plot_model_graphic(NNmodels[model], dataset, "logs/run1/plots/"+filename.split(".h5")[0]+".png", magic_number=magic_number)
                         print("Model graphic generated!")
                         break
 
