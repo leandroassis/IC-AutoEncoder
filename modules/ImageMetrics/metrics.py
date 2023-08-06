@@ -228,7 +228,7 @@ def blocking_efect_factor (im: tf.Tensor, block_size = 8) -> tf.Tensor:
 	# BEF
 	bef = t*(d_b - d_bc)
 
-	return tf.math.maximum(bef, tf.zeros(bef.shape, dtype = bef.dtype))
+	return tf.math.maximum(bef, tf.zeros(tf.shape(bef), dtype = bef.dtype))
 
 
 

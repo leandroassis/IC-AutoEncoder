@@ -81,7 +81,7 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
     ax5.spines['right'].set_position(('outward', 60))
     ax7.spines['right'].set_position(('outward', 60))
 
-    fig.tight_layout(pad=3.0)
+    fig.tight_layout(pad=2.0)
 
     color1, color2, color3 = plt.cm.viridis([0, .5, .9])
 
