@@ -77,9 +77,9 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
     ax7.set_ylabel('psnrb')
 
     # move the last y-axis spine over to the right by 20% of the width of the axes
-    ax3.spines['right'].set_position(('outward', 60))
-    ax5.spines['right'].set_position(('outward', 60))
-    ax7.spines['right'].set_position(('outward', 60))
+    ax3.spines['right'].set_position(('outward', 50))
+    ax5.spines['right'].set_position(('outward', 50))
+    ax7.spines['right'].set_position(('outward', 50))
 
     fig.tight_layout(pad=2.0)
 
@@ -103,48 +103,43 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
 
         if metric == "ssim": 
             ax[0].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
-            ax[0].grid(axis='y', alpha=0.75)
             ax[0].set_title("Loss = LSSIM", fontsize=10)
+            #ax[0].legend(loc='upper left', bbox_to_anchor=(0.0, 1.0), shadow=True, ncol=1)
         elif metric == "tssim":
             ax2.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
-            ax2.grid(axis='y', alpha=0.75)            
+            #ax2.legend(loc='upper left', bbox_to_anchor=(0.0, 0.85), shadow=True, ncol=1)
         else:
             ax3.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
-            ax3.grid(axis='y', alpha=0.75)
+            #ax3.legend(loc='upper left', bbox_to_anchor=(0.0, 0.70), shadow=True, ncol=1)
+        
+        plt.legend(loc='center', bbox_to_anchor=(0.5, 1.1), shadow=True, ncol=3)
+
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("L3SSIM", metric)
 
         if metric == "ssim": 
             ax[1].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
-            ax[1].grid(axis='y', alpha=0.75)
             ax[1].set_title("Loss = L3SSIM", fontsize=10)
         elif metric == "tssim":
             ax4.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
-            ax4.grid(axis='y', alpha=0.75)            
         else:
             ax5.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
-            ax5.grid(axis='y', alpha=0.75)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("LPSNRB", metric)
 
         if metric == "ssim": 
             ax[2].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
-            ax[2].grid(axis='y', alpha=0.75)
             ax[2].set_title("Loss = LPSNRB", fontsize=10)
         elif metric == "tssim":
             ax6.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
-            ax6.grid(axis='y', alpha=0.75)            
         else:
             ax7.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
-            ax7.grid(axis='y', alpha=0.75)
-
-    plt.legend(loc='best')
 
     plt.savefig("logs/run1/plots/model_comparison.png", dpi=600)
     
-def plot_model_graphic(model, dataset, output_path, magic_number):
+def plot_model_graphic(model, dataset, output_path, magic_number : list):
         # plots the model
 
         plt.figure(figsize=(8, 8))
@@ -162,13 +157,13 @@ def plot_model_graphic(model, dataset, output_path, magic_number):
         predicteds = model.predict(dataset.x_test)
         for idx in range(rows):
                 plt.subplot(rows, columns, columns*idx + 1)
-                plt.imshow(dataset.x_test[magic_number], cmap="gray")
+                plt.imshow(dataset.x_test[magic_number[idx]], cmap="gray")
                 plt.axis("off")
                 plt.subplot(rows, columns, columns*idx + 2)
-                plt.imshow(dataset.y_test[magic_number], cmap="gray")
+                plt.imshow(dataset.y_test[magic_number[idx]], cmap="gray")
                 plt.axis("off")
                 plt.subplot(rows, columns, columns*idx + 3)
-                plt.imshow(predicteds[magic_number], cmap="gray")
+                plt.imshow(predicteds[magic_number[idx]], cmap="gray")
                 plt.axis("off")
 
         plt.savefig(output_path)
@@ -191,7 +186,7 @@ with open("logs/run1/metrics/results.csv", "w") as results_csv:
      results_csv.write("model_name,loss_name,dataset_name,ssim,tssim,psnrb\n")
 
 print("Results sheet inicialized!")
-magic_number = rd.randint(0, 450)
+magic_number = [rd.randint(0, 450) for x in range(5)]
 
 print("Starting models analysis...")
 for model in NNmodels:
