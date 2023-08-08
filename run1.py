@@ -3,7 +3,7 @@ from os import getcwd, environ
 
 path.insert(0, getcwd())
 path.insert(0, getcwd() + "/modules/")
-environ["CUDA_VISIBLE_DEVICES"] = "3,1"
+environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 from modules.DataMod import DataSet
 from modules.CustomLosses import LSSIM, LPSNRB, L3SSIM
@@ -74,7 +74,7 @@ def train_models(dataset : DataSet):
                                                 verbose = 1,
                                                 validation_split = 0,
                                                 shuffle = True,
-                                                class_weNoneight = None,
+                                                class_weight = None,
                                                 sample_weight = None,
                                                 steps_per_epoch = None,
                                                 validation_steps = None,

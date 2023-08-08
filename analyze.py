@@ -3,7 +3,7 @@ from os import getcwd, environ, walk
 
 path.insert(0, getcwd())
 path.insert(0, getcwd() + "/modules/")
-environ["CUDA_VISIBLE_DEVICES"] = "1"
+environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 from modules.DataMod import DataSet
 from modules.CustomLosses import LSSIM, LPSNRB, L3SSIM
