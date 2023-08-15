@@ -252,3 +252,12 @@ class DataSet (DataSetABC):
     def get_metadata (self) -> dict:
 
         return {"name":self.name, "parameters": self.parameters}
+    
+    def add_gaussian_noise(self, dist_normal : int = 0.1):
+        noise = np.random.normal(loc=0.0, scale=dist_normal, size=self.x_train.shape)
+        self.x_train = self.x_train + noise
+
+        noise = np.random.normal(loc=0.0, scale=dist_normal, size=self.x_test.shape)
+        self.x_test = self.x_test + noise
+
+        return self
