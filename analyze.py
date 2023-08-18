@@ -31,7 +31,7 @@ dataset = DataSet.concatenateDataSets(DataSet().load_rafael_tinyImagenet_64x64_n
 
 print("Datasets fetched successfully!")
 
-def get_models_mean_score(loss_name, metric_name):
+def get_models_mean_score(dataset_name, metric_name):
     results_csv = pd.read_csv("logs/run1/metrics/results.csv")
 
     mean = []
@@ -40,7 +40,7 @@ def get_models_mean_score(loss_name, metric_name):
     # filter the goal metric results by the model name and dataset name which has the loss name
 
     for model_name in ["AutoEncoder-2.3-64x64", "Unet2.3-64x64", "ResidualAutoEncoder-0.1-64x64"]:
-         for dataset_name in ["rafael_tinyImagenet", "rafael_cifar_10", "rafael_cifar_10_rafael_tinyImagenet"]:
+         for loss_name in ["LSSIM", "L3SSIM", "LPSNRB"]:
             filtered_results = results_csv[(results_csv["model_name"] == model_name) & (results_csv["loss_name"] == loss_name) & (results_csv["dataset_name"] == dataset_name)]
             mean.append(filtered_results[metric_name].mean())
             std.append(filtered_results[metric_name].std())
@@ -55,7 +55,7 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
         pos_barra.append([x + barWidth for x in pos_barra[-1]])
 
     fig, ax = plt.subplots(num_subplots, 1, figsize=(12, 10))
-    plt.setp(ax, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['AE+tiny', 'AE+cifar', 'AE+both', 'UN+tiny', 'UN+cifar', 'UN+both', 'RAE+tiny', 'RAE+cifar', 'RAE+both'])
+    plt.setp(ax, xticks=[r + barWidth for r in range(num_sets)], xticklabels=['AE+LSSIM', 'AE+L3SSIM', 'AE+LPSNRB', 'UN+LSSIM', 'UN+L3SSIM', 'UN+LPSNRB', 'RAE+LSSIM', 'RAE+L3SSIM', 'RAE+LPSNRB'])
     plt.setp(ax, ylabel='Score')
 
     ax2 = ax[0].twinx()
@@ -97,13 +97,24 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
     ax6.yaxis.label.set_color(color2)
     ax7.yaxis.label.set_color(color3)
 
+    ax[0].yaxis.set_ybound(lower=0.7, upper=0.9)
+    ax2.yaxis.set_ybound(lower=0.7, upper=0.9)
+    ax3.yaxis.set_ybound(lower=19, upper=30)
+    
+    ax[1].yaxis.set_ybound(lower=0.7, upper=0.9)
+    ax4.yaxis.set_ybound(lower=0.7, upper=0.9)
+    ax5.yaxis.set_ybound(lower=19, upper=30)
+
+    ax[2].yaxis.set_ybound(lower=0.7, upper=0.9)
+    ax6.yaxis.set_ybound(lower=0.7, upper=0.9)
+    ax7.yaxis.set_ybound(lower=19, upper=30)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
-        scores, std_scores = get_models_mean_score("LSSIM", metric)
+        scores, std_scores = get_models_mean_score("rafael_cifar_10", metric)
 
         if metric == "ssim": 
             ax[0].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
-            ax[0].set_title("Loss = LSSIM", fontsize=10)
+            ax[0].set_title("CIFAR-10", fontsize=10)
             ax[0].legend(loc='upper left', bbox_to_anchor=(0.0, 1.0), shadow=True, ncol=1)
         elif metric == "tssim":
             ax2.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
@@ -113,22 +124,22 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
             ax3.legend(loc='upper left', bbox_to_anchor=(0.0, 0.70), shadow=True, ncol=1)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
-        scores, std_scores = get_models_mean_score("L3SSIM", metric)
+        scores, std_scores = get_models_mean_score("rafael_tinyImagenet", metric)
 
         if metric == "ssim": 
             ax[1].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
-            ax[1].set_title("Loss = L3SSIM", fontsize=10)
+            ax[1].set_title("TINY", fontsize=10)
         elif metric == "tssim":
             ax4.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
         else:
             ax5.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
-        scores, std_scores = get_models_mean_score("LPSNRB", metric)
+        scores, std_scores = get_models_mean_score("rafael_cifar_10_rafael_tinyImagenet", metric)
 
         if metric == "ssim": 
             ax[2].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
-            ax[2].set_title("Loss = LPSNRB", fontsize=10)
+            ax[2].set_title("CIFAR+TINY", fontsize=10)
         elif metric == "tssim":
             ax6.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
         else:
