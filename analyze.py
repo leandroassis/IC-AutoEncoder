@@ -196,6 +196,7 @@ with open("logs/run1/metrics/results.csv", "w") as results_csv:
 print("Results sheet inicialized!")
 magic_number = [rd.randint(0, 450) for x in range(5)]
 
+'''
 print("Starting models analysis...")
 for model in NNmodels:
     for (dirpath, dirnames, filenames) in walk("logs/run1/weights/"):
@@ -230,6 +231,7 @@ for model in NNmodels:
                 print("Model graphic generated!")
 
 print("Models analysis finished!")
+'''
 
 print("Generating model comparison graphic...")
 plot_model_comparison_graphic()
