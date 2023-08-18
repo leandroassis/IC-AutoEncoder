@@ -115,13 +115,10 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
         if metric == "ssim": 
             ax[0].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
             ax[0].set_title("CIFAR-10", fontsize=10)
-            ax[0].legend(loc='upper left', bbox_to_anchor=(0.0, 1.0), shadow=True, ncol=1)
         elif metric == "tssim":
             ax2.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
-            ax2.legend(loc='upper left', bbox_to_anchor=(0.0, 0.85), shadow=True, ncol=1)
         else:
             ax3.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
-            ax3.legend(loc='upper left', bbox_to_anchor=(0.0, 0.70), shadow=True, ncol=1)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("rafael_tinyImagenet", metric)
@@ -220,13 +217,13 @@ for model in NNmodels:
                 else:
                     print("Model evaluated!")
 
-                    if "rafael_cifar_10" in filename:
+                    if "rafael_cifar_10_rafael_tinyImagenet" in filename:
+                         name = "rafael_cifar_10_rafael_tinyImagenet"
+                    elif "rafael_cifar_10" in filename:
                          name = "rafael_cifar_10"
                     elif "rafael_tinyImagenet" in filename:
                          name = "rafael_tinyImagenet"
-                    elif "rafael_cifar_10_rafael_tinyImagenet" in filename:
-                         name = "rafael_cifar_10_rafael_tinyImagenet"
-
+                
                     print("Saving results...")
                     with open("logs/run1/metrics/results.csv", "a") as results_csv:
                         results_csv.write(str(model) + "," + str(loss.name) + "," + str(name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb_s) + "\n")
