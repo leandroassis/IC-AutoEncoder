@@ -21,13 +21,13 @@ import pandas as pd
 print("Libraries imported successfully!")
 
 print("Fetching datasets...")
-#tinyDataSet, cifarDataSet, cifarAndTinyDataSet = DataSet(), DataSet(), DataSet()
+tinyDataSet, cifarDataSet, dataset = DataSet(), DataSet(), DataSet()
 
-#tinyDataSet = tinyDataSet.load_rafael_tinyImagenet_64x64_noise_data()
-#cifarDataSet = cifarDataSet.load_rafael_cifar_10_noise_data()
+tinyDataSet = tinyDataSet.load_rafael_tinyImagenet_64x64_noise_data()
+cifarDataSet = cifarDataSet.load_rafael_cifar_10_noise_data()
 
 # concatenates the datasets
-dataset = DataSet.concatenateDataSets(DataSet().load_rafael_tinyImagenet_64x64_noise_data, DataSet().load_rafael_cifar_10_noise_data)
+dataset = dataset.concatenateDataSets(cifarDataSet, tinyDataSet)
 
 print("Datasets fetched successfully!")
 
