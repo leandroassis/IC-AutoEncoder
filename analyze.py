@@ -97,17 +97,17 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
     ax6.yaxis.label.set_color(color2)
     ax7.yaxis.label.set_color(color3)
 
-    ax[0].yaxis.set_ybound(lower=0.7, upper=0.9)
-    ax2.yaxis.set_ybound(lower=0.7, upper=0.9)
-    ax3.yaxis.set_ybound(lower=19, upper=30)
+    ax[0].set_ybound(lower=0.7, upper=0.9)
+    ax2.set_ybound(lower=0.7, upper=0.9)
+    ax3.set_ybound(lower=19, upper=30)
     
-    ax[1].yaxis.set_ybound(lower=0.7, upper=0.9)
-    ax4.yaxis.set_ybound(lower=0.7, upper=0.9)
-    ax5.yaxis.set_ybound(lower=19, upper=30)
+    ax[1].set_ybound(lower=0.7, upper=0.9)
+    ax4.set_ybound(lower=0.7, upper=0.9)
+    ax5.set_ybound(lower=19, upper=30)
 
-    ax[2].yaxis.set_ybound(lower=0.7, upper=0.9)
-    ax6.yaxis.set_ybound(lower=0.7, upper=0.9)
-    ax7.yaxis.set_ybound(lower=19, upper=30)
+    ax[2].set_ybound(lower=0.7, upper=0.9)
+    ax6.set_ybound(lower=0.7, upper=0.9)
+    ax7.set_ybound(lower=19, upper=30)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("rafael_cifar_10", metric)
