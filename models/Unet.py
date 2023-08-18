@@ -75,3 +75,6 @@ with open("models/arch/" + model_file_name + '.json', "w") as json_file:
     json_file.close()
 
 plot_model(model=unet, to_file="models/arch/photos/" + model_file_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
+
+with open("models/autoEncoder.py", "a") as file:
+    file.write("#"+unet.count_params())

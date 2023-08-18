@@ -36,4 +36,5 @@ with open("models/arch/" + model_name + ".json", "w") as json_file:
 
 plot_model(model=autoEncoder, to_file="models/arch/photos/" + model_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
 
-print(autoEncoder.count_params())
+with open("models/autoEncoder.py", "a") as file:
+    file.write("#"+autoEncoder.count_params())

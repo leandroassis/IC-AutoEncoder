@@ -21,13 +21,13 @@ import pandas as pd
 print("Libraries imported successfully!")
 
 print("Fetching datasets...")
-tinyDataSet, cifarDataSet, cifarAndTinyDataSet = DataSet(), DataSet(), DataSet()
+#tinyDataSet, cifarDataSet, cifarAndTinyDataSet = DataSet(), DataSet(), DataSet()
 
-tinyDataSet = tinyDataSet.load_rafael_tinyImagenet_64x64_noise_data()
-cifarDataSet = cifarDataSet.load_rafael_cifar_10_noise_data()
+#tinyDataSet = tinyDataSet.load_rafael_tinyImagenet_64x64_noise_data()
+#cifarDataSet = cifarDataSet.load_rafael_cifar_10_noise_data()
 
 # concatenates the datasets
-cifarAndTinyDataSet = cifarAndTinyDataSet.concatenateDataSets(cifarDataSet, tinyDataSet)
+dataset = DataSet.concatenateDataSets(DataSet().load_rafael_tinyImagenet_64x64_noise_data, DataSet().load_rafael_cifar_10_noise_data)
 
 print("Datasets fetched successfully!")
 
@@ -197,29 +197,26 @@ for model in NNmodels:
                 NNmodels[model].compile(optimizer = Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-7, amsgrad=False), loss = loss, metrics = [ssim_metric, three_ssim, psnrb])
                 print("Weights loaded and model compiled!")
 
-                for dataset in [cifarAndTinyDataSet, cifarDataSet, tinyDataSet]:
-                    if dataset.name in filename:
-                        try:
-                            print("Evaluating model "+filename.split(".h5")[0] + " with dataset "+dataset.name+"...")
-                            loss_r, ssim, tssim, psnrb_s = NNmodels[model].evaluate(x = dataset.x_test, y = dataset.y_test)
-                        except KeyboardInterrupt:
-                             exit()
-                        except Exception as e:
-                            print("Error evaluating model: " + filename.split(".h5")[0])
-                            print(e)
-                            print("\n")
-                        else:
-                            print("Model evaluated!")
+                try:
+                    print("Evaluating model "+filename.split(".h5")[0] + " with dataset "+dataset.name+"...")
+                    loss_r, ssim, tssim, psnrb_s = NNmodels[model].evaluate(x = dataset.x_test, y = dataset.y_test)
+                except KeyboardInterrupt:
+                        exit()
+                except Exception as e:
+                    print("Error evaluating model: " + filename.split(".h5")[0])
+                    print(e)
+                    print("\n")
+                else:
+                    print("Model evaluated!")
 
-                            print("Saving results...")
-                            with open("logs/run1/metrics/results.csv", "a") as results_csv:
-                                results_csv.write(str(model) + "," + str(loss.name) + "," + str(dataset.name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb_s) + "\n")
-                            print("Results saved!")
-                        
-                        print("Generating model graphic...")
-                        plot_model_graphic(NNmodels[model], dataset, "logs/run1/plots/"+filename.split(".h5")[0]+".png", magic_number=magic_number)
-                        print("Model graphic generated!")
-                        break
+                    print("Saving results...")
+                    with open("logs/run1/metrics/results.csv", "a") as results_csv:
+                        results_csv.write(str(model) + "," + str(loss.name) + "," + str(dataset.name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb_s) + "\n")
+                    print("Results saved!")
+                
+                print("Generating model graphic...")
+                plot_model_graphic(NNmodels[model], dataset, "logs/run1/plots/"+filename.split(".h5")[0]+".png", magic_number=magic_number)
+                print("Model graphic generated!")
 
 print("Models analysis finished!")
 
