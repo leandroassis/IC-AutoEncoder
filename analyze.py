@@ -130,16 +130,16 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
         else:
             ax7.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
 
-    ax[0].set_ybound(lower=0.6, upper=1.0)
-    ax2.set_ybound(lower=0.6, upper=1.0)
+    ax[0].set_ybound(lower=0.6, upper=0.9)
+    ax2.set_ybound(lower=0.6, upper=0.9)
     ax3.set_ybound(lower=15, upper=30)
     
-    ax[1].set_ybound(lower=0.6, upper=1.0)
-    ax4.set_ybound(lower=0.6, upper=1.0)
+    ax[1].set_ybound(lower=0.6, upper=0.9)
+    ax4.set_ybound(lower=0.6, upper=0.9)
     ax5.set_ybound(lower=15, upper=30)
 
-    ax[2].set_ybound(lower=0.6, upper=1.0)
-    ax6.set_ybound(lower=0.6, upper=1.0)
+    ax[2].set_ybound(lower=0.6, upper=0.9)
+    ax6.set_ybound(lower=0.6, upper=0.9)
     ax7.set_ybound(lower=15, upper=30)
 
     plt.savefig("logs/run1/plots/model_comparison.png", dpi=600)
