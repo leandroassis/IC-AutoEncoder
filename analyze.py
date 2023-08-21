@@ -97,18 +97,6 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
     ax6.yaxis.label.set_color(color2)
     ax7.yaxis.label.set_color(color3)
 
-    ax[0].set_ybound(lower=0.6, upper=1.0)
-    ax2.set_ybound(lower=0.6, upper=1.0)
-    ax3.set_ybound(lower=15, upper=30)
-    
-    ax[1].set_ybound(lower=0.6, upper=1.0)
-    ax4.set_ybound(lower=0.6, upper=1.0)
-    ax5.set_ybound(lower=15, upper=30)
-
-    ax[2].set_ybound(lower=0.6, upper=1.0)
-    ax6.set_ybound(lower=0.6, upper=1.0)
-    ax7.set_ybound(lower=15, upper=30)
-
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("rafael_cifar_10", metric)
 
@@ -141,6 +129,18 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
             ax6.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
         else:
             ax7.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
+
+    ax[0].set_ybound(lower=0.6, upper=1.0)
+    ax2.set_ybound(lower=0.6, upper=1.0)
+    ax3.set_ybound(lower=15, upper=30)
+    
+    ax[1].set_ybound(lower=0.6, upper=1.0)
+    ax4.set_ybound(lower=0.6, upper=1.0)
+    ax5.set_ybound(lower=15, upper=30)
+
+    ax[2].set_ybound(lower=0.6, upper=1.0)
+    ax6.set_ybound(lower=0.6, upper=1.0)
+    ax7.set_ybound(lower=15, upper=30)
 
     plt.savefig("logs/run1/plots/model_comparison.png", dpi=600)
     
@@ -191,7 +191,8 @@ with open("logs/run1/metrics/results.csv", "w") as results_csv:
      results_csv.write("model_name,loss_name,dataset_name,ssim,tssim,psnrb\n")
 
 print("Results sheet inicialized!")
-magic_number = [rd.randint(0, 450) for x in range(5)]
+print(dataset.x_test.shape[0]-1)
+magic_number = [rd.randint(0, dataset.x_test.shape[0]-1) for x in range(5)]
 
 print("Starting models analysis...")
 for model in NNmodels:
@@ -217,7 +218,7 @@ for model in NNmodels:
                 else:
                     print("Model evaluated!")
 
-                    if "rafael_cifar_10_rafael_tinyImagenet" in filename:
+                    if "rafael_cifar_10_rafael_tinyImagenet" in filename.split(".h5")[0]:
                          name = "rafael_cifar_10_rafael_tinyImagenet"
                     elif "rafael_cifar_10" in filename:
                          name = "rafael_cifar_10"
@@ -225,6 +226,7 @@ for model in NNmodels:
                          name = "rafael_tinyImagenet"
                 
                     print("Saving results...")
+                    print(name)
                     with open("logs/run1/metrics/results.csv", "a") as results_csv:
                         results_csv.write(str(model) + "," + str(loss.name) + "," + str(name) + "," + str(ssim) + "," + str(tssim) + "," + str(psnrb_s) + "\n")
                     print("Results saved!")
