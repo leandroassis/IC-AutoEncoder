@@ -47,8 +47,12 @@ def get_models_mean_score(dataset_name, metric_name):
 
     return mean, std
 
+def add_bar_label(num_sets, scores):
+     for idx in range(num_sets):
+            plt.text(idx, scores[idx]+0.0005, str(round(scores[idx], 3)), ha='center', va='bottom', fontsize=6)
+
 def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
-    barWidth = 0.15
+    barWidth = 0.20
     pos_barra = [[x for x in range(num_sets)]]
 
     for _ in range(num_sets-1):
@@ -107,6 +111,8 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
             ax2.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
         else:
             ax3.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
+
+        add_bar_label(9, scores)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("rafael_tinyImagenet", metric)
