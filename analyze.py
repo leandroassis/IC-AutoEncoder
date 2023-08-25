@@ -48,8 +48,9 @@ def get_models_mean_score(dataset_name, metric_name):
     return mean, std
 
 def add_bar_label(axis, bar):
-        height = bar.get_height()
-        axis.text(bar.get_x() + bar.get_width()/2., height, '%.3f' % float(height), ha='center', fontsize=6)
+     for rect in bar:
+            height = rect.get_height()
+            axis.text(rect.get_x() + rect.get_width()/2., height, '%.3f' % float(height), ha='center', fontsize=6)
 
 def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
     barWidth = 0.20
