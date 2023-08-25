@@ -241,8 +241,9 @@ class DataSet (DataSetABC):
             print("Error concatenating datasets")
             return 0
         finally:
+            print(dataset1.x_test.shape)
+            print(dataset2.x_test.shape)
             print(self.x_test.shape)
-            print(self.y_test.shape)
     
         return self
 
