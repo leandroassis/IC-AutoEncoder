@@ -237,10 +237,12 @@ class DataSet (DataSetABC):
             else:
                 self.x_test = np.concatenate((dataset1.x_test, dataset2.x_test))
                 self.y_test = np.concatenate((dataset1.y_test, dataset2.y_test))
-
         except:
             print("Error concatenating datasets")
             return 0
+        finally:
+            print(self.x_test.shape)
+            print(self.y_test.shape)
     
         return self
 
@@ -269,5 +271,7 @@ class DataSet (DataSetABC):
 
         noise = np.random.normal(loc=0.0, scale=dist_normal, size=self.x_test.shape)
         self.x_test = self.x_test + noise
+
+        #crop in 255
 
         return self

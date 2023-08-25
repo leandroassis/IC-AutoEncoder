@@ -47,9 +47,9 @@ def get_models_mean_score(dataset_name, metric_name):
 
     return mean, std
 
-def add_bar_label(axis, num_sets, scores):
-     for idx in range(num_sets):
-            axis.text(idx, scores[idx]+0.0005, str(round(scores[idx], 3)), ha='center', va='bottom', fontsize=6)
+def add_bar_label(axis, bar):
+        height = bar.get_height()
+        axis.text(bar.get_x() + bar.get_width()/2., height, '%.3f' % float(height), ha='center', fontsize=6)
 
 def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
     barWidth = 0.20
@@ -105,43 +105,43 @@ def plot_model_comparison_graphic(num_sets = 9, num_subplots = 3):
         scores, std_scores = get_models_mean_score("rafael_cifar_10", metric)
 
         if metric == "ssim": 
-            ax[0].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
-            add_bar_label(ax[0], 9, scores)
+            bar = ax[0].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
+            add_bar_label(ax[0], bar)
             ax[0].set_title("CIFAR-10", fontsize=10)
         elif metric == "tssim":
-            ax2.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
-            add_bar_label(ax2, 9, scores)
+            bar = ax2.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
+            add_bar_label(ax2, bar)
         else:
-            ax3.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
-            add_bar_label(ax3, 9, scores)
+            bar = ax3.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
+            add_bar_label(ax3, bar)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("rafael_tinyImagenet", metric)
 
         if metric == "ssim": 
-            ax[1].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
+            bar = ax[1].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
             ax[1].set_title("TINY", fontsize=10)
-            add_bar_label(ax[1], 9, scores)
+            add_bar_label(ax[1], bar)
         elif metric == "tssim":
-            ax4.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
-            add_bar_label(ax4, 9, scores)
+            bar = ax4.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
+            add_bar_label(ax4, bar)
         else:
-            ax5.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
-            add_bar_label(ax5, 9, scores)
+            bar = ax5.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
+            add_bar_label(ax5, bar)
 
     for idx, metric in enumerate(["ssim", "tssim", "psnrb"]):
         scores, std_scores = get_models_mean_score("rafael_cifar_10_rafael_tinyImagenet", metric)
 
         if metric == "ssim": 
-            ax[2].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
+            bar = ax[2].bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color1)
             ax[2].set_title("CIFAR+TINY", fontsize=10)
-            add_bar_label(ax[2], 9, scores)
+            add_bar_label(ax[2], bar)
         elif metric == "tssim":
-            ax6.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
-            add_bar_label(ax6, 9, scores)
+            bar = ax6.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color2)
+            add_bar_label(ax6, bar)
         else:
-            ax7.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
-            add_bar_label(ax7, 9, scores)
+            bar = ax7.bar(pos_barra[idx], scores, width = barWidth, label = metric, color=color3)
+            add_bar_label(ax7, bar)
 
     ax[0].set_ybound(lower=0.6, upper=0.9)
     ax2.set_ybound(lower=0.6, upper=0.9)
