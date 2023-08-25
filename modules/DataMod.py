@@ -226,8 +226,18 @@ class DataSet (DataSetABC):
         try:
             self.x_train = np.concatenate((dataset1.x_train, dataset2.x_train))
             self.y_train = np.concatenate((dataset1.y_train, dataset2.y_train))
-            self.x_test = np.concatenate((dataset1.x_test, dataset2.x_test))
-            self.y_test = np.concatenate((dataset1.y_test, dataset2.y_test))
+
+            # makes validation datasets equals
+            if dataset1.x_test.shape[0] > dataset2.x_test.shape[0]:
+                self.x_test = np.concatenate(dataset1.x_test[:dataset2.x_test.shape[0]], dataset2.x_test)
+                self.y_test = np.concatenate(dataset1.y_test[:dataset2.y_test.shape[0]], dataset2.y_test)
+            elif dataset1.x_test.shape[0] < dataset2.x_test.shape[0]:
+                self.x_test = np.concatenate(dataset2.x_test[:dataset1.x_test.shape[0]], dataset1.x_test)
+                self.y_test = np.concatenate(dataset2.y_test[:dataset1.y_test.shape[0]], dataset1.y_test)
+            else:
+                self.x_test = np.concatenate((dataset1.x_test, dataset2.x_test))
+                self.y_test = np.concatenate((dataset1.y_test, dataset2.y_test))
+
         except:
             print("Error concatenating datasets")
             return 0
