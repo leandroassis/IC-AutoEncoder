@@ -3,7 +3,6 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.utils import plot_model
 
 model_name = "AutoEncoder-2.3-64x64"
-
 inputs = Input(shape=(64,64,1))
 layer_1 = Conv2D(filters = 20, kernel_size = 4, padding = 'same', activation = 'relu')(inputs)
 layer_2 = Conv2D(filters = 40, kernel_size = 4, padding = 'same', activation = 'relu')(layer_1)
@@ -35,6 +34,3 @@ with open("models/arch/" + model_name + ".json", "w") as json_file:
     json_file.write(model_json)
 
 plot_model(model=autoEncoder, to_file="models/arch/photos/" + model_name + '.png', show_shapes=True, rankdir= "TB", expand_nested=True )
-
-with open("models/autoEncoder.py", "a") as file:
-    file.write("#"+autoEncoder.count_params())

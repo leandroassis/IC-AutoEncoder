@@ -1,0 +1,1 @@
+# trainer com mlflow pra lgoar + cross validation + treinar até não ter melhoria
