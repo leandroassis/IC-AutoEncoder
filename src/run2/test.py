@@ -8,9 +8,10 @@ environ["CUDA_VISIBLE_DEVICES"] = "3"
 from modules.DataMod import DataSet
 
 tinyDataSet = DataSet()
-print(tinyDataSet.x_test[15])
 
 tinyDataSet.load_rafael_tinyImagenet_64x64_noise_data()
+print(tinyDataSet.x_test[15])
+
 tinyDataSet = tinyDataSet.add_gaussian_noise()
 
 print(tinyDataSet.x_test[15])
