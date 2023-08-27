@@ -14,7 +14,7 @@ tinyDataSet.load_rafael_tinyImagenet_64x64_noise_data()
 tiny2 = tinyDataSet
 print(tinyDataSet.x_test[15])
 
-tinyDataSet = tinyDataSet.add_gaussian_noise(dist_normal=0.3)
+tinyDataSet = tinyDataSet.add_gaussian_noise(dist_normal=5)
 
 print(tinyDataSet.x_test[15])
 
