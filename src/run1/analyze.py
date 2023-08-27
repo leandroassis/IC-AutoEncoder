@@ -173,7 +173,9 @@ def plot_model_graphic(model, dataset, output_path, magic_number : list):
         plt.subplot(rows, columns, 3)
         plt.title("Output Image")
 
-        predicteds = model.predict(dataset.x_test)
+        if model:
+            predicteds = model.predict(dataset.x_test)
+
         for idx in range(rows):
                 plt.subplot(rows, columns, columns*idx + 1)
                 plt.imshow(dataset.x_test[magic_number[idx]], cmap="gray")
@@ -181,9 +183,11 @@ def plot_model_graphic(model, dataset, output_path, magic_number : list):
                 plt.subplot(rows, columns, columns*idx + 2)
                 plt.imshow(dataset.y_test[magic_number[idx]], cmap="gray")
                 plt.axis("off")
-                plt.subplot(rows, columns, columns*idx + 3)
-                plt.imshow(predicteds[magic_number[idx]], cmap="gray")
-                plt.axis("off")
+
+                if model:
+                    plt.subplot(rows, columns, columns*idx + 3)
+                    plt.imshow(predicteds[magic_number[idx]], cmap="gray")
+                    plt.axis("off")
 
         plt.savefig(output_path, dpi=600)
         plt.close()
