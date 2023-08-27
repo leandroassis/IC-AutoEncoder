@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 tinyDataSet = DataSet()
 
 tinyDataSet.load_rafael_tinyImagenet_64x64_noise_data()
+tiny2 = tinyDataSet
 print(tinyDataSet.x_test[15])
 
 tinyDataSet = tinyDataSet.add_gaussian_noise(dist_normal=0.3)
@@ -36,7 +37,7 @@ for idx in range(rows):
     plt.imshow(tinyDataSet.x_test[magic_number[idx]], cmap="gray")
     plt.axis("off")
     plt.subplot(rows, columns, columns*idx + 2)
-    plt.imshow(tinyDataSet.y_test[magic_number[idx]], cmap="gray")
+    plt.imshow(tiny2.x_test[magic_number[idx]], cmap="gray")
     plt.axis("off")
 
 plt.savefig("ruido.png", dpi=600)
