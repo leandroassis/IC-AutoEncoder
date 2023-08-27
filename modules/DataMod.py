@@ -276,3 +276,9 @@ class DataSet (DataSetABC):
         self.x_test = np.clip(self.x_test, 0, 255)
 
         return self
+
+    def normalize_dataset(self):
+        self.x_train = self.x_train / 255
+        self.x_test = self.x_test / 255
+
+        return self
