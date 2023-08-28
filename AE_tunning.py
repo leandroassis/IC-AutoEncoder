@@ -13,7 +13,7 @@ from models.functions.autoEncoder import create_AE_model
 from modules.DataMod import DataSet
 
 tuner = kt.Hyperband(create_AE_model,
-                  objective=[kt.Objective('val_three_ssim', direction="max"), kt.Objective('val_psnrb', direction="max"), kt.Objective('val_ssim_metric', direction="max")],
+                  objective=kt.Objective('val_three_ssim', direction="max"),
                   max_epochs=15,
                   seed=1234)
 
