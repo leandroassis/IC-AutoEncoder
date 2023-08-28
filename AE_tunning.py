@@ -12,7 +12,7 @@ environ["CUDA_VISIBLE_DEVICES"] = "1"
 from models.functions.autoEncoder import create_AE_model
 from modules.DataMod import DataSet
 
-tuner = kt.HyperBand(create_AE_model,
+tuner = kt.Hyperband(create_AE_model,
                   objective='val_three_ssim',
                   max_epochs=5,
                   factor=4,
