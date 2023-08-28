@@ -8,11 +8,12 @@ from modules.misc import ssim_metric
 from modules.ImageMetrics.metrics import three_ssim, psnrb
 from tensorflow.keras.optimizers import Adam
 
-def create_AE_model(hp, model_name : str, bias : bool = False):
+def create_AE_model(hp):
 
     inputs = Input(shape=(64,64,1))
     
     hp_kernel_sz = hp.Choice('kernel_size', values = [x for x in range(2, 20, 5)])
+    bias = hp.Choice('bias', values = [True, False])
 
     l1_filters = hp.Int('l1_filters', min_value = 10, max_value = 160, step = 20)
     layer_1 = Conv2D(filters = l1_filters, kernel_size = hp_kernel_sz, padding = 'same', activation = 'relu', use_bias=bias)(inputs)
@@ -61,13 +62,11 @@ def create_AE_model(hp, model_name : str, bias : bool = False):
 
     layer_20 = Conv2D(filters = 1, kernel_size = hp_kernel_sz, padding = 'same', activation = 'relu')(layer_19, use_bias=bias)
 
+    model_name = "AutoEncoder-2.3-64x64"
     autoEncoder = Model(inputs = inputs, outputs = layer_20, name = model_name)
 
 
     hp_lr = hp.Choice('learning_rate', values = [0.5e-1, 1e-2, 1e-3, 1e-4])
     autoEncoder.compile(optimizer = Adam(learning_rate = hp_lr), loss = L3SSIM(), metrics=[ ssim_metric, three_ssim, psnrb ])
-    
-    with open("models/models_params_counter.csv", "a") as file:
-        file.write(model_name+','+autoEncoder.count_params()+',')
 
     return autoEncoder
