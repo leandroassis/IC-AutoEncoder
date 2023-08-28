@@ -60,7 +60,7 @@ def create_AE_model(hp):
     l19_filters = hp.Int('l19_filters', min_value = 10, max_value = 160, step = 20)
     layer_19 = Conv2D(filters = l19_filters, kernel_size = hp_kernel_sz, padding = 'same', activation = 'relu', use_bias=bias)(layer_18)
 
-    layer_20 = Conv2D(filters = 1, kernel_size = hp_kernel_sz, padding = 'same', activation = 'relu')(layer_19, use_bias=bias)
+    layer_20 = Conv2D(filters = 1, kernel_size = hp_kernel_sz, padding = 'same', activation = 'relu', use_bias=bias)(layer_19)
 
     model_name = "AutoEncoder-2.3-64x64"
     autoEncoder = Model(inputs = inputs, outputs = layer_20, name = model_name)
