@@ -5,6 +5,8 @@ from os import getcwd, environ, walk
 
 path.insert(0, getcwd())
 path.insert(0, getcwd() + "/modules/")
+path.insert(0, getcwd() + "/models/")
+
 environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 from models.functions.autoEncoder import create_AE_model
