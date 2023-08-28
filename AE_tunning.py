@@ -4,8 +4,8 @@ from sys import path
 from os import getcwd, environ, walk
 
 path.insert(0, getcwd())
-path.insert(0, getcwd() + "../../modules/")
-path.insert(0, getcwd() + "../../models/")
+path.insert(0, getcwd() + "/modules/")
+path.insert(0, getcwd() + "/models/")
 
 environ["CUDA_VISIBLE_DEVICES"] = "1"
 
