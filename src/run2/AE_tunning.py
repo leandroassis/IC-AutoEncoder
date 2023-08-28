@@ -5,7 +5,7 @@ from os import getcwd, environ, walk
 
 path.insert(0, getcwd())
 path.insert(0, getcwd() + "/modules/")
-environ["CUDA_VISIBLE_DEVICES"] = "3"
+environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 from models.functions.autoEncoder import create_AE_model
 from modules.DataMod import DataSet
