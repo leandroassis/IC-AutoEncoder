@@ -14,8 +14,9 @@ from modules.DataMod import DataSet
 
 tuner = kt.Hyperband(create_AE_model,
                   objective=kt.Objective('val_three_ssim', direction="max"),
-                  max_epochs=15,
-                  seed=1234)
+                  max_epochs=20,
+                  max_trials=60,
+                  executions_per_trial=1)
 
 tuner.search_space_summary()
 
@@ -28,11 +29,9 @@ cifar_tiny = cifar_tiny.concatenateDataSets(cifar, tiny)
 cifar_tiny = cifar_tiny.add_gaussian_noise(0.3)
 
 #tuner.search(cifar_tiny.x_test, cifar_tiny.y_test, epochs=5, validation_data=0.1)
-tuner.search(cifar_tiny.x_train, cifar_tiny.y_train, epochs=5, validation_data=0.1)
+tuner.search(cifar_tiny.x_train, cifar_tiny.y_train, validation_data=(cifar_tiny.x_test, cifar_tiny.y_test))
 
-hps = tuner.get_best_hyperparameters(20)
-
-print(hps[13])
+hps = tuner.get_best_hyperparameters(25)
 
 for hp in hps:
     model = create_AE_model(hp)
@@ -40,6 +39,9 @@ for hp in hps:
 
     loss, ssim, tssim, psnrb = model.evaluate(cifar_tiny.x_test, cifar_tiny.y_test)
 
+    print(hp.values)
+
     with open("models/models_params_counter.csv", "a") as file:
+        # adicionar leitura dos hiperparametros
         file.write(model.model_name+','+model.count_params()+','+','+ssim+','+tssim+','+psnrb+'\n')
 
