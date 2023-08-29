@@ -15,7 +15,6 @@ from modules.DataMod import DataSet
 tuner = kt.Hyperband(create_AE_model,
                   objective=kt.Objective('val_three_ssim', direction="max"),
                   max_epochs=20,
-                  max_trials=60,
                   executions_per_trial=1)
 
 tuner.search_space_summary()
