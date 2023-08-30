@@ -22,23 +22,27 @@ def scheduler(epoch, lr):
     else:
         return lr * 0.85
 
-
-tuner = kt.BayesianOptimization(create_AE_model,
-                  objective= kt.Objective('val_three_ssim', direction="max"),
-                  max_trials=60,
-                  executions_per_trial=1)
-
-tuner.search_space_summary()
-
+print("Fetching datasets...")
 cifar, tiny, cifar_tiny = DataSet(), DataSet(), DataSet()
 
 cifar = cifar.load_rafael_cifar_10_noise_data()
 tiny = tiny.load_rafael_tinyImagenet_64x64_noise_data()
-
 cifar_tiny = cifar_tiny.concatenateDataSets(cifar, tiny)
-cifar_tiny = cifar_tiny.add_gaussian_noise(0.1)
+print("Datasets fetched!")
 
-tuner.search(cifar_tiny.x_train, cifar_tiny.y_train, callbacks = [ LearningRateScheduler(scheduler) ])
+print("Adding gaussian noise...")
+cifar_tiny = cifar_tiny.add_gaussian_noise(0.3)
+print("Gaussian noise added!")
+
+tuner = kt.BayesianOptimization(create_AE_model,
+                  objective= kt.Objective('val_three_ssim', direction="max"),
+                  max_trials=60,
+                  max_retries_per_trial=3,
+                  max_consecutive_failed_trials=5,
+                  beta=3.0)
+
+tuner.search_space_summary()
+tuner.search(cifar_tiny.x_train, cifar_tiny.y_train, validation_data=(cifar_tiny.x_test, cifar_tiny.y_test), callbacks = [ LearningRateScheduler(scheduler) ])
 
 hps = tuner.get_best_hyperparameters(25)
 
