@@ -1,8 +1,6 @@
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, UpSampling2D, Input
 from tensorflow.keras.models import Model
 
-import keras_tuner as kt
-
 from modules.CustomLosses import L3SSIM
 from modules.misc import ssim_metric
 from modules.ImageMetrics.metrics import three_ssim, psnrb
@@ -65,8 +63,6 @@ def create_AE_model(hp):
     model_name = "AutoEncoder-2.3-64x64"
     autoEncoder = Model(inputs = inputs, outputs = layer_20, name = model_name)
 
-
-    hp_lr = hp.Choice('learning_rate', values = [0.5e-1, 1e-2, 1e-3, 1e-4])
-    autoEncoder.compile(optimizer = Adam(learning_rate = hp_lr), loss = L3SSIM(), metrics=[ ssim_metric, three_ssim, psnrb ])
+    autoEncoder.compile(optimizer = Adam(), loss = L3SSIM(), metrics=[ ssim_metric, three_ssim, psnrb ])
 
     return autoEncoder
