@@ -20,11 +20,12 @@ def scheduler(epoch, lr):
     if epoch < 5:
         return 0.01
     else:
-        return lr * exp(-0.1)
+        return lr * 0.85
 
 
-tuner = kt.Hyperband(create_AE_model,
-                  objective=kt.Objective('val_three_ssim', direction="max"),
+tuner = kt.BayesianOptimization(create_AE_model,
+                  objective= [kt.Objective('val_three_ssim', direction="max"), kt.Objective('val_psnrb', direction="max"), kt.Objective('val_ssim_metric', direction="max")],
+                  max_trials=60,
                   max_epochs=20,
                   executions_per_trial=1)
 
