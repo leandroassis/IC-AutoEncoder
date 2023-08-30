@@ -26,7 +26,6 @@ def scheduler(epoch, lr):
 tuner = kt.BayesianOptimization(create_AE_model,
                   objective= [kt.Objective('val_three_ssim', direction="max"), kt.Objective('val_psnrb', direction="max"), kt.Objective('val_ssim_metric', direction="max")],
                   max_trials=60,
-                  max_epochs=20,
                   executions_per_trial=1)
 
 tuner.search_space_summary()
