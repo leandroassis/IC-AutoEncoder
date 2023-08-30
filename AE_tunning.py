@@ -18,7 +18,7 @@ from tensorflow.keras.callbacks import LearningRateScheduler
 
 def scheduler(epoch, lr):
     if epoch < 5:
-        return 0.01
+        return 0.001
     else:
         return lr * 0.85
 
@@ -38,7 +38,7 @@ tiny = tiny.load_rafael_tinyImagenet_64x64_noise_data()
 cifar_tiny = cifar_tiny.concatenateDataSets(cifar, tiny)
 cifar_tiny = cifar_tiny.add_gaussian_noise(0.1)
 
-tuner.search(cifar_tiny.x_train, cifar_tiny.y_train, validation_data=(cifar_tiny.x_test, cifar_tiny.y_test), callbacks = [ LearningRateScheduler(scheduler) ])
+tuner.search(cifar_tiny.x_train, cifar_tiny.y_train, callbacks = [ LearningRateScheduler(scheduler) ])
 
 hps = tuner.get_best_hyperparameters(25)
 

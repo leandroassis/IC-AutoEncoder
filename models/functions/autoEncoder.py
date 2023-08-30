@@ -10,7 +10,7 @@ def create_AE_model(hp):
 
     inputs = Input(shape=(64,64,1))
     
-    hp_kernel_sz = hp.Choice('kernel_size', values = [2, 5, 10, 12, 15, 20])
+    hp_kernel_sz = hp.Choice('kernel_size', values = [2, 3, 4, 5, 8])
     bias = hp.Choice('bias', values = [True, False])
 
     l1_filters = hp.Int('l1_filters', min_value = 10, max_value = 160, step = 20)
