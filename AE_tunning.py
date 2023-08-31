@@ -58,7 +58,7 @@ with open("models/models_params_counter.csv", "w") as file:
 for hp in hps:
     model = tuner.hypermodel.build(hp)
 
-    model.fit(cifar_tiny.x_train, cifar_tiny.y_train, epochs=5, validation_data=0.1)
+    model.fit(cifar_tiny.x_train, cifar_tiny.y_train, epochs=15, batch_size=20 , callbacks = [ LearningRateScheduler(scheduler) ])
 
     loss, ssim, tssim, psnrb = model.evaluate(cifar_tiny.x_test, cifar_tiny.y_test)
 
