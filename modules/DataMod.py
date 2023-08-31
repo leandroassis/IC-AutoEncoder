@@ -214,11 +214,14 @@ class DataSet (DataSetABC):
         '''
         return self
 
-    def concatenateDataSets(self, dataset1, dataset2):
+    def load_cifar_and_tiny(self):
         """
         Concatenate two datasets into a new dataset
         if suceeds, returns 1, else returns 0
         """
+
+        dataset1 = self.load_rafael_cifar_10_noise_data()
+        dataset2 = self.load_rafael_tinyImagenet_64x64_noise_data()
 
         self.name = dataset1.name + "_" + dataset2.name
         self.description = "Concatenation of " + dataset1.name + " and " + dataset2.name + " datasets"
@@ -240,10 +243,6 @@ class DataSet (DataSetABC):
         except:
             print("Error concatenating datasets")
             return 0
-        finally:
-            print(dataset1.x_test.shape)
-            print(dataset2.x_test.shape)
-            print(self.x_test.shape)
     
         return self
 
