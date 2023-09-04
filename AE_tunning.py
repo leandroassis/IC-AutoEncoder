@@ -23,11 +23,8 @@ def scheduler(epoch, lr):
         return lr * 0.85
 
 print("Fetching datasets...")
-cifar, tiny, cifar_tiny = DataSet(), DataSet(), DataSet()
-
-cifar = cifar.load_rafael_cifar_10_noise_data()
-tiny = tiny.load_rafael_tinyImagenet_64x64_noise_data()
-cifar_tiny = cifar_tiny.concatenateDataSets(cifar, tiny)
+cifar_tiny = DataSet(), DataSet(), DataSet()
+cifar_tiny = cifar_tiny.load_cifar_and_tiny()
 print("Datasets fetched!")
 
 print("Adding gaussian noise...")
