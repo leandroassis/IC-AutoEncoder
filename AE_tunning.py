@@ -23,7 +23,7 @@ def scheduler(epoch, lr):
         return lr * 0.85
 
 print("Fetching datasets...")
-cifar_tiny = DataSet(), DataSet(), DataSet()
+cifar_tiny = DataSet()
 cifar_tiny = cifar_tiny.load_cifar_and_tiny()
 print("Datasets fetched!")
 
