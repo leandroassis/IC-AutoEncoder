@@ -266,13 +266,16 @@ class DataSet (DataSetABC):
         return {"name":self.name, "parameters": self.parameters}
     
     def add_gaussian_noise(self, dist_normal : int = 0.1):
+
+        self.normalize_dataset()
+
         noise = np.random.normal(loc=0.0, scale=dist_normal, size=self.x_train.shape)
         self.x_train = self.x_train + noise
-        self.x_train = np.clip(self.x_train, 0, 255)
+        self.x_train = np.clip(self.x_train, 0, 1)
 
         noise = np.random.normal(loc=0.0, scale=dist_normal, size=self.x_test.shape)
         self.x_test = self.x_test + noise
-        self.x_test = np.clip(self.x_test, 0, 255)
+        self.x_test = np.clip(self.x_test, 0, 1)
 
         return self
 

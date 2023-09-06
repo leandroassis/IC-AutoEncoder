@@ -5,7 +5,6 @@ environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 from keras_tuner import Objective, BayesianOptimization, Hyperband, RandomSearch, Tuner
 from modules.DataMod import DataSet
-
 class ModelTuner():
 
     def __init__(self,
@@ -96,7 +95,6 @@ class ModelTuner():
                         file.write(str(value))
 
                 file.write('\n')
-
 
     def __set_tuner(self, tuner_id, model_function, objective, **kwargs) -> Tuner:
         if tuner_id == "Hyperband":
