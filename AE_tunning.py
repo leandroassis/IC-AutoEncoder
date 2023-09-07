@@ -60,7 +60,7 @@ for hp in hps:
     loss, ssim, tssim, psnrb = model.evaluate(cifar_tiny.x_test, cifar_tiny.y_test)
 
     with open("models/models_params_counter.csv", "a") as file:
-        file.write(str(model.model_name)+','+str(model.count_params())+','+','+str(ssim)+','+str(tssim)+','+str(psnrb)+',')
+        file.write(str(model.name)+','+str(model.count_params())+','+','+str(ssim)+','+str(tssim)+','+str(psnrb)+',')
 
         for key, value in hp.values.items():
             file.write(str(value)+',')
