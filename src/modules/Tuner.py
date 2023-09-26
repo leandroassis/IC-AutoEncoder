@@ -5,6 +5,7 @@ environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 from keras_tuner import Objective, BayesianOptimization, Hyperband, RandomSearch, Tuner
 from modules.DataMod import DataSet
+
 class ModelTuner():
 
     def __init__(self,
@@ -19,9 +20,9 @@ class ModelTuner():
                 models_reclamation : float = 0.2,
                 output_logs_path : str = None,
                 callbacks : list = None):
-        
+
         if tuner is None:
-            self.__tuner = self.set_tuner(tuner_id, model_function, objective, **tuner_params)            
+            self.__tuner = self.__set_tuner(tuner_id, model_function, objective, **tuner_params)            
             self.__trials = tuner_params["max_trials"]            
         else:
             self.__tuner = tuner
@@ -44,7 +45,8 @@ class ModelTuner():
 
         print("Starting tunning...")
         self.__tuner.search(self.__dataset.x_train, self.__dataset.y_train,\
-                            validation_data = validation_data if validation_data else validation_perc, callbacks = callbacks)
+                            validation_data = validation_data if validation_data else validation_perc,\
+                            callbacks = callbacks)
         print("Tunning finished!")
 
         print("Printing results summary...")
@@ -55,7 +57,7 @@ class ModelTuner():
         print("Best models logged!")
 
     def __log_best_models(self):
-
+        # use Tuner.results_summary
         try:
             file = open(self.__logs_path, "r")
         except FileNotFoundError:
@@ -85,7 +87,7 @@ class ModelTuner():
             loss, ssim, tssim, psnrb = model.evaluate(self.__dataset.x_test, self.__dataset.y_test)
         
             with open(self.__logs_path, "a") as file:
-                file.write(model.name, model.count_params(), ssim, tssim, psnrb,)
+                file.write(model.name +','+str(model.count_params())+','+str(ssim)+','+str(tssim)+','+str(psnrb)+',')
 
                 for idx, (key, value)in enumerate(hp_set.values.items()):
                     
@@ -97,6 +99,7 @@ class ModelTuner():
                 file.write('\n')
 
     def __set_tuner(self, tuner_id, model_function, objective, **kwargs) -> Tuner:
+
         if tuner_id == "Hyperband":
             return Hyperband(model_function, objective= objective, **kwargs)
         elif tuner_id == "BayesianOptimization":
@@ -105,7 +108,3 @@ class ModelTuner():
             return RandomSearch(model_function, objective= objective, **kwargs)
         else:
             raise ValueError("Tuner type not recognized.")
-
-
-
-

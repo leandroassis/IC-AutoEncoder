@@ -18,7 +18,7 @@ from tensorflow.keras.callbacks import LearningRateScheduler
 
 def scheduler(epoch, lr):
     if epoch < 5:
-        return 0.001
+        return 0.1
     else:
         return lr * 0.85
 

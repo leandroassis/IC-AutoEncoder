@@ -267,7 +267,8 @@ class DataSet (DataSetABC):
     
     def add_gaussian_noise(self, dist_normal : int = 0.1):
 
-        self.normalize_dataset()
+        self.x_train = self.x_train / 255
+        self.x_test = self.x_test / 255
 
         noise = np.random.normal(loc=0.0, scale=dist_normal, size=self.x_train.shape)
         self.x_train = self.x_train + noise
@@ -277,10 +278,26 @@ class DataSet (DataSetABC):
         self.x_test = self.x_test + noise
         self.x_test = np.clip(self.x_test, 0, 1)
 
-        return self
+        # normalize data
+        return self.normalize_dataset()
 
     def normalize_dataset(self):
-        self.x_train = self.x_train / 255
-        self.x_test = self.x_test / 255
+        x_test_mean = np.mean(self.x_test, keepdims=True)
+        x_test_std = np.sqrt(((self.x_test - x_test_mean)**2).mean(keepdims=True))
+
+        y_test_mean = np.mean(self.y_test, keepdims=True)
+        y_test_std = np.sqrt(((self.y_test - y_test_mean)**2).mean(keepdims=True))
+
+        x_train_mean = np.mean(self.x_train, keepdims=True)
+        x_train_std = np.sqrt(((self.x_train - x_train_mean)**2).mean(keepdims=True))
+
+        y_train_mean = np.mean(self.y_train, keepdims=True)
+        y_train_std = np.sqrt(((self.y_train - y_train_mean)**2).mean(keepdims=True))
+
+        self.x_test = (self.x_test - x_test_mean)/ x_test_std
+        self.y_test = (self.y_test - y_test_mean)/ y_test_std
+
+        self.x_train = (self.x_train - x_train_mean)/ x_train_std
+        self.y_train = (self.y_train - y_train_mean)/ y_train_std
 
         return self

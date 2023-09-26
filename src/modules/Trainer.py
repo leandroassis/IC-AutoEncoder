@@ -1,4 +1,4 @@
-# trainer com mlflow pra lgoar + cross validation + treinar até não ter melhoria
+# trainer com mlflow pra logar (opcional) + cross validation + treinar até não ter melhoria
 
 from modules.DataMod import DataSet
 from numpy import ndarray

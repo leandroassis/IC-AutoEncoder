@@ -13,6 +13,8 @@ def create_AE_model(hp):
     hp_kernel_sz = hp.Choice('kernel_size', values = [2, 3, 4, 5, 8])
     bias = hp.Choice('bias', values = [True, False])
 
+    step_filter = hp.Int('step_filter', min_value = 5, max_value = 40, step = 20)
+
     l1_filters = hp.Int('l1_filters', min_value = 10, max_value = 160, step = 20)
     layer_1 = Conv2D(filters = l1_filters, kernel_size = hp_kernel_sz, padding = 'same', activation = 'relu', use_bias=bias)(inputs)
 
@@ -63,6 +65,7 @@ def create_AE_model(hp):
     model_name = "AutoEncoder-2.3-64x64"
     autoEncoder = Model(inputs = inputs, outputs = layer_20, name = model_name)
 
+    # weight decay + ema
     autoEncoder.compile(optimizer = Adam(), loss = L3SSIM(), metrics=[ ssim_metric, three_ssim, psnrb ])
 
     return autoEncoder
