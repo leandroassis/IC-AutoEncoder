@@ -1,8 +1,18 @@
 import sys, os
 
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
+
 from tensorflow.python.keras.engine import training
 
 import numpy as np
+
+import cupy as ncp # todo: use cupy for fast operations
+
+import cupy
+
+mempool = cupy.get_default_memory_pool()
+
 import tensorflow as tf
 from tensorflow._api.v2.image import rgb_to_grayscale
 from io import BytesIO
@@ -140,30 +150,32 @@ class DataSet (DataSetABC):
     def load_rafael_cifar_10_noise_data (self):
         self.name = "rafael_cifar_10"
         self.description = "Cifar 10 with bad quality"
-        self.x_train = np.load("/home/rafaeltadeu/old/autoencoder/X_64x64_treino.npy")
-        self.x_test = np.load("/home/rafaeltadeu/old/autoencoder/X_64x64_teste.npy")
-        self.y_train = np.load("/home/rafaeltadeu/old/autoencoder/Y_64x64_treino.npy")
-        self.y_test = np.load("/home/rafaeltadeu/old/autoencoder/Y_64x64_teste.npy")
+        self.x_train = ncp.load("/home/rafaeltadeu/old/autoencoder/X_64x64_treino.npy")
+        self.x_test = ncp.load("/home/rafaeltadeu/old/autoencoder/X_64x64_teste.npy")
+        self.y_train = ncp.load("/home/rafaeltadeu/old/autoencoder/Y_64x64_treino.npy")
+        self.y_test = ncp.load("/home/rafaeltadeu/old/autoencoder/Y_64x64_teste.npy")
 
-        self.x_test = self.x_test.astype('float64')
-        self.x_train = self.x_train.astype('float64')
-        self.y_test = self.y_test.astype('float64')
-        self.y_train = self.y_train.astype('float64')
+        self.x_test = self.x_test.astype('float64').get()
+        self.x_train = self.x_train.astype('float64').get()
+        self.y_test = self.y_test.astype('float64').get()
+        self.y_train = self.y_train.astype('float64').get()
+        mempool.free_all_blocks()
         
         return self
 
     def load_rafael_tinyImagenet_64x64_noise_data (self):
         self.name = "rafael_tinyImagenet"
         self.description = "tinyImagenet with bad quality"
-        self.x_train = np.load("/home/rafaeltadeu/old/autoencoder/X_tinyImagenet_64x64_treino.npy")
-        self.x_test = np.load("/home/rafaeltadeu/old/autoencoder/X_tinyImagenet_64x64_teste.npy")
-        self.y_train = np.load("/home/rafaeltadeu/old/autoencoder/Y_tinyImagenet_64x64_treino.npy")
-        self.y_test = np.load("/home/rafaeltadeu/old/autoencoder/Y_tinyImagenet_64x64_teste.npy")
+        self.x_train = ncp.load("/home/rafaeltadeu/old/autoencoder/X_tinyImagenet_64x64_treino.npy")
+        self.x_test = ncp.load("/home/rafaeltadeu/old/autoencoder/X_tinyImagenet_64x64_teste.npy")
+        self.y_train = ncp.load("/home/rafaeltadeu/old/autoencoder/Y_tinyImagenet_64x64_treino.npy")
+        self.y_test = ncp.load("/home/rafaeltadeu/old/autoencoder/Y_tinyImagenet_64x64_teste.npy")
         
-        self.x_test = self.x_test.astype('float32')
-        self.x_train = self.x_train.astype('float32')
-        self.y_test = self.y_test.astype('float32')
-        self.y_train = self.y_train.astype('float32')
+        self.x_test = self.x_test.astype('float32').get()
+        self.x_train = self.x_train.astype('float32').get()
+        self.y_test = self.y_test.astype('float32').get()
+        self.y_train = self.y_train.astype('float32').get()
+        mempool.free_all_blocks()
 
         return self
 
@@ -214,35 +226,49 @@ class DataSet (DataSetABC):
         '''
         return self
 
-    def load_cifar_and_tiny(self):
+    def load_cifar_and_tiny(self, dataset1, dataset2, validation_equal = False):
         """
         Concatenate two datasets into a new dataset
-        if suceeds, returns 1, else returns 0
         """
-
-        dataset1 = self.load_rafael_cifar_10_noise_data()
-        dataset2 = self.load_rafael_tinyImagenet_64x64_noise_data()
-
+        
         self.name = dataset1.name + "_" + dataset2.name
         self.description = "Concatenation of " + dataset1.name + " and " + dataset2.name + " datasets"
         
-        try:
-            self.x_train = np.concatenate((dataset1.x_train, dataset2.x_train))
-            self.y_train = np.concatenate((dataset1.y_train, dataset2.y_train))
-
-            # makes validation datasets equals
+        dataset1.x_train = cupy.array(dataset1.x_train)
+        dataset2.x_train = cupy.array(dataset2.x_train)
+        self.x_train = cupy.asnumpy(ncp.concatenate((dataset1.x_train, dataset2.x_train)))
+        dataset1.x_train = cupy.asnumpy(dataset1.x_train)
+        dataset2.x_train = cupy.asnumpy(dataset2.x_train)
+        
+        
+        dataset1.y_train = cupy.array(dataset1.y_train)
+        dataset2.y_train = cupy.array(dataset2.y_train)
+        self.y_train = cupy.asnumpy(ncp.concatenate((dataset1.y_train, dataset2.y_train)))
+        dataset1.y_train = cupy.asnumpy(dataset1.y_train)
+        dataset2.y_train = cupy.asnumpy(dataset2.y_train)
+        
+        # makes validation datasets equals
+        if validation_equal:
             if dataset1.x_test.shape[0] > dataset2.x_test.shape[0]:
-                self.x_test = np.concatenate(dataset1.x_test[:dataset2.x_test.shape[0]], dataset2.x_test)
-                self.y_test = np.concatenate(dataset1.y_test[:dataset2.y_test.shape[0]], dataset2.y_test)
+                self.x_test = cupy.asnumpy(ncp.concatenate(dataset1.x_test[:dataset2.x_test.shape[0]], dataset2.x_test))
+                self.y_test = cupy.asnumpy(ncp.concatenate(dataset1.y_test[:dataset2.y_test.shape[0]], dataset2.y_test))
             elif dataset1.x_test.shape[0] < dataset2.x_test.shape[0]:
-                self.x_test = np.concatenate(dataset2.x_test[:dataset1.x_test.shape[0]], dataset1.x_test)
-                self.y_test = np.concatenate(dataset2.y_test[:dataset1.y_test.shape[0]], dataset1.y_test)
-            else:
-                self.x_test = np.concatenate((dataset1.x_test, dataset2.x_test))
-                self.y_test = np.concatenate((dataset1.y_test, dataset2.y_test))
-        except:
-            print("Error concatenating datasets")
-            return 0
+                self.x_test = cupy.asnumpy(ncp.concatenate(dataset2.x_test[:dataset1.x_test.shape[0]], dataset1.x_test))
+                self.y_test = cupy.asnumpy(ncp.concatenate(dataset2.y_test[:dataset1.y_test.shape[0]], dataset1.y_test))
+        else:
+            dataset1.x_test = cupy.array(dataset1.x_test)
+            dataset2.x_test = cupy.array(dataset2.x_test)
+            self.x_test = cupy.asnumpy(ncp.concatenate((dataset1.x_test, dataset2.x_test)))
+            dataset1.x_test = dataset1.x_test.get()
+            dataset2.x_test = dataset2.x_test.get()
+
+            dataset1.y_test = cupy.array(dataset1.y_test)
+            dataset2.y_test = cupy.array(dataset2.y_test)
+            self.y_test = cupy.asnumpy(ncp.concatenate((dataset1.y_test, dataset2.y_test)))
+            dataset1.y_test = cupy.asnumpy(dataset1.y_test)
+            dataset2.y_ttest = cupy.asnumpy(dataset2.y_test)
+
+        mempool.free_all_blocks()
     
         return self
 
@@ -265,39 +291,81 @@ class DataSet (DataSetABC):
 
         return {"name":self.name, "parameters": self.parameters}
     
-    def add_gaussian_noise(self, dist_normal : int = 0.1):
+    def add_gaussian_noise(self, dist_normal : float = 0.1):        
 
-        self.x_train = self.x_train / 255
-        self.x_test = self.x_test / 255
+        # make it in batches
+        num_chuncks = 100
+        chunck_size = int(len(self.x_train)/num_chuncks)
+        x_train_gpu = np.zeros(self.x_train[:chunck_size].shape)
+        for it in range(num_chuncks):
+            start = it*chunck_size
+            end = (it+1)*chunck_size
+           
+            x_train_gpu = cupy.array(self.x_train[start: end]) / 255
+            
+            noise = ncp.random.normal(loc=0.0, scale=dist_normal, size=x_train_gpu.shape)
 
-        noise = np.random.normal(loc=0.0, scale=dist_normal, size=self.x_train.shape)
-        self.x_train = self.x_train + noise
-        self.x_train = np.clip(self.x_train, 0, 1)
+            x_train_gpu += noise
+            del noise
+            x_train_gpu = ncp.clip(x_train_gpu, 0, 1)
+            self.x_train[start : end] = cupy.asnumpy(x_train_gpu)
+            del x_train_gpu
+        
+        num_chuncks = 50
+        chunck_size = int(len(self.x_test)/num_chuncks)
+        x_test_gpu = np.zeros(self.x_test[:chunck_size].shape)
+        for it in range(num_chuncks):
+            start = it*chunck_size
+            end = (it+1)*chunck_size
+           
+            x_test_gpu = cupy.array(self.x_test[start: end]) / 255
+            
+            noise = ncp.random.normal(loc=0.0, scale=dist_normal, size=x_test_gpu.shape)
 
-        noise = np.random.normal(loc=0.0, scale=dist_normal, size=self.x_test.shape)
-        self.x_test = self.x_test + noise
-        self.x_test = np.clip(self.x_test, 0, 1)
-
-        # normalize data
-        return self.normalize_dataset()
+            x_test_gpu += noise
+            del noise
+            x_test_gpu = ncp.clip(x_test_gpu, 0, 1)
+            self.x_test[start : end] = cupy.asnumpy(x_test_gpu)
+            del x_test_gpu
+            
+        mempool.free_all_blocks()
+        
+        return self
 
     def normalize_dataset(self):
-        x_test_mean = np.mean(self.x_test, keepdims=True)
-        x_test_std = np.sqrt(((self.x_test - x_test_mean)**2).mean(keepdims=True))
-
-        y_test_mean = np.mean(self.y_test, keepdims=True)
-        y_test_std = np.sqrt(((self.y_test - y_test_mean)**2).mean(keepdims=True))
-
-        x_train_mean = np.mean(self.x_train, keepdims=True)
-        x_train_std = np.sqrt(((self.x_train - x_train_mean)**2).mean(keepdims=True))
-
-        y_train_mean = np.mean(self.y_train, keepdims=True)
-        y_train_std = np.sqrt(((self.y_train - y_train_mean)**2).mean(keepdims=True))
-
-        self.x_test = (self.x_test - x_test_mean)/ x_test_std
-        self.y_test = (self.y_test - y_test_mean)/ y_test_std
-
-        self.x_train = (self.x_train - x_train_mean)/ x_train_std
-        self.y_train = (self.y_train - y_train_mean)/ y_train_std
+        
+        self.x_test = cupy.array(self.x_test)
+        
+        x_test_l2 = ncp.linalg.norm(self.x_test, keepdims=True)
+        self.x_test /= x_test_l2
+        del x_test_l2
+        
+        self.x_test = cupy.asnumpy(self.x_test)
+        
+        self.y_test = cupy.array(self.y_test)
+        
+        y_test_l2 = ncp.linalg.norm(self.y_test, keepdims=True)
+        self.y_test /= y_test_l2
+        del y_test_l2
+        
+        self.y_test = cupy.asnumpy(self.y_test)
+        
+        self.x_train = cupy.array(self.x_train)
+        
+        x_train_l2 = ncp.linalg.norm(self.x_train, keepdims=True)
+        self.x_train /= x_train_l2
+        del x_train_l2
+        
+        self.x_train = cupy.asnumpy(self.x_train)
+                                  
+        self.y_train = cupy.array(self.y_train)
+        
+        y_train_l2 = ncp.linalg.norm(self.y_train, keepdims=True)
+        self.y_train /= y_train_l2
+        del y_train_l2
+        
+        self.y_train = cupy.asnumpy(self.y_train)
+        
+        mempool.free_all_blocks()
 
         return self

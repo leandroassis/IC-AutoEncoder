@@ -1,1 +1,3 @@
-model_name,count_params,ssim,3ssim,psnrb
+model_name, num_params, ssim, tssim, psnrb,kernel_size,bias,l1_filters,l2_filters,l3_filters,l5_filters,l7_filters,l8_filters,l10_filters,l11_filters,l13_filters,l14_filters,l16_filters,l17_filters,l19_filters,
+AutoEncoder-2.3-64x64,785531,,0.5216479301452637,0.5744697451591492,18.272336959838867,3,1,110,110,10,70,110,110,110,110,70,110,70,50,50,
+AutoEncoder-2.3-64x64,853991,,0.5189264416694641,0.5713855624198914,18.437461853027344,3,1,70,90,130,110,70,50,110,70,110,70,70,110,90,
