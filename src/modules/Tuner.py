@@ -52,52 +52,6 @@ class ModelTuner():
         print("Printing results summary...")
         self.tuner.results_summary(num_trias=self.__trials)
 
-        print("Logging best models...")
-        self.__log_best_models()
-        print("Best models logged!")
-
-    def __log_best_models(self):
-        # use Tuner.results_summary
-        try:
-            file = open(self.__logs_path, "r")
-        except FileNotFoundError:
-            pass
-        else: 
-            overwrite = input(f"O arquivo {self.__logs_path} já existe. Deseja sobreescrever? (Y/n)")
-
-            if overwrite.capitalize() == "N":
-                file.close()
-                return
-            
-        with open(self.__logs_path, "w") as file:
-            file.write('model_name, num_params, ssim, tssim, psnrb,')
-            
-            for key, value in self.__tuner.get_best_hyperparameters(1)[0].values.items():
-                file.write(str(key)+',')
-                
-            file.write('\n')
-
-        self.bests_hyperparameters = self.__tuner.get_best_hyperparameters(num_trials=self.__models_useful)
-
-        for hp_set in self.bests_hyperparameters:
-
-            model = self.__tuner.hypermodel.build(hp_set)
-
-            model.fit(self.__dataset.x_train, self.__dataset.y_train, epochs=self.__epochs, batch_size=self.__batch_size, callbacks = self.callbacks)
-            loss, ssim, tssim, psnrb = model.evaluate(self.__dataset.x_test, self.__dataset.y_test)
-        
-            with open(self.__logs_path, "a") as file:
-                file.write(model.name +','+str(model.count_params())+','+str(ssim)+','+str(tssim)+','+str(psnrb)+',')
-
-                for idx, (key, value)in enumerate(hp_set.values.items()):
-                    
-                    if idx != len(hp_set.values.items()) - 1:
-                        file.write(str(value)+',')
-                    else:
-                        file.write(str(value))
-
-                file.write('\n')
-
     def __set_tuner(self, tuner_id, model_function, objective, **kwargs) -> Tuner:
 
         if tuner_id == "Hyperband":

@@ -1,8 +1,5 @@
 import sys, os
 
-
-os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
-
 from tensorflow.python.keras.engine import training
 
 import numpy as np
@@ -10,8 +7,6 @@ import numpy as np
 import cupy as ncp # todo: use cupy for fast operations
 
 import cupy
-
-mempool = cupy.get_default_memory_pool()
 
 import tensorflow as tf
 from tensorflow._api.v2.image import rgb_to_grayscale
@@ -159,7 +154,9 @@ class DataSet (DataSetABC):
         self.x_train = self.x_train.astype('float64').get()
         self.y_test = self.y_test.astype('float64').get()
         self.y_train = self.y_train.astype('float64').get()
-        mempool.free_all_blocks()
+        
+        cupy.get_default_memory_pool().free_all_blocks()
+        cupy.get_default_pinned_memory_pool().free_all_blocks()
         
         return self
 
@@ -175,7 +172,9 @@ class DataSet (DataSetABC):
         self.x_train = self.x_train.astype('float32').get()
         self.y_test = self.y_test.astype('float32').get()
         self.y_train = self.y_train.astype('float32').get()
-        mempool.free_all_blocks()
+        
+        cupy.get_default_memory_pool().free_all_blocks()
+        cupy.get_default_pinned_memory_pool().free_all_blocks()
 
         return self
 
@@ -229,46 +228,54 @@ class DataSet (DataSetABC):
     def load_cifar_and_tiny(self, dataset1, dataset2, validation_equal = False):
         """
         Concatenate two datasets into a new dataset
-        """
-        
+        """        
+        #print("concatenating")
         self.name = dataset1.name + "_" + dataset2.name
         self.description = "Concatenation of " + dataset1.name + " and " + dataset2.name + " datasets"
         
         dataset1.x_train = cupy.array(dataset1.x_train)
         dataset2.x_train = cupy.array(dataset2.x_train)
         self.x_train = cupy.asnumpy(ncp.concatenate((dataset1.x_train, dataset2.x_train)))
-        dataset1.x_train = cupy.asnumpy(dataset1.x_train)
-        dataset2.x_train = cupy.asnumpy(dataset2.x_train)
+        dataset1.x_train = None
+        dataset2.x_train = None
         
         
         dataset1.y_train = cupy.array(dataset1.y_train)
         dataset2.y_train = cupy.array(dataset2.y_train)
         self.y_train = cupy.asnumpy(ncp.concatenate((dataset1.y_train, dataset2.y_train)))
-        dataset1.y_train = cupy.asnumpy(dataset1.y_train)
-        dataset2.y_train = cupy.asnumpy(dataset2.y_train)
+        dataset1.y_train = None
+        dataset2.y_train = None
         
         # makes validation datasets equals
         if validation_equal:
+            print("A geração de datasets de validação com proporções iguais da cifar e tiny não foi otimizada para rodar com o CuPy. Isso pode demorar mais que o normal.")
             if dataset1.x_test.shape[0] > dataset2.x_test.shape[0]:
-                self.x_test = cupy.asnumpy(ncp.concatenate(dataset1.x_test[:dataset2.x_test.shape[0]], dataset2.x_test))
-                self.y_test = cupy.asnumpy(ncp.concatenate(dataset1.y_test[:dataset2.y_test.shape[0]], dataset2.y_test))
+                self.x_test = np.concatenate(dataset1.x_test[:dataset2.x_test.shape[0]], dataset2.x_test)
+                self.y_test = np.concatenate(dataset1.y_test[:dataset2.y_test.shape[0]], dataset2.y_test)
+                
+                self.x_train = np.concatenate(dataset1.x_test[dataset2.x_test.shape[0]:], self.x_train)
+                self.y_train = np.concatenate(dataset1.y_test[dataset2.y_test.shape[0]:], self.y_train)
             elif dataset1.x_test.shape[0] < dataset2.x_test.shape[0]:
-                self.x_test = cupy.asnumpy(ncp.concatenate(dataset2.x_test[:dataset1.x_test.shape[0]], dataset1.x_test))
-                self.y_test = cupy.asnumpy(ncp.concatenate(dataset2.y_test[:dataset1.y_test.shape[0]], dataset1.y_test))
+                self.x_test = np.concatenate(dataset2.x_test[:dataset1.x_test.shape[0]], dataset1.x_test)
+                self.y_test = np.concatenate(dataset2.y_test[:dataset1.y_test.shape[0]], dataset1.y_test)
+                
+                self.x_train = np.concatenate(dataset2.x_test[dataset1.x_test.shape[0]:], self.x_train)
+                self.y_train = np.concatenate(dataset2.y_test[dataset1.y_test.shape[0]:], self.y_train)
         else:
             dataset1.x_test = cupy.array(dataset1.x_test)
             dataset2.x_test = cupy.array(dataset2.x_test)
             self.x_test = cupy.asnumpy(ncp.concatenate((dataset1.x_test, dataset2.x_test)))
-            dataset1.x_test = dataset1.x_test.get()
-            dataset2.x_test = dataset2.x_test.get()
+            dataset1.x_test = None
+            dataset2.x_test = None
 
             dataset1.y_test = cupy.array(dataset1.y_test)
             dataset2.y_test = cupy.array(dataset2.y_test)
             self.y_test = cupy.asnumpy(ncp.concatenate((dataset1.y_test, dataset2.y_test)))
-            dataset1.y_test = cupy.asnumpy(dataset1.y_test)
-            dataset2.y_ttest = cupy.asnumpy(dataset2.y_test)
+            dataset1.y_test = None
+            dataset2.y_test = None
 
-        mempool.free_all_blocks()
+        cupy.get_default_memory_pool().free_all_blocks()
+        cupy.get_default_pinned_memory_pool().free_all_blocks()
     
         return self
 
@@ -292,8 +299,7 @@ class DataSet (DataSetABC):
         return {"name":self.name, "parameters": self.parameters}
     
     def add_gaussian_noise(self, dist_normal : float = 0.1):        
-
-        # make it in batches
+        #print("gaussian")
         num_chuncks = 100
         chunck_size = int(len(self.x_train)/num_chuncks)
         x_train_gpu = np.zeros(self.x_train[:chunck_size].shape)
@@ -328,12 +334,13 @@ class DataSet (DataSetABC):
             self.x_test[start : end] = cupy.asnumpy(x_test_gpu)
             del x_test_gpu
             
-        mempool.free_all_blocks()
+        cupy.get_default_memory_pool().free_all_blocks()
+        cupy.get_default_pinned_memory_pool().free_all_blocks()
         
         return self
 
     def normalize_dataset(self):
-        
+        print("This method can breaks logic of ssim and three ssim metrics. If those operations applieds into datasets which had run this method returns always 1, please consider not using this method for normalize the dataset.")
         self.x_test = cupy.array(self.x_test)
         
         x_test_l2 = ncp.linalg.norm(self.x_test, keepdims=True)
@@ -366,6 +373,7 @@ class DataSet (DataSetABC):
         
         self.y_train = cupy.asnumpy(self.y_train)
         
-        mempool.free_all_blocks()
+        cupy.get_default_memory_pool().free_all_blocks()
+        cupy.get_default_pinned_memory_pool().free_all_blocks()
 
         return self
