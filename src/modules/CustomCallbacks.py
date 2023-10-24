@@ -1,21 +1,12 @@
 from tensorflow.keras.callbacks import Callback
-
-'''
-
-filepath=self.filepath+train_name+'{epoch:02d}-{val_loss:.2f}.hdf5',
-                                save_weights_only=True,
-                                monitor=self.metric,
-                                save_freq = self.save_freq
-                                verbose=self.verbose)
-'''
+import json
 
 class WeightCheckpoint(Callback):
-    def __init__(self, epoch_offset : int, monitor : str, save_path : str, json_dict : dict, save_best=True, direction='max', verbose=1):
+    def __init__(self, epoch_offset : int, monitor : str, save_path : str, json_dict : dict, direction='max', verbose=1):
         super(Callback, self).__init__()
         self.monitor = monitor
         self.epoch_offset = epoch_offset
         self.path = save_path
-        self.save_best_only = save_best
         self.direction = direction
         self.verbose = verbose
         
@@ -26,18 +17,21 @@ class WeightCheckpoint(Callback):
         current = logs.get(self.monitor)
         if current is None:
             warnings.warn("ModelCheckpoint requires %s available!" % self.monitor, RuntimeWarning)
+            
+        current_epoch = epoch+self.epoch_offset+1
         
-        if self.save_best_only == False:
-            self.write_output("Salvando pesos da época %02d." %(epoch+epoch_offset))
-        else:
-            if direction == "max" and current > self.last:
-                self.write_output("Época %02d: A métrica %s cresceu de %.6f para %.6f. Salvando pesos."  %(epoch+epoch_offset) %self.monitor %self.last %current)
-            elif direction == "min" and current < self.last:
-                self.write_output("Época %02d: A métrica %s desceu de %.6f para %.6f. Salvando pesos."  %(epoch+epoch_offset) %self.monitor %self.last %current)
-        self.model.save_weights(self.path+"%02d.hdf5" %(epoch+epoch_offset), overwrite=True, save_format='h5')
+        if self.direction == "max" and current > self.last:
+            self.write_output("\nÉpoca %02d: A métrica %s cresceu de %.6f para %.6f. Salvando pesos."  %(current_epoch, self.monitor, self.last, current))
+        elif self.direction == "min" and current < self.last:
+            self.write_output("\nÉpoca %02d: A métrica %s desceu de %.6f para %.6f. Salvando pesos."  %(current_epoch, self.monitor, self.last, current))
+        self.model.save_weights(self.path+"%02d.hdf5" %current_epoch, overwrite=True, save_format='h5')
         
         self.last = current
-        self.log['current_epoch'] = epoch+epoch_offset
+        self.log['current_epoch'] = current_epoch
+        
+        json_object = json.dumps(self.log, indent=4)
+        with open(self.log['path'], "w") as outfile:
+            outfile.write(json_object)
         
     def write_output(self, string):
         if self.verbose > 0:
