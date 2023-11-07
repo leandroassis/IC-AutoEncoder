@@ -225,7 +225,7 @@ class DataSet (DataSetABC):
         '''
         return self
 
-    def load_cifar_and_tiny(self, dataset1, dataset2, validation_equal = False):
+    def load_cifar_and_tiny(self, dataset1, dataset2, validation_equal = False, shuffle=False):
         """
         Concatenate two datasets into a new dataset
         """        
@@ -276,7 +276,17 @@ class DataSet (DataSetABC):
 
         cupy.get_default_memory_pool().free_all_blocks()
         cupy.get_default_pinned_memory_pool().free_all_blocks()
-    
+        
+        if shuffle:
+            np.random.seed(367)
+            np.random.shuffle(self.x_test)
+            np.random.seed(367)
+            np.random.shuffle(self.y_test)
+            np.random.seed(354)
+            np.random.shuffle(self.x_train)
+            np.random.seed(354)
+            np.random.shuffle(self.y_train)
+              
         return self
 
     def load_by_name(self, name:str, kwargs: dict = {}):
@@ -340,7 +350,6 @@ class DataSet (DataSetABC):
         return self
 
     def normalize_dataset(self):
-        print("This method can breaks logic of ssim and three ssim metrics. If those operations applieds into datasets which had run this method returns always 1, please consider not using this method for normalize the dataset.")
         self.x_test = cupy.array(self.x_test)
         
         x_test_l2 = ncp.linalg.norm(self.x_test, keepdims=True)

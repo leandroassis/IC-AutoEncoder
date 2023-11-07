@@ -233,26 +233,20 @@ def blocking_efect_factor (im: tf.Tensor, block_size = 8) -> tf.Tensor:
 
 
 def psnrb (target_imgs: tf.Tensor, degraded_imgs: tf.Tensor, ) -> tf.float32:
-	"""
-	Computes the PSNR-B for a batch of images
-
-	### Obs: 
-	The order of images are important, the block efect factor (BEF) calculation only depends of one image.
-
-	### Ref:
-	Quality Assessment of Deblocked Images: Changhoon Yim, Member, IEEE, and Alan Conrad Bovik, Fellow, IEEE 
-	"""
-	imgs_shape = degraded_imgs.shape.__len__()
-
-	assert imgs_shape == 4
-
-	img_mse = tf.reduce_mean(tf.square(target_imgs - degraded_imgs), axis=[1,2,3])
-
-	bef_total = blocking_efect_factor(degraded_imgs)
-
-	psnr_b =  tf.math.add(-10*tf.math.log(bef_total + img_mse)/log(10), 10*log(255**2, 10))
-
-	return psnr_b
+    target_imgs = tf.cast(target_imgs, tf.double)
+    degraded_imgs = tf.cast(degraded_imgs, tf.double)
+    
+    imgs_shape = degraded_imgs.shape.__len__()
+    
+    assert imgs_shape == 4
+    
+    img_mse = tf.reduce_mean(tf.square(target_imgs - degraded_imgs), axis=[1,2,3])
+    
+    bef_total = blocking_efect_factor(degraded_imgs)
+    
+    psnr_b =  tf.math.add(-10*tf.math.log(bef_total + img_mse)/log(10), 10*log(255**2, 10))
+    
+    return psnr_b
 
 if __name__ == "__main__":
 	

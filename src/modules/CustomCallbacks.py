@@ -38,12 +38,14 @@ class WeightCheckpoint(Callback):
             print(string)
 
 class EarlyStopByPercentage(Callback):
-    def __init__(self, monitor : str, percentage : float, num_epochs : int, verbose=1):
+    def __init__(self, monitor : str, percentage : float, num_epochs : int, path : str, json_dict : dict, verbose=1):
         super(Callback, self).__init__()
         self.monitor = monitor
         self.percentage = percentage
         self.verbose = verbose
         self.num_epochs = num_epochs
+        self.path = path
+        self.log = json_dict
         self.last = []
 
     def on_epoch_end(self, epoch, logs={}):
@@ -58,6 +60,14 @@ class EarlyStopByPercentage(Callback):
         if self.last[0]/current < 1 + (percentage/100):
             if self.verbose > 0:
                 print("Epoch %05d: early stopping THR" % epoch)
+            with open(path, "w") as file:
+                    file.write("Época %05d: encerrando pois não houve melhora nas últimas %02d épocas\n" %(epoch, self.num_epochs))
+                    self.log['status'] = 'COMPLETED'
             self.model.stop_training = True
         else:
+            self.log['status'] = 'RUNNING'
             self.last = [current]
+            
+        json_object = json.dumps(self.log, indent=4)
+        with open(self.log['path'], "w") as outfile:
+            outfile.write(json_object)

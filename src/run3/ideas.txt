@@ -1,0 +1,1 @@
+test performance in noise pattern vs in gaussian noise

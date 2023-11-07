@@ -59,7 +59,7 @@ class NetTrainer():
         
         last_fold = self.__get_last_fold()
         
-        self.stop = EarlyStopByPercentage(monitor=self.metric, percentage=self.percentage, num_epochs=self.grow_epochs, verbose=self.verbose)
+        self.stop = EarlyStopByPercentage(monitor=self.metric, percentage=self.percentage, num_epochs=self.grow_epochs, path=self.filepath+'completed', json_dict=self.json, verbose=self.verbose)
         
         if self.no_folds == 1:
             self.checkpoint = BackupAndRestore(backup_dir=self.filepath+'fit_backup', save_freq="epoch",  delete_checkpoint=False)

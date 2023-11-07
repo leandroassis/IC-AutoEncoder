@@ -10,3 +10,4 @@ pydot
 keras-tuner
 cupy-cuda11x
 sklearn
+tqdm
