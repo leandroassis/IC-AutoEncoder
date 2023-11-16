@@ -1,0 +1,3 @@
+usar maxpooling e dropout no discriminator e no gerador
+aumentar número de filtros
+mexer no stride e adicionar Conv2DTranspose no gerador

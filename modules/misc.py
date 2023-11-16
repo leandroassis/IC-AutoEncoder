@@ -97,9 +97,9 @@ class IDCT2D (Layer):
         return 
 
 
-def ssim_metric (y_true,y_pred, max_val = 255, filter_size = 9, filter_sigma = 1.5, k1=0.01, k2=0.03):
-    y_true = tf.cast(y_true, tf.double)
-    y_pred = tf.cast(y_pred, tf.double)
+def ssim_metric (y_true_,y_pred_, max_val = 255, filter_size = 9, filter_sigma = 1.5, k1=0.01, k2=0.03):
+    y_true = tf.cast(y_true_, tf.double)
+    y_pred = tf.cast(y_pred_, tf.double)
     return ssim(y_true, y_pred, max_val = max_val,
                       filter_size = filter_size,
                       filter_sigma = filter_sigma,

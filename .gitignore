@@ -16,3 +16,4 @@ Logs/*
 !Logs/*.csv
 .ipynb_checkpoints
 output.txt
+*.png

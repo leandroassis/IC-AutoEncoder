@@ -232,9 +232,9 @@ def blocking_efect_factor (im: tf.Tensor, block_size = 8) -> tf.Tensor:
 
 
 
-def psnrb (target_imgs: tf.Tensor, degraded_imgs: tf.Tensor, ) -> tf.float32:
-    target_imgs = tf.cast(target_imgs, tf.double)
-    degraded_imgs = tf.cast(degraded_imgs, tf.double)
+def psnrb (target_imgs_: tf.Tensor, degraded_imgs_: tf.Tensor, ) -> tf.float32:
+    target_imgs = tf.cast(target_imgs_, tf.double)
+    degraded_imgs = tf.cast(degraded_imgs_, tf.double)
     
     imgs_shape = degraded_imgs.shape.__len__()
     
